@@ -31,6 +31,11 @@ internal class DrawingCanvas : IDrawable
         _canvasProperties.StrokeColor = color;
     }
 
+    public void SetStrokeSize(float size)
+    {
+        _canvasProperties.StrokeSize = size;
+    }
+
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
         foreach (IDrawable drawable in _drawStack)

@@ -23,5 +23,12 @@
             <Button x:Name="clearButton" Text="clear"/>
         </VerticalStackLayout>
 
+
+        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="End">
+            <Slider x:Name="brushSizeSlider" WidthRequest="240" 
+                Minimum="1" Maximum="32" Value="2"/>
+            <!-- TODO: Add label displaying slider value -->
+        </VerticalStackLayout>
+
     </Grid>
 </ContentPage>

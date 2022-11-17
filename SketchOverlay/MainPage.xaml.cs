@@ -25,6 +25,8 @@ public partial class MainPage : ContentPage
         lineBrush.Clicked += (_, _) => _rootDrawable.DrawingTool = new LineBrush();
         rectangleBrush.Clicked += (_, _) => _rootDrawable.DrawingTool = new RectangleBrush();
 
+        brushSizeSlider.ValueChanged += (_, args) => _rootDrawable.SetStrokeSize((float)args.NewValue);
+
         _rootDrawable.RequestRedraw += (_, _) => canvas.Invalidate();
         _rootDrawable.CanClearChanged += (_, enabled) => UpdateButton(clearButton, enabled);
         _rootDrawable.CanRedoChanged += (_, enabled) => UpdateButton(redoButton, enabled);
