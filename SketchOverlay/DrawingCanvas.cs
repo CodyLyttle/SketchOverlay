@@ -38,7 +38,7 @@ internal class DrawingCanvas : IDrawable
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
-        foreach (IDrawable drawable in _drawStack)
+        foreach (IDrawable drawable in _drawStack.Reverse())
         {
             drawable.Draw(canvas, dirtyRect);
         }
