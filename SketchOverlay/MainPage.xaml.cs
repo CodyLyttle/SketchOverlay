@@ -18,6 +18,10 @@ public partial class MainPage : ContentPage
         redoButton.Clicked += (_, _) => _rootDrawable.Redo();
         undoButton.Clicked += (_, _) => _rootDrawable.Undo();
 
+        redButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Red);
+        greenButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Green);
+        blueButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Blue);
+
         lineBrush.Clicked += (_, _) => _rootDrawable.DrawingTool = new LineBrush();
         rectangleBrush.Clicked += (_, _) => _rootDrawable.DrawingTool = new RectangleBrush();
 

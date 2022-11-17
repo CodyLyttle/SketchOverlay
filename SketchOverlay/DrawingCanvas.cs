@@ -12,7 +12,7 @@ internal class DrawingCanvas : IDrawable
     // Temporary undo/redo solution. Refactored to support delete tool.
     private readonly Stack<IDrawable> _drawStack = new();
     private readonly Stack<IDrawable> _redoStack = new();
-    private readonly CanvasProperties _canvasProperties = new();
+    private CanvasProperties _canvasProperties = new();
 
     public DrawingCanvas(IDrawingTool drawingTool)
     {
@@ -26,6 +26,10 @@ internal class DrawingCanvas : IDrawable
 
     public IDrawingTool DrawingTool { get; set; }
 
+    public void SetStrokeColor(Color color)
+    {
+        _canvasProperties.StrokeColor = color;
+    }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {

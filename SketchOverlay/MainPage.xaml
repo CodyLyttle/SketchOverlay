@@ -6,6 +6,12 @@
         <Label x:Name="debugLabel"/>
         <GraphicsView x:Name="canvas"/>
 
+        <VerticalStackLayout HorizontalOptions="Start" VerticalOptions="Start">
+            <Button x:Name="redButton" Background="Red"/>
+            <Button x:Name="greenButton" Background="Green"/>
+            <Button x:Name="blueButton" Background="Blue"/>
+        </VerticalStackLayout>
+
         <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Start">
             <Button x:Name="lineBrush"  Text="line"/>
             <Button x:Name="rectangleBrush"  Text="rect"/>
