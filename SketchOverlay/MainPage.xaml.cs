@@ -2,23 +2,28 @@
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
+    private readonly DrawingCanvas _rootDrawable = new();
 
-	public MainPage()
-	{
-		InitializeComponent();
-	}
+    public MainPage()
+    {
+        InitializeComponent();
 
-	private void OnCounterClicked(object sender, EventArgs e)
-	{
-		count++;
+        canvas.Drawable = _rootDrawable;
+        canvas.DragInteraction += CanvasOnDragInteraction;
+        canvas.EndInteraction += CanvasOnEndInteraction;
+        clearButton.Clicked += (_,_) => _rootDrawable.ClearCanvas();
+        _rootDrawable.RequestRedraw += (_, _) => canvas.Invalidate();
+    }
 
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
+    private void CanvasOnDragInteraction(object? sender, TouchEventArgs e)
+    {
+        // Mouse movement creates a single drawing event.
+        _rootDrawable.DoDrawingEvent(e.Touches[0]);
+    }
 
-		SemanticScreenReader.Announce(CounterBtn.Text);
-	}
+    private void CanvasOnEndInteraction(object? sender, TouchEventArgs e)
+    {
+        _rootDrawable.EndDrawingEvent();
+    }
 }
 
