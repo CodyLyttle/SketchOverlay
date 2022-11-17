@@ -13,6 +13,7 @@
         </VerticalStackLayout>
 
         <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Start">
+            <Button x:Name="brushTool"  Text="brush"/>
             <Button x:Name="lineTool"  Text="line"/>
             <Button x:Name="rectangleTool"  Text="rect"/>
         </HorizontalStackLayout>

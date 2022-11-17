@@ -4,7 +4,7 @@ namespace SketchOverlay;
 
 public partial class MainPage : ContentPage
 {
-    private readonly DrawingCanvas _rootDrawable = new(new LineTool());
+    private readonly DrawingCanvas _rootDrawable = new(new BrushTool());
 
     public MainPage()
     {
@@ -22,6 +22,7 @@ public partial class MainPage : ContentPage
         greenButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Green);
         blueButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Blue);
 
+        brushTool.Clicked += (_, _) => _rootDrawable.DrawingTool = new BrushTool();
         lineTool.Clicked += (_, _) => _rootDrawable.DrawingTool = new LineTool();
         rectangleTool.Clicked += (_, _) => _rootDrawable.DrawingTool = new RectangleTool();
 

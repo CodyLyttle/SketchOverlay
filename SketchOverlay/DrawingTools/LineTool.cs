@@ -29,7 +29,6 @@ internal class LineTool : IDrawingTool
     public IDrawable BeginDraw(CanvasProperties canvasProperties, PointF startPoint)
     {
         _currentOutput = new LineToolOutput(canvasProperties, startPoint);
-
         return _currentOutput;
     }
 
