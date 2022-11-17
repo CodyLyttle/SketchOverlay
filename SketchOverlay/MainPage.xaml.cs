@@ -4,7 +4,7 @@ namespace SketchOverlay;
 
 public partial class MainPage : ContentPage
 {
-    private readonly DrawingCanvas _rootDrawable = new(new LineBrush());
+    private readonly DrawingCanvas _rootDrawable = new(new LineTool());
 
     public MainPage()
     {
@@ -22,10 +22,10 @@ public partial class MainPage : ContentPage
         greenButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Green);
         blueButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Blue);
 
-        lineBrush.Clicked += (_, _) => _rootDrawable.DrawingTool = new LineBrush();
-        rectangleBrush.Clicked += (_, _) => _rootDrawable.DrawingTool = new RectangleBrush();
+        lineTool.Clicked += (_, _) => _rootDrawable.DrawingTool = new LineTool();
+        rectangleTool.Clicked += (_, _) => _rootDrawable.DrawingTool = new RectangleTool();
 
-        brushSizeSlider.ValueChanged += (_, args) => _rootDrawable.SetStrokeSize((float)args.NewValue);
+        drawSizeSlider.ValueChanged += (_, args) => _rootDrawable.SetStrokeSize((float)args.NewValue);
 
         _rootDrawable.RequestRedraw += (_, _) => canvas.Invalidate();
         _rootDrawable.CanClearChanged += (_, enabled) => UpdateButton(clearButton, enabled);

@@ -13,8 +13,8 @@
         </VerticalStackLayout>
 
         <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Start">
-            <Button x:Name="lineBrush"  Text="line"/>
-            <Button x:Name="rectangleBrush"  Text="rect"/>
+            <Button x:Name="lineTool"  Text="line"/>
+            <Button x:Name="rectangleTool"  Text="rect"/>
         </HorizontalStackLayout>
 
         <VerticalStackLayout HorizontalOptions="End" VerticalOptions="Start">
@@ -25,7 +25,7 @@
 
 
         <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="End">
-            <Slider x:Name="brushSizeSlider" WidthRequest="240" 
+            <Slider x:Name="drawSizeSlider" WidthRequest="240" 
                 Minimum="1" Maximum="32" Value="2"/>
             <!-- TODO: Add label displaying slider value -->
         </VerticalStackLayout>

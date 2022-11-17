@@ -2,13 +2,13 @@
 
 namespace SketchOverlay.DrawingTools;
 
-internal class LineBrush : IDrawingTool
+internal class RectangleTool : IDrawingTool
 {
-    private class LineBrushOutput : IDrawable
+    private class RectangleToolOutput : IDrawable
     {
         private readonly CanvasProperties _canvasProperties;
 
-        public LineBrushOutput(CanvasProperties canvasProperties, PointF startPoint)
+        public RectangleToolOutput(CanvasProperties canvasProperties, PointF startPoint)
         {
             _canvasProperties = canvasProperties;
             PointB = PointA = startPoint;
@@ -20,22 +20,25 @@ internal class LineBrush : IDrawingTool
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
             canvas.SetProperties(_canvasProperties);
-            canvas.DrawLine(PointA, PointB);
+            canvas.DrawRectangle(
+                PointA.X,
+                PointA.Y,
+                PointB.X - PointA.X,
+                PointB.Y - PointA.Y);
         }
     }
 
-    private LineBrushOutput? _currentOutput;
+    private RectangleToolOutput? _currentOutput;
 
     public IDrawable BeginDraw(CanvasProperties canvasProperties, PointF startPoint)
     {
-        _currentOutput = new LineBrushOutput(canvasProperties, startPoint);
-
+        _currentOutput = new RectangleToolOutput(canvasProperties, startPoint);
         return _currentOutput;
     }
 
     public void ContinueDraw(PointF currentPoint)
     {
-        if(_currentOutput == null)
+        if (_currentOutput is null)
             throw new InvalidOperationException($"{nameof(ContinueDraw)} was called before {nameof(BeginDraw)}");
 
         _currentOutput.PointB = currentPoint;
