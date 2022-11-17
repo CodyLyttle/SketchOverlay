@@ -1,8 +1,10 @@
-﻿namespace SketchOverlay;
+﻿using SketchOverlay.DrawingTools;
+
+namespace SketchOverlay;
 
 public partial class MainPage : ContentPage
 {
-    private readonly DrawingCanvas _rootDrawable = new();
+    private readonly DrawingCanvas _rootDrawable = new(new LineBrush());
 
     public MainPage()
     {
@@ -12,9 +14,12 @@ public partial class MainPage : ContentPage
         canvas.DragInteraction += CanvasOnDragInteraction;
         canvas.EndInteraction += CanvasOnEndInteraction;
 
-        clearButton.Clicked += (_,_) => _rootDrawable.Clear();
+        clearButton.Clicked += (_, _) => _rootDrawable.Clear();
         redoButton.Clicked += (_, _) => _rootDrawable.Redo();
         undoButton.Clicked += (_, _) => _rootDrawable.Undo();
+
+        lineBrush.Clicked += (_, _) => _rootDrawable.DrawingTool = new LineBrush();
+        rectangleBrush.Clicked += (_, _) => _rootDrawable.DrawingTool = new RectangleBrush();
 
         _rootDrawable.RequestRedraw += (_, _) => canvas.Invalidate();
         _rootDrawable.CanClearChanged += (_, enabled) => UpdateButton(clearButton, enabled);
@@ -42,4 +47,3 @@ public partial class MainPage : ContentPage
         Dispatcher.Dispatch(() => button.IsEnabled = enabled);
     }
 }
-

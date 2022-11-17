@@ -12,9 +12,9 @@ internal class DrawingCanvas : IDrawable
     private readonly Stack<IDrawable> _drawStack = new();
     private readonly Stack<IDrawable> _redoStack = new();
 
-    public DrawingCanvas()
+    public DrawingCanvas(IDrawingTool drawingTool)
     {
-        DrawingTool = new RectangleBrush();
+        DrawingTool = drawingTool;
     }
 
     public event EventHandler? RequestRedraw;
