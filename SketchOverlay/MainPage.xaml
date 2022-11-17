@@ -2,9 +2,22 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SketchOverlay.MainPage">
+    <ContentPage.Resources>
+        <Style TargetType="Button" x:Key="IconButton">
+            <Style.Setters>
+                <Setter Property="FontSize" Value="16"/>
+            </Style.Setters>
+        </Style>
+    </ContentPage.Resources>
     <Grid>
         <Label x:Name="debugLabel"/>
         <GraphicsView x:Name="canvas"/>
-        <Button x:Name="clearButton" Text="Clear" HorizontalOptions="End" VerticalOptions="End"/>
+
+        <VerticalStackLayout HorizontalOptions="End" VerticalOptions="Start">
+            <Button x:Name="undoButton" Style="{StaticResource IconButton}" Text="undo"/>
+            <Button x:Name="redoButton" Style="{StaticResource IconButton}" Text="redo"/>
+            <Button x:Name="clearButton" Style="{StaticResource IconButton}" Text="clear"/>
+        </VerticalStackLayout>
+
     </Grid>
 </ContentPage>
