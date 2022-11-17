@@ -1,16 +1,25 @@
-﻿namespace SketchOverlay.DrawingTools;
+﻿using SketchOverlay.Canvas;
+
+namespace SketchOverlay.DrawingTools;
 
 internal class RectangleBrush : IDrawingTool
 {
     private class RectangleBrushOutput : IDrawable
     {
-        public PointF PointA { get; init; }
+        private readonly CanvasProperties _canvasProperties;
+
+        public RectangleBrushOutput(CanvasProperties canvasProperties, PointF startPoint)
+        {
+            _canvasProperties = canvasProperties;
+            PointB = PointA = startPoint;
+        }
+
+        public PointF PointA { get; }
         public PointF PointB { get; set; }
 
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            canvas.StrokeColor = Colors.Red;
-
+            canvas.SetProperties(_canvasProperties);
             canvas.DrawRectangle(
                 PointA.X,
                 PointA.Y,
@@ -21,14 +30,9 @@ internal class RectangleBrush : IDrawingTool
 
     private RectangleBrushOutput? _currentOutput;
 
-    public IDrawable BeginDraw(PointF startPoint)
+    public IDrawable BeginDraw(CanvasProperties canvasProperties, PointF startPoint)
     {
-        _currentOutput = new RectangleBrushOutput
-        {
-            PointA = startPoint,
-            PointB = startPoint
-        };
-
+        _currentOutput = new RectangleBrushOutput(canvasProperties, startPoint);
         return _currentOutput;
     }
 

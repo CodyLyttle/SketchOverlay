@@ -1,28 +1,34 @@
-﻿namespace SketchOverlay.DrawingTools;
+﻿using SketchOverlay.Canvas;
+
+namespace SketchOverlay.DrawingTools;
 
 internal class LineBrush : IDrawingTool
 {
     private class LineBrushOutput : IDrawable
     {
-        public PointF PointA { get; init; }
+        private readonly CanvasProperties _canvasProperties;
+
+        public LineBrushOutput(CanvasProperties canvasProperties, PointF startPoint)
+        {
+            _canvasProperties = canvasProperties;
+            PointB = PointA = startPoint;
+        }
+
+        public PointF PointA { get; }
         public PointF PointB { get; set; }
 
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            canvas.StrokeColor = Colors.Red;
+            canvas.SetProperties(_canvasProperties);
             canvas.DrawLine(PointA, PointB);
         }
     }
 
     private LineBrushOutput? _currentOutput;
 
-    public IDrawable BeginDraw(PointF startPoint)
+    public IDrawable BeginDraw(CanvasProperties canvasProperties, PointF startPoint)
     {
-        _currentOutput = new LineBrushOutput
-        {
-            PointA = startPoint,
-            PointB = startPoint
-        };
+        _currentOutput = new LineBrushOutput(canvasProperties, startPoint);
 
         return _currentOutput;
     }

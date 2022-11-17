@@ -1,4 +1,5 @@
-﻿using SketchOverlay.DrawingTools;
+﻿using SketchOverlay.Canvas;
+using SketchOverlay.DrawingTools;
 
 namespace SketchOverlay;
 
@@ -11,6 +12,7 @@ internal class DrawingCanvas : IDrawable
     // Temporary undo/redo solution. Refactored to support delete tool.
     private readonly Stack<IDrawable> _drawStack = new();
     private readonly Stack<IDrawable> _redoStack = new();
+    private readonly CanvasProperties _canvasProperties = new();
 
     public DrawingCanvas(IDrawingTool drawingTool)
     {
@@ -39,7 +41,7 @@ internal class DrawingCanvas : IDrawable
         {
             _redoStack.Clear();
             _isDrawing = true;
-            _drawStack.Push(DrawingTool.BeginDraw(point));
+            _drawStack.Push(DrawingTool.BeginDraw(_canvasProperties, point));
             UpdateButtons();
         }
         else
