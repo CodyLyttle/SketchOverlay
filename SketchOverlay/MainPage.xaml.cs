@@ -1,10 +1,12 @@
 ﻿using SketchOverlay.DrawingTools;
+using SketchOverlay.Native.Input.Mouse;
 
 namespace SketchOverlay;
 
 public partial class MainPage : ContentPage
 {
     private readonly DrawingCanvas _rootDrawable = new(new BrushTool());
+    private readonly LowLevelMouseHook _mouseHook;
 
     public MainPage()
     {
@@ -36,6 +38,26 @@ public partial class MainPage : ContentPage
         clearButton.IsEnabled = false;
         redoButton.IsEnabled = false;
         undoButton.IsEnabled = false;
+
+        _mouseHook = new LowLevelMouseHook();
+        _mouseHook.MouseDown += (_, args) => DisplayMouseButtonAction(args, "down");
+        _mouseHook.MouseUp += (_, args) => DisplayMouseButtonAction(args, "up");
+        _mouseHook.MouseMove += (_, args) => DisplayMouseMoveAction(args);
+    }
+
+    private void DisplayMouseButtonAction(MouseButtonEventArgs e, string action)
+    {
+        Dispatcher.Dispatch(() =>
+            debugLabel.Text = $"{e.Button} {action}\r\n{e.Position}"
+        );
+    }
+
+    private void DisplayMouseMoveAction(MouseMoveArgs e)
+    {
+        // TODO: Calculate position relative to Window/GraphicsView.
+        Dispatcher.Dispatch(() =>
+            debugLabel.Text = $"Move\r\n{e.Position}"
+        );
     }
 
     private void CanvasOnDragInteraction(object? sender, TouchEventArgs e)

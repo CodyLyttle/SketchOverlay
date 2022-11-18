@@ -42,4 +42,8 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\SketchOverlay.Native\SketchOverlay.Native.csproj" />
+	</ItemGroup>
+
 </Project>
