@@ -6,6 +6,7 @@ internal sealed class WindowsHook : IDisposable
 {
     // Store the callback delegate to prevent early collection resulting in a NullReferenceException.
     private HookProcedure? _callbackObject;
+    // Store the hook handle to release when disposed.
     private IntPtr? _hookHandle;
     public bool IsHookSet { get; private set; }
 
