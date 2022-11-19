@@ -14,9 +14,9 @@ internal static class NativeHelpers
     {
         using Process currentProcess = Process.GetCurrentProcess();
         using ProcessModule mainModule = currentProcess.MainModule!;
-        return Native.GetModuleHandle(mainModule.ModuleName!); 
+        return Native.GetModuleHandle(mainModule.ModuleName!);
     }
-    
+
     private static class Native
     {
         [DllImport("kernel32.dll")]

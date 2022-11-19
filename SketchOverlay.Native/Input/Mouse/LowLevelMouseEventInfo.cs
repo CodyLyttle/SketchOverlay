@@ -8,14 +8,14 @@ internal readonly struct LowLevelMouseEventInfo
     public LowLevelMouseEventInfo(NativePoint pos, int mouseData, int flags, int time, UIntPtr extraInfo)
     {
         Position = pos;
-        MouseData = mouseData;
+        MouseData = new TwoWordParam(mouseData);
         Flags = flags;
         Time = time;
         ExtraInfo = extraInfo;
     }
     
     public NativePoint Position { get;}
-    public int MouseData { get; }
+    public TwoWordParam MouseData { get; }
     public int Flags { get; }
     public int Time { get; }
     public UIntPtr ExtraInfo { get; }

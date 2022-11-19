@@ -40,16 +40,10 @@ public partial class MainPage : ContentPage
         undoButton.IsEnabled = false;
 
         _mouseHook = new LowLevelMouseHook();
-        _mouseHook.MouseDown += (_, args) => DisplayMouseButtonAction(args, "down");
-        _mouseHook.MouseUp += (_, args) => DisplayMouseButtonAction(args, "up");
         _mouseHook.MouseMove += (_, args) => DisplayMouseMoveAction(args);
-    }
-
-    private void DisplayMouseButtonAction(MouseButtonEventArgs e, string action)
-    {
-        Dispatcher.Dispatch(() =>
-            debugLabel.Text = $"{e.Button} {action}\r\n{e.Position}"
-        );
+        _mouseHook.MouseUp += (_, args) => DisplayMouseButtonAction(args, "up");
+        _mouseHook.MouseDown += (_, args) => DisplayMouseButtonAction(args, "down");
+        _mouseHook.MouseWheel += (_, args) => DisplayMouseWheelAction(args);
     }
 
     private void DisplayMouseMoveAction(MouseMoveArgs e)
@@ -58,6 +52,20 @@ public partial class MainPage : ContentPage
         Dispatcher.Dispatch(() =>
             debugLabel.Text = $"Move\r\n{e.Position}"
         );
+    }
+
+    private void DisplayMouseButtonAction(MouseButtonEventArgs e, string action)
+    {
+        string debugTxt = e.Button == MouseButton.XButton
+            ? $"{e.Button}{e.XButtonIndex} {action}\r\n{e.Position}"
+            : $"{e.Button} {action}\r\n{e.Position}";
+
+        Dispatcher.Dispatch(() => debugLabel.Text = debugTxt );
+    }
+
+    private void DisplayMouseWheelAction(MouseWheelArgs e)
+    {
+        Dispatcher.Dispatch(() => debugLabel.Text = $"Scroll {e.Direction}\r\n{e.Position}");
     }
 
     private void CanvasOnDragInteraction(object? sender, TouchEventArgs e)
