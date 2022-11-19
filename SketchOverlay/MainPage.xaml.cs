@@ -1,4 +1,6 @@
-﻿using SketchOverlay.DrawingTools;
+﻿using System.Diagnostics;
+using SketchOverlay.DrawingTools;
+using SketchOverlay.Native;
 using SketchOverlay.Native.Input.Mouse;
 
 namespace SketchOverlay;
@@ -7,6 +9,7 @@ public partial class MainPage : ContentPage
 {
     private readonly DrawingCanvas _rootDrawable = new(new BrushTool());
     private readonly LowLevelMouseHook _mouseHook;
+    private IntPtr _windowHandle;
 
     public MainPage()
     {
@@ -48,24 +51,23 @@ public partial class MainPage : ContentPage
 
     private void DisplayMouseMoveAction(MouseMoveArgs e)
     {
-        // TODO: Calculate position relative to Window/GraphicsView.
         Dispatcher.Dispatch(() =>
-            debugLabel.Text = $"Move\r\n{e.Position}"
+            debugLabel.Text = $"Move\r\n{GetRelativePosition(e.Position)}"
         );
     }
 
     private void DisplayMouseButtonAction(MouseButtonEventArgs e, string action)
     {
         string debugTxt = e.Button == MouseButton.XButton
-            ? $"{e.Button}{e.XButtonIndex} {action}\r\n{e.Position}"
-            : $"{e.Button} {action}\r\n{e.Position}";
+            ? $"{e.Button}{e.XButtonIndex} {action}\r\n{GetRelativePosition(e.Position)}"
+            : $"{e.Button} {action}\r\n{GetRelativePosition(e.Position)}";
 
         Dispatcher.Dispatch(() => debugLabel.Text = debugTxt );
     }
 
     private void DisplayMouseWheelAction(MouseWheelArgs e)
     {
-        Dispatcher.Dispatch(() => debugLabel.Text = $"Scroll {e.Direction}\r\n{e.Position}");
+        Dispatcher.Dispatch(() => debugLabel.Text = $"Scroll {e.Direction}\r\n{GetRelativePosition(e.Position)}");
     }
 
     private void CanvasOnDragInteraction(object? sender, TouchEventArgs e)
@@ -82,5 +84,11 @@ public partial class MainPage : ContentPage
     private void UpdateButton(Button button, bool enabled)
     {
         Dispatcher.Dispatch(() => button.IsEnabled = enabled);
+    }
+    
+    private System.Drawing.Point GetRelativePosition(System.Drawing.Point absolutePosition)
+    {
+        _windowHandle = Process.GetCurrentProcess().MainWindowHandle;
+        return absolutePosition.RelativeToWindow(_windowHandle);
     }
 }
