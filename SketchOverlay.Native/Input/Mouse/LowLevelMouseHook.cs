@@ -5,7 +5,7 @@ namespace SketchOverlay.Native.Input.Mouse;
 
 public class LowLevelMouseHook
 {
-    public const int LowLevelMouseHookId = 14;
+    private const int LowLevelMouseHookId = 14;
     private readonly WindowsHook _hook;
 
     public LowLevelMouseHook()
