@@ -4,5 +4,6 @@ public enum MouseButton
 {
     Left,
     Right,
-    Middle
+    Middle,
+    XButton
 }

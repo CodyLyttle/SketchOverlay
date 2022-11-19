@@ -44,6 +44,18 @@ public class LowLevelMouseHook
             case MouseMessage.RightButtonUp:
                 InvokeMouseUp(eventInfo, MouseButton.Right);
                 break;
+            case MouseMessage.MiddleButtonDown:
+                InvokeMouseDown(eventInfo, MouseButton.Middle);
+                break;
+            case MouseMessage.MiddleButtonUp:
+                InvokeMouseUp(eventInfo, MouseButton.Middle);
+                break;
+            case MouseMessage.XButtonDown:
+                InvokeMouseDown(eventInfo, MouseButton.XButton);
+                break;
+            case MouseMessage.XButtonUp:
+                InvokeMouseUp(eventInfo, MouseButton.XButton);
+                break;
             case MouseMessage.MouseWheel:
                 break;
             case MouseMessage.MouseWheelHorizontal:
