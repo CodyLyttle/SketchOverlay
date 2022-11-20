@@ -19,10 +19,10 @@ public class InputStateTracker
         _mouseHook.MouseDown += (_, args) => SetButtonState(args, true);
     }
 
-    public MouseButtonEventArgs? GetLastMouseButtonEvent
+    public MouseButtonEventArgs? LastMouseButtonEvent
         => _mouseButtonHistory.LastOrDefault();
 
-    public IEnumerable<MouseButtonEventArgs> GetMouseButtonEventHistory
+    public IEnumerable<MouseButtonEventArgs> MouseButtonEventHistory
         => _mouseButtonHistory.Reverse();
 
     public int MaxMouseButtonEventHistoryCount { get; set; } = 5;
