@@ -6,8 +6,11 @@ using SketchOverlay.Native.Input.Mouse;
 
 namespace SketchOverlay;
 
+// TODO: Use InputManager.Events to handle the tool window dragging logic. Dragging stops abruptly due to the cursor leaving the bounds of the GraphicsView.
 public partial class MainPage : ContentPage
 {
+    private const MouseButton ToggleDrawingWindowButton = MouseButton.Right;
+
     private readonly DrawingCanvas _rootDrawable = new(new BrushTool());
     private readonly IInputManger _inputManager;
     private IntPtr _windowHandle;
@@ -16,82 +19,83 @@ public partial class MainPage : ContentPage
     public MainPage()
     {
         InitializeComponent();
-        _inputManager = new InputManager();
 
         canvas.Drawable = _rootDrawable;
-        canvas.StartInteraction += CanvasOnDragInteraction;
+        canvas.StartInteraction += CanvasOnStartInteraction;
         canvas.DragInteraction += CanvasOnDragInteraction;
         canvas.EndInteraction += CanvasOnEndInteraction;
-
-        clearButton.Clicked += (_, _) => _rootDrawable.Clear();
-        redoButton.Clicked += (_, _) => _rootDrawable.Redo();
-        undoButton.Clicked += (_, _) => _rootDrawable.Undo();
-
-        redButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Red);
-        greenButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Green);
-        blueButton.Clicked += (_, _) => _rootDrawable.SetStrokeColor(Colors.Blue);
-
-        brushTool.Clicked += (_, _) => _rootDrawable.DrawingTool = new BrushTool();
-        lineTool.Clicked += (_, _) => _rootDrawable.DrawingTool = new LineTool();
-        rectangleTool.Clicked += (_, _) => _rootDrawable.DrawingTool = new RectangleTool();
-
-        drawSizeSlider.ValueChanged += (_, args) => _rootDrawable.SetStrokeSize((float)args.NewValue);
-
         _rootDrawable.RequestRedraw += (_, _) => canvas.Invalidate();
-        _rootDrawable.CanClearChanged += (_, enabled) => UpdateButton(clearButton, enabled);
-        _rootDrawable.CanRedoChanged += (_, enabled) => UpdateButton(redoButton, enabled);
-        _rootDrawable.CanUndoChanged += (_, enabled) => UpdateButton(undoButton, enabled);
 
-        clearButton.IsEnabled = false;
-        redoButton.IsEnabled = false;
-        undoButton.IsEnabled = false;
-        _inputManager.Events.MouseMove += (_, args) => DisplayMouseMoveAction(args);
-        _inputManager.Events.MouseUp += (_, args) => DisplayMouseButtonAction(args, "up");
-        _inputManager.Events.MouseDown += (_, args) => DisplayMouseButtonAction(args, "down");
-        _inputManager.Events.MouseWheel += (_, args) => DisplayMouseWheelAction(args);
+        _inputManager = new InputManager();
+        _inputManager.Events.MouseMove += (sender, args) =>
+        {
+            Dispatcher.Dispatch(() => debugLabel.Text = GetRelativePosition(args.Position).ToString());
+        };
     }
 
-    private void DisplayMouseMoveAction(MouseMoveArgs e)
+    private void CanvasOnStartInteraction(object? sender, TouchEventArgs e)
     {
-        Dispatcher.Dispatch(() =>
-            debugLabel.Text = $"Move\r\n{GetRelativePosition(e.Position)}"
-        );
-    }
+        if (_inputManager.State.IsButtonDown(MouseButton.Left))
+        {
+            // Allow drawing to continue when the cursor enters the drawing tool window.
+            DrawingToolsWindow.InputTransparent = true;
+        }
 
-    private void DisplayMouseButtonAction(MouseButtonEventArgs e, string action)
-    {
-        string debugTxt = e.Button == MouseButton.XButton
-            ? $"{e.Button}{e.XButtonIndex} {action}\r\n{GetRelativePosition(e.Position)}"
-            : $"{e.Button} {action}\r\n{GetRelativePosition(e.Position)}";
+        else if (_inputManager.State.IsButtonDown(ToggleDrawingWindowButton))
+        {
+            if (DrawingToolsWindow.IsVisible)
+            {
+                DrawingToolsWindow.HideWindow();
+            }
+            else
+            {
+                DrawingToolsWindow.BeginDragWindow(e.Touches[0]);
+                DrawingToolsWindow.ShowWindow();
+            }
+        }
 
-        Dispatcher.Dispatch(() => debugLabel.Text = debugTxt);
-    }
-
-    private void DisplayMouseWheelAction(MouseWheelArgs e)
-    {
-        Dispatcher.Dispatch(() => debugLabel.Text = $"Scroll {e.Direction}\r\n{GetRelativePosition(e.Position)}");
+        CanvasOnDragInteraction(sender, e);
     }
 
     private void CanvasOnDragInteraction(object? sender, TouchEventArgs e)
     {
-        // Mouse movement creates a single drawing event.
-        if(_inputManager.State.IsButtonDown(MouseButton.Left))
-            _rootDrawable.DoDrawingEvent(e.Touches[0]);
+        PointF cursorPos = e.Touches[0];
+
+        if (_inputManager.State.IsButtonDown(MouseButton.Left))
+        {
+            _rootDrawable.DoDrawingEvent(cursorPos);
+        }
+        else if (_inputManager.State.IsButtonDown(MouseButton.Right) &&
+                 DrawingToolsWindow.IsDragging)
+        {
+            DrawingToolsWindow.ContinueDragWindow(cursorPos);
+        }
     }
 
     private void CanvasOnEndInteraction(object? sender, TouchEventArgs e)
     {
-        _rootDrawable.EndDrawingEvent();
+        MouseButtonEventArgs? lastMouseEvent = _inputManager.State.GetLastMouseButtonEvent;
+        if (lastMouseEvent == null)
+            return;
+
+        if (lastMouseEvent.Button == MouseButton.Left)
+        {
+            _rootDrawable.EndDrawingEvent();
+            DrawingToolsWindow.InputTransparent = false;
+        }
+        else if (lastMouseEvent.Button == MouseButton.Right)
+        {
+            if(DrawingToolsWindow.IsDragging)
+                DrawingToolsWindow.EndDragWindow(e.Touches[0]);
+        }
     }
 
-    private void UpdateButton(Button button, bool enabled)
+    private PointF GetRelativePosition(System.Drawing.Point absolutePos)
     {
-        Dispatcher.Dispatch(() => button.IsEnabled = enabled);
-    }
+        if (_windowHandle == IntPtr.Zero)
+            _windowHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-    private System.Drawing.Point GetRelativePosition(System.Drawing.Point absolutePosition)
-    {
-        _windowHandle = Process.GetCurrentProcess().MainWindowHandle;
-        return absolutePosition.RelativeToWindow(_windowHandle);
+        System.Drawing.Point relativePos = absolutePos.RelativeToWindow(_windowHandle);
+        return new PointF(relativePos.X, relativePos.Y);
     }
 }

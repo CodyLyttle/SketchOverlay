@@ -9,6 +9,7 @@ public class InputStateTracker
     private System.Drawing.Point _cursorPosition;
     private readonly object _buttonStateLock = new();
     private readonly object _cursorPositionLock = new();
+    private readonly Queue<MouseButtonEventArgs> _mouseButtonHistory = new();
 
     public InputStateTracker(LowLevelMouseHook mouseHook)
     {
@@ -17,6 +18,14 @@ public class InputStateTracker
         _mouseHook.MouseUp += (_, args) => SetButtonState(args, false);
         _mouseHook.MouseDown += (_, args) => SetButtonState(args, true);
     }
+
+    public MouseButtonEventArgs? GetLastMouseButtonEvent
+        => _mouseButtonHistory.LastOrDefault();
+
+    public IEnumerable<MouseButtonEventArgs> GetMouseButtonEventHistory
+        => _mouseButtonHistory.Reverse();
+
+    public int MaxMouseButtonEventHistoryCount { get; set; } = 5;
 
     public System.Drawing.Point CursorPosition
     {
@@ -68,10 +77,20 @@ public class InputStateTracker
 
     private void SetButtonState(MouseButtonEventArgs args, bool isPressed)
     {
+        AddMouseButtonEventToHistory(args);
+
         KeyValuePair<MouseButton, int?> key = new(args.Button, args.XButtonIndex);
         lock (_buttonStateLock)
         {
             _mouseButtonStates[key] = isPressed;
         }
+    }
+
+    private void AddMouseButtonEventToHistory(MouseButtonEventArgs args)
+    {
+        if (_mouseButtonHistory.Count == MaxMouseButtonEventHistoryCount)
+            _mouseButtonHistory.Dequeue();
+
+        _mouseButtonHistory.Enqueue(args);
     }
 }

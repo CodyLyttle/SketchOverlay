@@ -46,4 +46,16 @@
 	  <ProjectReference Include="..\SketchOverlay.Native\SketchOverlay.Native.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="DrawingToolWindow.xaml.cs">
+	    <DependentUpon>DrawingToolWindow.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="DrawingToolWindow.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
