@@ -5,7 +5,7 @@ namespace SketchOverlay;
 
 internal class DrawingCanvas : IDrawable
 {
-    private bool _isDrawing;
+    private bool _isDrawingPrimary;
     private bool _canRedo;
     private bool _canUndo;
 
@@ -14,9 +14,9 @@ internal class DrawingCanvas : IDrawable
     private readonly Stack<IDrawable> _redoStack = new();
     private CanvasProperties _canvasProperties = new();
 
-    public DrawingCanvas(IDrawingTool drawingTool)
+    public DrawingCanvas(IDrawingTool primaryDrawingTool)
     {
-        DrawingTool = drawingTool;
+        PrimaryDrawingTool = primaryDrawingTool;
     }
 
     public event EventHandler? RequestRedraw;
@@ -24,14 +24,14 @@ internal class DrawingCanvas : IDrawable
     public event EventHandler<bool>? CanRedoChanged;
     public event EventHandler<bool>? CanUndoChanged;
 
-    public IDrawingTool DrawingTool { get; set; }
+    public IDrawingTool PrimaryDrawingTool { get; set; }
 
-    public void SetStrokeColor(Color color)
+    public void SetPrimaryStrokeColor(Color color)
     {
         _canvasProperties.StrokeColor = color;
     }
 
-    public void SetStrokeSize(float size)
+    public void SetPrimaryStrokeSize(float size)
     {
         _canvasProperties.StrokeSize = size;
     }
@@ -44,18 +44,18 @@ internal class DrawingCanvas : IDrawable
         }
     }
 
-    public void DoDrawingEvent(PointF point)
+    public void DoPrimaryDrawingEvent(PointF point)
     {
-        if (!_isDrawing)
+        if (!_isDrawingPrimary)
         {
+            _isDrawingPrimary = true;
             _redoStack.Clear();
-            _isDrawing = true;
-            _drawStack.Push(DrawingTool.BeginDraw(_canvasProperties, point));
-            UpdateButtons();
+            _drawStack.Push(PrimaryDrawingTool.BeginDraw(_canvasProperties, point));
+            UpdateAvailableActions();
         }
         else
         {
-            DrawingTool.ContinueDraw(point);
+            PrimaryDrawingTool.ContinueDraw(point);
         }
 
         Redraw();
@@ -63,9 +63,26 @@ internal class DrawingCanvas : IDrawable
 
     public void EndDrawingEvent()
     {
-        _isDrawing = false;
-        DrawingTool.EndDraw();
+        if (_isDrawingPrimary)
+        {
+            _isDrawingPrimary = false;
+            PrimaryDrawingTool.EndDraw();
+        }
+
         Redraw();
+    }
+
+    public void CancelPrimaryDrawingEvent()
+    {
+        if (_isDrawingPrimary)
+        {
+            _isDrawingPrimary = false;
+            PrimaryDrawingTool.EndDraw();
+            _drawStack.Pop();
+            UpdateAvailableActions();
+            Redraw();
+        }
+
     }
 
     public void Undo()
@@ -74,7 +91,7 @@ internal class DrawingCanvas : IDrawable
             return;
 
         _redoStack.Push(_drawStack.Pop());
-        UpdateButtons();
+        UpdateAvailableActions();
         Redraw();
     }
 
@@ -84,7 +101,7 @@ internal class DrawingCanvas : IDrawable
             return;
 
         _drawStack.Push(_redoStack.Pop());
-        UpdateButtons();
+        UpdateAvailableActions();
         Redraw();
     }
 
@@ -92,7 +109,7 @@ internal class DrawingCanvas : IDrawable
     {
         _drawStack.Clear();
         _redoStack.Clear();
-        UpdateButtons();
+        UpdateAvailableActions();
         Redraw();
     }
 
@@ -101,11 +118,10 @@ internal class DrawingCanvas : IDrawable
         RequestRedraw?.Invoke(this, EventArgs.Empty);
     }
 
-    private void UpdateButtons()
+    private void UpdateAvailableActions()
     {
         bool currentCanUndo = _drawStack.Count > 0;
         bool currentCanRedo = _redoStack.Count > 0;
-
 
         if (currentCanUndo != _canUndo)
         {

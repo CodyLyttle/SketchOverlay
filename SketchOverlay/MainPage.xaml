@@ -5,7 +5,7 @@
              x:Class="SketchOverlay.MainPage">
     <Grid>
         <Label x:Name="debugLabel" Margin="32,0,0,0"/>
-        <GraphicsView x:Name="canvas"/>
+        <GraphicsView x:Name="graphicsView"/>
         <local:DrawingToolWindow x:Name="DrawingToolsWindow"/>
     </Grid>
 </ContentPage>

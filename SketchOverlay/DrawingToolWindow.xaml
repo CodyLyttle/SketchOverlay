@@ -17,9 +17,9 @@
             </HorizontalStackLayout>
 
             <HorizontalStackLayout HorizontalOptions="Center">
-                <Button x:Name="brushTool"  Text="brush"/>
-                <Button x:Name="lineTool"  Text="line"/>
-                <Button x:Name="rectangleTool"  Text="rect"/>
+                <Button x:Name="brushToolButton"  Text="brush"/>
+                <Button x:Name="lineToolButton"  Text="line"/>
+                <Button x:Name="rectangleToolButton"  Text="rect"/>
             </HorizontalStackLayout>
 
             <HorizontalStackLayout HorizontalOptions="Center">
