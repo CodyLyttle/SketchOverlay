@@ -19,6 +19,7 @@ public partial class MainPage : ContentPage
         _inputManager = new InputManager();
 
         canvas.Drawable = _rootDrawable;
+        canvas.StartInteraction += CanvasOnDragInteraction;
         canvas.DragInteraction += CanvasOnDragInteraction;
         canvas.EndInteraction += CanvasOnEndInteraction;
 
@@ -74,7 +75,8 @@ public partial class MainPage : ContentPage
     private void CanvasOnDragInteraction(object? sender, TouchEventArgs e)
     {
         // Mouse movement creates a single drawing event.
-        _rootDrawable.DoDrawingEvent(e.Touches[0]);
+        if(_inputManager.State.IsButtonDown(MouseButton.Left))
+            _rootDrawable.DoDrawingEvent(e.Touches[0]);
     }
 
     private void CanvasOnEndInteraction(object? sender, TouchEventArgs e)
