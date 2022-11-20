@@ -2,7 +2,7 @@
 
 namespace SketchOverlay.DrawingTools;
 
-internal interface IDrawingTool
+public interface IDrawingTool
 {
     IDrawable BeginDraw(CanvasProperties canvasProperties, PointF startPoint);
     void ContinueDraw(PointF currentPoint);
