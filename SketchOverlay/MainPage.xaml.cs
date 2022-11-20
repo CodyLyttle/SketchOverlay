@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using SketchOverlay.DrawingTools;
+using SketchOverlay.Input;
 using SketchOverlay.Native;
 using SketchOverlay.Native.Input.Mouse;
 
@@ -8,12 +9,14 @@ namespace SketchOverlay;
 public partial class MainPage : ContentPage
 {
     private readonly DrawingCanvas _rootDrawable = new(new BrushTool());
-    private readonly LowLevelMouseHook _mouseHook;
+    private readonly IInputManger _inputManager;
     private IntPtr _windowHandle;
 
+    // TODO: Inject IInputManager via constructor & MauiProgram.cs
     public MainPage()
     {
         InitializeComponent();
+        _inputManager = new InputManager();
 
         canvas.Drawable = _rootDrawable;
         canvas.DragInteraction += CanvasOnDragInteraction;
@@ -41,12 +44,10 @@ public partial class MainPage : ContentPage
         clearButton.IsEnabled = false;
         redoButton.IsEnabled = false;
         undoButton.IsEnabled = false;
-
-        _mouseHook = new LowLevelMouseHook();
-        _mouseHook.MouseMove += (_, args) => DisplayMouseMoveAction(args);
-        _mouseHook.MouseUp += (_, args) => DisplayMouseButtonAction(args, "up");
-        _mouseHook.MouseDown += (_, args) => DisplayMouseButtonAction(args, "down");
-        _mouseHook.MouseWheel += (_, args) => DisplayMouseWheelAction(args);
+        _inputManager.Events.MouseMove += (_, args) => DisplayMouseMoveAction(args);
+        _inputManager.Events.MouseUp += (_, args) => DisplayMouseButtonAction(args, "up");
+        _inputManager.Events.MouseDown += (_, args) => DisplayMouseButtonAction(args, "down");
+        _inputManager.Events.MouseWheel += (_, args) => DisplayMouseWheelAction(args);
     }
 
     private void DisplayMouseMoveAction(MouseMoveArgs e)
@@ -62,7 +63,7 @@ public partial class MainPage : ContentPage
             ? $"{e.Button}{e.XButtonIndex} {action}\r\n{GetRelativePosition(e.Position)}"
             : $"{e.Button} {action}\r\n{GetRelativePosition(e.Position)}";
 
-        Dispatcher.Dispatch(() => debugLabel.Text = debugTxt );
+        Dispatcher.Dispatch(() => debugLabel.Text = debugTxt);
     }
 
     private void DisplayMouseWheelAction(MouseWheelArgs e)
@@ -85,7 +86,7 @@ public partial class MainPage : ContentPage
     {
         Dispatcher.Dispatch(() => button.IsEnabled = enabled);
     }
-    
+
     private System.Drawing.Point GetRelativePosition(System.Drawing.Point absolutePosition)
     {
         _windowHandle = Process.GetCurrentProcess().MainWindowHandle;
