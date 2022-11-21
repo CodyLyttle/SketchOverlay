@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net6.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>SketchOverlay</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -19,8 +19,6 @@
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -43,19 +41,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\SketchOverlay.Native\SketchOverlay.Native.csproj" />
+		<ProjectReference Include="..\SketchOverlay.Native\SketchOverlay.Native.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="DrawingToolWindow.xaml.cs">
-	    <DependentUpon>DrawingToolWindow.xaml</DependentUpon>
-	  </Compile>
+		<Compile Update="DrawingToolWindow.xaml.cs">
+			<DependentUpon>DrawingToolWindow.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="DrawingToolWindow.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<MauiXaml Update="DrawingToolWindow.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 
 </Project>
