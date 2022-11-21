@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
-using SketchOverlay.DrawingTools;
+using SketchOverlay.Drawing;
+using SketchOverlay.Drawing.Canvas;
+using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Input;
 using SketchOverlay.Native;
 using SketchOverlay.Native.Input.Mouse;

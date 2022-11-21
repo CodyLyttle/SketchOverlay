@@ -1,7 +1,6 @@
-﻿using SketchOverlay.Canvas;
-using SketchOverlay.DrawingTools;
+﻿using SketchOverlay.Drawing.Tools;
 
-namespace SketchOverlay;
+namespace SketchOverlay.Drawing.Canvas;
 
 internal class DrawingCanvas : IDrawable
 {

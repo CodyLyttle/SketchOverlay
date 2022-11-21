@@ -1,6 +1,6 @@
-﻿using SketchOverlay.Canvas;
+﻿using SketchOverlay.Drawing.Canvas;
 
-namespace SketchOverlay.DrawingTools;
+namespace SketchOverlay.Drawing.Tools;
 
 public interface IDrawingTool
 {

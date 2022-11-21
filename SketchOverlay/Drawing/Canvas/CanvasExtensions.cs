@@ -1,4 +1,4 @@
-﻿namespace SketchOverlay.Canvas;
+﻿namespace SketchOverlay.Drawing.Canvas;
 
 internal static class CanvasExtensions
 {
