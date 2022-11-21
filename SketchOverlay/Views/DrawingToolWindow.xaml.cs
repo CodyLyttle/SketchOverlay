@@ -1,8 +1,6 @@
 using SketchOverlay.DrawingTools;
-using SketchOverlay.Input;
-using SketchOverlay.Native.Input.Mouse;
 
-namespace SketchOverlay;
+namespace SketchOverlay.Views;
 
 public partial class DrawingToolWindow
 {

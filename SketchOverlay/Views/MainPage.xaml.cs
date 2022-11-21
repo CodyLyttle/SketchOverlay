@@ -4,7 +4,7 @@ using SketchOverlay.Input;
 using SketchOverlay.Native;
 using SketchOverlay.Native.Input.Mouse;
 
-namespace SketchOverlay;
+namespace SketchOverlay.Views;
 
 // TODO: Use InputManager.Events to handle the tool window dragging logic. Dragging stops abruptly due to the cursor leaving the bounds of the GraphicsView.
 public partial class MainPage : ContentPage

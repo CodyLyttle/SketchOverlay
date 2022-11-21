@@ -49,15 +49,20 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="DrawingToolWindow.xaml.cs">
+		<Compile Update="Views\DrawingToolWindow.xaml.cs">
 			<DependentUpon>DrawingToolWindow.xaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-		<MauiXaml Update="DrawingToolWindow.xaml">
+		<MauiXaml Update="Views\DrawingToolWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Models\" />
+	  <Folder Include="ViewModels\" />
 	</ItemGroup>
 
 </Project>
