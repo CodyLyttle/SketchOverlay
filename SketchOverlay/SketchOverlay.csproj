@@ -47,6 +47,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\DrawingTools\placeholder_line.png" />
+	  <None Remove="Resources\Images\DrawingTools\placeholder_paintbrush.png" />
+	  <None Remove="Resources\Images\DrawingTools\placeholder_rectangle.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 	</ItemGroup>
 
@@ -67,13 +73,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Models\" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>SketchOverlay.Tests</_Parameter1>
 		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Images\DrawingTools\placeholder_line.png">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Include="Resources\Images\DrawingTools\placeholder_paintbrush.png" />
+	  <MauiImage Include="Resources\Images\DrawingTools\placeholder_rectangle.png" />
 	</ItemGroup>
 
 </Project>

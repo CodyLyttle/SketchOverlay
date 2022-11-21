@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing.Canvas;
+using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Messages;
+using SketchOverlay.Models;
 using SketchOverlay.ViewModels;
 
 namespace SketchOverlay.Tests.ViewModels;
@@ -55,6 +57,22 @@ public class DrawingToolWindowViewModelTests
 
         // Act
         _sut.ClearCommand.Execute(null);
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+
+    [Fact]
+    public void SelectedDrawingTool_ValueChanged_SendsDrawingToolChangedMessage()
+    {
+        // Arrange
+        IDrawingTool expected = new RectangleTool();
+        IDrawingTool? actual = null;
+        TestMessenger.Register<DrawingToolChangedMessage>(this, (_, message) => actual = message.Value);
+
+        // Act
+        _sut.SelectedDrawingTool = new DrawingToolInfo(expected, "iconUri", "TestTool");
 
         // Assert
         Assert.Equal(expected, actual);
