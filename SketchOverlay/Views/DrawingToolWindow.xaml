@@ -15,7 +15,8 @@
     <Border Background="#222222"
             Stroke="Green">
         <VerticalStackLayout>
-            <CollectionView ItemsSource="{Binding DrawingTools}"
+            <CollectionView x:Name="DrawingToolsCollection"
+                            ItemsSource="{Binding DrawingTools}"
                             SelectedItem="{Binding SelectedDrawingTool}"
                             ItemSizingStrategy="MeasureFirstItem"
                             SelectionMode="Single"
@@ -37,6 +38,25 @@
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <CollectionView x:Name="DrawingColorsCollection"
+                            ItemsSource="{Binding DrawingColors}"
+                            SelectedItem="{Binding SelectedDrawingColor, Mode=TwoWay}"
+                            ItemSizingStrategy="MeasureFirstItem"
+                            SelectionMode="Single"
+                            HorizontalOptions="Center">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="Color">
+                        <Rectangle Fill="{Binding}"
+                                   WidthRequest="24"
+                                   HeightRequest="24"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
             </CollectionView>
 
             <HorizontalStackLayout  HorizontalOptions="Center">

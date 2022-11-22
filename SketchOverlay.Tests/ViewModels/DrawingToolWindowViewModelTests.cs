@@ -62,6 +62,20 @@ public class DrawingToolWindowViewModelTests
         Assert.Equal(expected, actual);
     }
 
+    [Fact]
+    public void SelectedDrawingColor_ValueChanged_SendsDrawingColorChangedMessage()
+    {
+        // Arrange
+        Color expected = _sut.DrawingColors.Last();
+        Color? actual = null;
+        TestMessenger.Register<DrawingColorChangedMessage>(this, (_, msg) => actual = msg.Value);
+
+        // Act
+        _sut.SelectedDrawingColor = _sut.DrawingColors.Last();
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
 
     [Fact]
     public void SelectedDrawingTool_ValueChanged_SendsDrawingToolChangedMessage()

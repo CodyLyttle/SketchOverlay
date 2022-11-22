@@ -10,12 +10,22 @@ namespace SketchOverlay.ViewModels;
 
 public partial class DrawingToolWindowViewModel : ObservableObject
 {
+    private Color? _selectedDrawingColor;
     private DrawingToolInfo? _selectedDrawingTool;
 
     public DrawingToolWindowViewModel()
     {
-        SelectedDrawingTool = DrawingTools[0];
+        _selectedDrawingColor = DrawingColors[0];
+        _selectedDrawingTool = DrawingTools[0];
+        // BUG: CollectionView.SelectedItem reverts to null after this point. See - https://github.com/dotnet/maui/issues/8572
+        // Potential workaround: Set initial values when tool window is first displayed.
     }
+
+    public Color[] DrawingColors { get; } =
+    {
+        Colors.Red, Colors.Green, Colors.Blue,
+        Colors.Magenta, Colors.Yellow
+    };
 
     public DrawingToolInfo[] DrawingTools { get; } =
     {
@@ -23,6 +33,25 @@ public partial class DrawingToolWindowViewModel : ObservableObject
         new(new LineTool(), ImageSource.FromFile("placeholder_line.png"), "Line"),
         new(new RectangleTool(), ImageSource.FromFile("placeholder_rectangle.png"), "Rectangle")
     };
+
+    public Color? SelectedDrawingColor
+    {
+        get => _selectedDrawingColor;
+        set
+        {
+            if (EqualityComparer<Color>.Default.Equals(value, _selectedDrawingColor))
+                return;
+
+            _selectedDrawingColor = value;
+
+            // Sending a message while value is null throws a NullReferenceException.
+            if (value == null)
+                return;
+
+            WeakReferenceMessenger.Default.Send(new DrawingColorChangedMessage(value));
+            OnPropertyChanged(nameof(SelectedDrawingColor));
+        }
+    }
 
     public DrawingToolInfo? SelectedDrawingTool
     {
@@ -33,9 +62,8 @@ public partial class DrawingToolWindowViewModel : ObservableObject
                 return;
 
             _selectedDrawingTool = value;
-            
+
             // Sending a message while value is null throws a NullReferenceException.
-            // The exception was being thrown during instantiation, even when DrawingToolInfo was non-nullable.
             if (value == null)
                 return;
 
