@@ -23,7 +23,7 @@ public class DrawingToolWindowViewModelTests
         // Arrange
         const CanvasAction expected = CanvasAction.Undo;
         CanvasAction? actual = null;
-        TestMessenger.Register<CanvasActionMessage>(this, (_, message) => actual = message.Value);
+        TestMessenger.Register<CanvasActionMessage>(this, (_, msg) => actual = msg.Value);
 
         // Act
         _sut.UndoCommand.Execute(null);
@@ -38,7 +38,7 @@ public class DrawingToolWindowViewModelTests
         // Arrange
         const CanvasAction expected = CanvasAction.Redo;
         CanvasAction? actual = null;
-        TestMessenger.Register<CanvasActionMessage>(this, (_, message) => actual = message.Value);
+        TestMessenger.Register<CanvasActionMessage>(this, (_, msg) => actual = msg.Value);
 
         // Act
         _sut.RedoCommand.Execute(null);
@@ -53,7 +53,7 @@ public class DrawingToolWindowViewModelTests
         // Arrange
         const CanvasAction expected = CanvasAction.Clear;
         CanvasAction? actual = null;
-        TestMessenger.Register<CanvasActionMessage>(this, (_, message) => actual = message.Value);
+        TestMessenger.Register<CanvasActionMessage>(this, (_, msg) => actual = msg.Value);
 
         // Act
         _sut.ClearCommand.Execute(null);
@@ -83,7 +83,7 @@ public class DrawingToolWindowViewModelTests
         // Arrange
         IDrawingTool expected = new RectangleTool();
         IDrawingTool? actual = null;
-        TestMessenger.Register<DrawingToolChangedMessage>(this, (_, message) => actual = message.Value);
+        TestMessenger.Register<DrawingToolChangedMessage>(this, (_, msg) => actual = msg.Value);
 
         // Act
         _sut.SelectedDrawingTool = new DrawingToolInfo(expected, "iconUri", "TestTool");
