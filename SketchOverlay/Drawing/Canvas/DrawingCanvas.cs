@@ -2,9 +2,9 @@
 
 namespace SketchOverlay.Drawing.Canvas;
 
-internal class DrawingCanvas : IDrawable
+public class DrawingCanvas : IDrawingCanvas
 {
-    private bool _isDrawingPrimary;
+    private bool _isDrawing;
     private bool _canRedo;
     private bool _canUndo;
 
@@ -13,9 +13,9 @@ internal class DrawingCanvas : IDrawable
     private readonly Stack<IDrawable> _redoStack = new();
     private CanvasProperties _canvasProperties = new();
 
-    public DrawingCanvas(IDrawingTool primaryDrawingTool)
+    public DrawingCanvas(IDrawingTool drawingTool)
     {
-        PrimaryDrawingTool = primaryDrawingTool;
+        DrawingTool = drawingTool;
     }
 
     public event EventHandler? RequestRedraw;
@@ -23,65 +23,16 @@ internal class DrawingCanvas : IDrawable
     public event EventHandler<bool>? CanRedoChanged;
     public event EventHandler<bool>? CanUndoChanged;
 
-    public IDrawingTool PrimaryDrawingTool { get; set; }
+    public IDrawingTool DrawingTool { private get; set; }
 
-    public void SetPrimaryStrokeColor(Color color)
+    public Color StrokeColor
     {
-        _canvasProperties.StrokeColor = color;
+        set => _canvasProperties.StrokeColor = value;
     }
 
-    public void SetPrimaryStrokeSize(float size)
+    public float StrokeSize
     {
-        _canvasProperties.StrokeSize = size;
-    }
-
-    public void Draw(ICanvas canvas, RectF dirtyRect)
-    {
-        foreach (IDrawable drawable in _drawStack.Reverse())
-        {
-            drawable.Draw(canvas, dirtyRect);
-        }
-    }
-
-    public void DoPrimaryDrawingEvent(PointF point)
-    {
-        if (!_isDrawingPrimary)
-        {
-            _isDrawingPrimary = true;
-            _redoStack.Clear();
-            _drawStack.Push(PrimaryDrawingTool.BeginDraw(_canvasProperties, point));
-            UpdateAvailableActions();
-        }
-        else
-        {
-            PrimaryDrawingTool.ContinueDraw(point);
-        }
-
-        Redraw();
-    }
-
-    public void EndDrawingEvent()
-    {
-        if (_isDrawingPrimary)
-        {
-            _isDrawingPrimary = false;
-            PrimaryDrawingTool.EndDraw();
-        }
-
-        Redraw();
-    }
-
-    public void CancelPrimaryDrawingEvent()
-    {
-        if (_isDrawingPrimary)
-        {
-            _isDrawingPrimary = false;
-            PrimaryDrawingTool.EndDraw();
-            _drawStack.Pop();
-            UpdateAvailableActions();
-            Redraw();
-        }
-
+        set => _canvasProperties.StrokeSize = value;
     }
 
     public void Undo()
@@ -110,6 +61,54 @@ internal class DrawingCanvas : IDrawable
         _redoStack.Clear();
         UpdateAvailableActions();
         Redraw();
+    }
+
+    public void DoDrawingEvent(PointF point)
+    {
+        if (!_isDrawing)
+        {
+            _isDrawing = true;
+            _redoStack.Clear();
+            _drawStack.Push(DrawingTool.BeginDraw(_canvasProperties, point));
+            UpdateAvailableActions();
+        }
+        else
+        {
+            DrawingTool.ContinueDraw(point);
+        }
+
+        Redraw();
+    }
+
+    public void FinalizeDrawingEvent()
+    {
+        if (_isDrawing)
+        {
+            _isDrawing = false;
+            DrawingTool.EndDraw();
+        }
+
+        Redraw();
+    }
+
+    public void CancelDrawingEvent()
+    {
+        if (!_isDrawing)
+            return;
+
+        _isDrawing = false;
+        DrawingTool.EndDraw();
+        _drawStack.Pop();
+        UpdateAvailableActions();
+        Redraw();
+    }
+
+    public void Draw(ICanvas canvas, RectF dirtyRect)
+    {
+        foreach (IDrawable drawable in _drawStack.Reverse())
+        {
+            drawable.Draw(canvas, dirtyRect);
+        }
     }
 
     private void Redraw()

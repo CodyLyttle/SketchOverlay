@@ -30,9 +30,9 @@ public partial class MainPage : ContentPage
         graphicsView.EndInteraction += GraphicsViewOnEndInteraction;
         _drawingCanvas.RequestRedraw += (_, _) => graphicsView.Invalidate();
 
-        DrawingToolsWindow.PrimaryToolChanged += (_, tool) => _drawingCanvas.PrimaryDrawingTool = tool;
-        DrawingToolsWindow.PrimaryToolColorChanged += (_, color) => _drawingCanvas.SetPrimaryStrokeColor(color);
-        DrawingToolsWindow.PrimaryToolDrawSizeChanged += (_, size) => _drawingCanvas.SetPrimaryStrokeSize((float)size);
+        DrawingToolsWindow.PrimaryToolChanged += (_, tool) => _drawingCanvas.DrawingTool = tool;
+        DrawingToolsWindow.PrimaryToolColorChanged += (_, color) => _drawingCanvas.StrokeColor = color;
+        DrawingToolsWindow.PrimaryToolDrawSizeChanged += (_, size) => _drawingCanvas.StrokeSize = (float)size;
 
         DrawingToolsWindow.RequestUndo += (_, _) => _drawingCanvas.Undo();
         DrawingToolsWindow.RequestRedo += (_, _) => _drawingCanvas.Redo();
@@ -74,7 +74,7 @@ public partial class MainPage : ContentPage
 
         if(lastMouseButton is DrawingButton)
         {
-            _drawingCanvas.DoPrimaryDrawingEvent(cursorPos);
+            _drawingCanvas.DoDrawingEvent(cursorPos);
         }
         else if (lastMouseButton is ToggleMenuButton && DrawingToolsWindow.IsDragging)
         {
@@ -88,7 +88,7 @@ public partial class MainPage : ContentPage
 
         if (lastMouseButton is DrawingButton)
         {
-            _drawingCanvas.EndDrawingEvent();
+            _drawingCanvas.FinalizeDrawingEvent();
             DrawingToolsWindow.InputTransparent = false;
         }
         else if (lastMouseButton is ToggleMenuButton)
@@ -101,7 +101,7 @@ public partial class MainPage : ContentPage
     private void OnMouseDown(object? sender, MouseButtonEventArgs args)
     {
         if (args.Button is CancelDrawingButton)
-            _drawingCanvas.CancelPrimaryDrawingEvent();
+            _drawingCanvas.CancelDrawingEvent();
     }
 
     // Will likely come in handy. Move to a relevant class.
