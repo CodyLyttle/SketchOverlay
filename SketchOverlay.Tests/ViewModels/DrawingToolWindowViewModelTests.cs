@@ -78,6 +78,20 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
+    public void SelectedDrawingColor_SetWithExistingValue_DoesNothing()
+    {
+        // Arrange
+        var wasMessageReceived = false;
+        TestMessenger.Register<DrawingColorChangedMessage>(this, (_, _) => wasMessageReceived = true);
+        
+        // Act
+        _sut.SelectedDrawingColor = _sut.SelectedDrawingColor;
+
+        // Assert
+        Assert.False(wasMessageReceived);
+    }
+
+    [Fact]
     public void SelectedDrawingTool_ValueChanged_SendsDrawingToolChangedMessage()
     {
         // Arrange
@@ -90,5 +104,19 @@ public class DrawingToolWindowViewModelTests
 
         // Assert
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void SelectedDrawingTool_SetWithExistingValue_DoesNothing()
+    {
+        // Arrange
+        var wasMessageReceived = false;
+        TestMessenger.Register<DrawingToolChangedMessage>(this, (_, _) => wasMessageReceived = true);
+
+        // Act
+        _sut.SelectedDrawingTool = _sut.SelectedDrawingTool;
+
+        // Assert
+        Assert.False(wasMessageReceived);
     }
 }
