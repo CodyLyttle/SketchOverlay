@@ -4,9 +4,9 @@ namespace SketchOverlay.Drawing.Canvas;
 
 public interface IDrawingCanvas : IDrawable
 {
-    IDrawingTool DrawingTool { set; }
-    Color StrokeColor { set; }
-    float StrokeSize { set; }
+    IDrawingTool DrawingTool { get; set; }
+    Color StrokeColor { get; set; }
+    float StrokeSize { get; set; }
 
     void Undo();
     void Redo();

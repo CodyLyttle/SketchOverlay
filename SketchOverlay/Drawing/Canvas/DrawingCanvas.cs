@@ -23,16 +23,18 @@ public class DrawingCanvas : IDrawingCanvas
     public event EventHandler<bool>? CanRedoChanged;
     public event EventHandler<bool>? CanUndoChanged;
 
-    public IDrawingTool DrawingTool { private get; set; }
+    public IDrawingTool DrawingTool { get; set; }
 
     public Color StrokeColor
     {
         set => _canvasProperties.StrokeColor = value;
+        get => _canvasProperties.StrokeColor;
     }
 
     public float StrokeSize
     {
         set => _canvasProperties.StrokeSize = value;
+        get => _canvasProperties.StrokeSize;
     }
 
     public void Undo()
