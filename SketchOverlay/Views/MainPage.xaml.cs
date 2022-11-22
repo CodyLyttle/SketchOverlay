@@ -19,11 +19,10 @@ public partial class MainPage : ContentPage
     private readonly IInputManger _inputManager = new InputManager();
     private IntPtr _windowHandle;
 
-    // TODO: Inject IInputManager via constructor & MauiProgram.cs
-    public MainPage()
+    public MainPage(OverlayWindowViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = MauiProgram.GetService<OverlayWindowViewModel>();
+        BindingContext = viewModel;
 
         graphicsView.Drawable = _drawingCanvas;
         graphicsView.StartInteraction += GraphicsViewOnStartInteraction;
