@@ -56,8 +56,13 @@
                                    HeightRequest="24"/>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-
             </CollectionView>
+
+            <!-- TODO: Add label displaying slider value -->
+            <Slider x:Name="drawSizeSlider" WidthRequest="240" 
+                    Minimum="{Binding MinimumDrawingSize}" 
+                    Maximum="{Binding MaximumDrawingSize}" 
+                    Value="{Binding SelectedDrawingSize, Mode=OneWayToSource}"/>
 
             <HorizontalStackLayout  HorizontalOptions="Center">
                 <Button x:Name="redButton" Background="Red"/>
@@ -76,10 +81,6 @@
                 <Button x:Name="redoButton" Text="redo" Command="{Binding RedoCommand}"/>
                 <Button x:Name="clearButton" Text="clear" Command="{Binding ClearCommand}"/>
             </HorizontalStackLayout>
-
-            <!-- TODO: Add label displaying slider value -->
-            <Slider x:Name="drawSizeSlider" WidthRequest="240" 
-                Minimum="1" Maximum="32" Value="2"/>
 
         </VerticalStackLayout>
     </Border>

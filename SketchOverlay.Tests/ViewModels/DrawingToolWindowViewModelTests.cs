@@ -119,4 +119,59 @@ public class DrawingToolWindowViewModelTests
         // Assert
         Assert.False(wasMessageReceived);
     }
+
+    [Fact]
+    public void SelectedDrawingSize_ValueChanged_SendsDrawingSizeChangedMessage()
+    {
+        // Arrange
+        double expected = 16;
+        double actual = 0;
+        TestMessenger.Register<DrawingSizeChangedMessage>(this, (_, msg) => actual = msg.Value);
+
+        // Act
+        _sut.SelectedDrawingSize = expected;
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void SelectedDrawingSize_SetWithExistingValue_DoesNothing()
+    {
+        // Arrange
+        var wasMessageReceived = false;
+        TestMessenger.Register<DrawingSizeChangedMessage>(this, (_, _) => wasMessageReceived = true);
+
+        // Act
+        _sut.SelectedDrawingSize = _sut.SelectedDrawingSize;
+
+        // Assert
+        Assert.False(wasMessageReceived);
+    }
+
+    [Fact]
+    public void SelectedDrawingSize_SetWithValueBelowMinimumDrawingSize_SetsValueToMinimumDrawingSize()
+    {
+        // Arrange
+        double expected = _sut.MinimumDrawingSize;
+
+        // Act
+        _sut.SelectedDrawingSize = _sut.MinimumDrawingSize - 1;
+        
+        // Assert
+        Assert.Equal(expected, _sut.SelectedDrawingSize);
+    }
+
+    [Fact]
+    public void SelectedDrawingSize_SetWithValueAboveMaximumDrawingSize_SetsValueToMaximumDrawingSize()
+    {
+        // Arrange
+        double expected = _sut.MaximumDrawingSize;
+
+        // Act
+        _sut.SelectedDrawingSize = _sut.MaximumDrawingSize + 1;
+
+        // Assert
+        Assert.Equal(expected, _sut.SelectedDrawingSize);
+    }
 }

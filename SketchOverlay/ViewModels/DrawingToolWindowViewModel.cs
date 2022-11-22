@@ -12,9 +12,11 @@ public partial class DrawingToolWindowViewModel : ObservableObject
 {
     private Color? _selectedDrawingColor;
     private DrawingToolInfo? _selectedDrawingTool;
+    private double _selectedDrawingSize;
 
     public DrawingToolWindowViewModel()
     {
+        SelectedDrawingSize = MinimumDrawingSize;
         _selectedDrawingColor = DrawingColors[0];
         _selectedDrawingTool = DrawingTools[0];
         // BUG: CollectionView.SelectedItem reverts to null after this point. See - https://github.com/dotnet/maui/issues/8572
@@ -71,15 +73,38 @@ public partial class DrawingToolWindowViewModel : ObservableObject
         }
     }
 
+    public double MinimumDrawingSize { get; } = 1;
+
+    public double MaximumDrawingSize { get; } = 32;
+
+    public double SelectedDrawingSize
+    {
+        get => _selectedDrawingSize;
+        set
+        {
+            if (Math.Abs(value - _selectedDrawingSize) < 0.1)
+                return;
+
+            if (value < MinimumDrawingSize)
+                _selectedDrawingSize = MinimumDrawingSize;
+            else if (value > MaximumDrawingSize)
+                _selectedDrawingSize = MaximumDrawingSize;
+            else
+                _selectedDrawingSize = value;
+
+            WeakReferenceMessenger.Default.Send(new DrawingSizeChangedMessage(_selectedDrawingSize));
+        }
+    }
+
     [RelayCommand]
     private static void Undo() =>
         WeakReferenceMessenger.Default.Send(new CanvasActionMessage(CanvasAction.Undo));
 
     [RelayCommand]
-    private static void Redo() => 
+    private static void Redo() =>
         WeakReferenceMessenger.Default.Send(new CanvasActionMessage(CanvasAction.Redo));
 
     [RelayCommand]
-    private static void Clear() => 
+    private static void Clear() =>
         WeakReferenceMessenger.Default.Send(new CanvasActionMessage(CanvasAction.Clear));
 }
