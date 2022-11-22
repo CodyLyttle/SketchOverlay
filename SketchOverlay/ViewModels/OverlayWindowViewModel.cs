@@ -8,7 +8,8 @@ namespace SketchOverlay.ViewModels;
 public partial class OverlayWindowViewModel : ObservableObject, 
     IRecipient<CanvasActionMessage>,
     IRecipient<DrawingColorChangedMessage>,
-    IRecipient<DrawingToolChangedMessage>
+    IRecipient<DrawingToolChangedMessage>,
+    IRecipient<DrawingSizeChangedMessage>
 {
     public IDrawingCanvas Canvas { get; }
 
@@ -18,6 +19,7 @@ public partial class OverlayWindowViewModel : ObservableObject,
         WeakReferenceMessenger.Default.Register<CanvasActionMessage>(this);
         WeakReferenceMessenger.Default.Register<DrawingColorChangedMessage>(this);
         WeakReferenceMessenger.Default.Register<DrawingToolChangedMessage>(this);
+        WeakReferenceMessenger.Default.Register<DrawingSizeChangedMessage>(this);
     }
 
     public void Receive(CanvasActionMessage message)
@@ -46,5 +48,10 @@ public partial class OverlayWindowViewModel : ObservableObject,
     public void Receive(DrawingToolChangedMessage message)
     {
         Canvas.DrawingTool = message.Value;
+    }
+
+    public void Receive(DrawingSizeChangedMessage message)
+    {
+        Canvas.StrokeSize = message.Value;
     }
 }

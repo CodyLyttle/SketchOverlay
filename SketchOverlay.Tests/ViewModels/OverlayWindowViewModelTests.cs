@@ -107,4 +107,24 @@ public class OverlayWindowViewModelTests
         Assert.Equal(messageB.Value, actualB);
         _mockCanvas.Verify(x => x.DrawingTool, Times.Exactly(2));
     }
+
+    [Fact]
+    public void Receive_WithDrawingSizeChangedMessage_SetsCanvasStrokeSize()
+    {
+        // Arrange
+        DrawingSizeChangedMessage messageA = new(10);
+        DrawingSizeChangedMessage messageB = new(20);
+
+        // Act
+        _sut.Receive(messageA);
+        float actualA = _sut.Canvas.StrokeSize;
+
+        TestMessenger.Send(messageB);
+        float actualB = _sut.Canvas.StrokeSize;
+
+        // Assert
+        Assert.Equal(messageA.Value, actualA);
+        Assert.Equal(messageB.Value, actualB);
+        _mockCanvas.Verify(x => x.StrokeSize, Times.Exactly(2));
+    }
 }
