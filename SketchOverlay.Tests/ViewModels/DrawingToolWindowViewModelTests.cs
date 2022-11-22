@@ -15,7 +15,7 @@ public class DrawingToolWindowViewModelTests
 
     public DrawingToolWindowViewModelTests()
     {
-        _sut = new DrawingToolWindowViewModel();
+        _sut = new DrawingToolWindowViewModel(TestMessenger);
     }
 
     [Fact]

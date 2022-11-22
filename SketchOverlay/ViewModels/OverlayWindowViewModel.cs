@@ -13,13 +13,13 @@ public partial class OverlayWindowViewModel : ObservableObject,
 {
     public IDrawingCanvas Canvas { get; }
 
-    public OverlayWindowViewModel(IDrawingCanvas canvas)
+    public OverlayWindowViewModel(IDrawingCanvas canvas, IMessenger messenger)
     {
         Canvas = canvas;
-        WeakReferenceMessenger.Default.Register<CanvasActionMessage>(this);
-        WeakReferenceMessenger.Default.Register<DrawingColorChangedMessage>(this);
-        WeakReferenceMessenger.Default.Register<DrawingToolChangedMessage>(this);
-        WeakReferenceMessenger.Default.Register<DrawingSizeChangedMessage>(this);
+        messenger.Register<CanvasActionMessage>(this);
+        messenger.Register<DrawingColorChangedMessage>(this);
+        messenger.Register<DrawingToolChangedMessage>(this);
+        messenger.Register<DrawingSizeChangedMessage>(this);
     }
 
     public void Receive(CanvasActionMessage message)

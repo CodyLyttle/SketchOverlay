@@ -17,7 +17,7 @@ public class OverlayWindowViewModelTests
     {
         _mockCanvas = new Mock<IDrawingCanvas>();
         _mockCanvas.SetupAllProperties();
-        _sut = new OverlayWindowViewModel(_mockCanvas.Object);
+        _sut = new OverlayWindowViewModel(_mockCanvas.Object, TestMessenger);
     }
 
     [Fact]

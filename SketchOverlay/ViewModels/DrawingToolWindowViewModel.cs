@@ -13,9 +13,11 @@ public partial class DrawingToolWindowViewModel : ObservableObject
     private Color? _selectedDrawingColor;
     private DrawingToolInfo? _selectedDrawingTool;
     private double _selectedDrawingSize;
+    private readonly IMessenger _messenger;
 
-    public DrawingToolWindowViewModel()
+    public DrawingToolWindowViewModel(IMessenger messenger)
     {
+        _messenger = messenger;
         _selectedDrawingColor = GlobalDrawingValues.DefaultDrawingColor;
         _selectedDrawingTool = GlobalDrawingValues.DefaultDrawingTool;
         // BUG: CollectionView.SelectedItem reverts to null after this point. See - https://github.com/dotnet/maui/issues/8572
@@ -38,7 +40,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject
             if (value == null)
                 return;
 
-            WeakReferenceMessenger.Default.Send(new DrawingColorChangedMessage(value));
+            _messenger.Send(new DrawingColorChangedMessage(value));
             OnPropertyChanged(nameof(SelectedDrawingColor));
         }
     }
@@ -57,7 +59,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject
             if (value == null)
                 return;
 
-            WeakReferenceMessenger.Default.Send(new DrawingToolChangedMessage(value.Tool));
+            _messenger.Send(new DrawingToolChangedMessage(value.Tool));
         }
     }
 
@@ -76,19 +78,19 @@ public partial class DrawingToolWindowViewModel : ObservableObject
             else
                 _selectedDrawingSize = value;
 
-            WeakReferenceMessenger.Default.Send(new DrawingSizeChangedMessage((float)_selectedDrawingSize));
+            _messenger.Send(new DrawingSizeChangedMessage((float)_selectedDrawingSize));
         }
     }
 
     [RelayCommand]
-    private static void Undo() =>
-        WeakReferenceMessenger.Default.Send(new CanvasActionMessage(CanvasAction.Undo));
+    private void Undo() =>
+        _messenger.Send(new CanvasActionMessage(CanvasAction.Undo));
 
     [RelayCommand]
-    private static void Redo() =>
-        WeakReferenceMessenger.Default.Send(new CanvasActionMessage(CanvasAction.Redo));
+    private void Redo() =>
+        _messenger.Send(new CanvasActionMessage(CanvasAction.Redo));
 
     [RelayCommand]
-    private static void Clear() =>
-        WeakReferenceMessenger.Default.Send(new CanvasActionMessage(CanvasAction.Clear));
+    private void Clear() =>
+        _messenger.Send(new CanvasActionMessage(CanvasAction.Clear));
 }
