@@ -25,7 +25,7 @@ public class OverlayWindowViewModelTests
         CanvasActionMessage message = new(CanvasAction.Undo);
 
         // Act
-        _sut.Receive(new CanvasActionMessage(CanvasAction.Undo));
+        _sut.Receive(message);
         TestMessenger.Send(message);
 
         // Assert
@@ -41,7 +41,7 @@ public class OverlayWindowViewModelTests
         CanvasActionMessage message = new(CanvasAction.Redo);
 
         // Act
-        _sut.Receive(new CanvasActionMessage(CanvasAction.Redo));
+        _sut.Receive(message);
         TestMessenger.Send(message);
 
         // Assert
@@ -57,7 +57,7 @@ public class OverlayWindowViewModelTests
         CanvasActionMessage message = new(CanvasAction.Clear);
 
         // Act
-        _sut.Receive(new CanvasActionMessage(CanvasAction.Clear));
+        _sut.Receive(message);
         TestMessenger.Send(message);
 
         // Assert
