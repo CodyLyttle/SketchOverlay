@@ -10,9 +10,7 @@
              HorizontalOptions="Start"
              VerticalOptions="Start"
              x:DataType="viewModels:DrawingToolWindowViewModel">
-    <ContentView.BindingContext>
-        <viewModels:DrawingToolWindowViewModel/>
-    </ContentView.BindingContext>
+
     <Border Background="#222222"
             Stroke="Green">
         <VerticalStackLayout>

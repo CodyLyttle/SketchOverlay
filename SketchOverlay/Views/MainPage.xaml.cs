@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
-using SketchOverlay.Drawing;
 using SketchOverlay.Drawing.Canvas;
 using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Input;
 using SketchOverlay.Native;
 using SketchOverlay.Native.Input.Mouse;
+using SketchOverlay.ViewModels;
 
 namespace SketchOverlay.Views;
 
@@ -23,6 +23,7 @@ public partial class MainPage : ContentPage
     public MainPage()
     {
         InitializeComponent();
+        BindingContext = MauiProgram.GetService<OverlayWindowViewModel>();
 
         graphicsView.Drawable = _drawingCanvas;
         graphicsView.StartInteraction += GraphicsViewOnStartInteraction;

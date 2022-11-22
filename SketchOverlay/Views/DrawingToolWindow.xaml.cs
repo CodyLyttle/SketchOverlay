@@ -1,4 +1,5 @@
 using SketchOverlay.Drawing.Tools;
+using SketchOverlay.ViewModels;
 
 namespace SketchOverlay.Views;
 
@@ -11,6 +12,8 @@ public partial class DrawingToolWindow
     public DrawingToolWindow()
     {
         InitializeComponent();
+        BindingContext = MauiProgram.GetService<DrawingToolWindowViewModel>();
+
         HideWindow();
         clearButton.IsEnabled = false;
         redoButton.IsEnabled = false;
