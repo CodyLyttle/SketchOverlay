@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Moq;
 using SketchOverlay.Drawing.Canvas;
+using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Messages;
 using SketchOverlay.ViewModels;
 
@@ -85,5 +86,25 @@ public class OverlayWindowViewModelTests
         Assert.Equal(messageA.Value, actualA);
         Assert.Equal(messageB.Value, actualB);
         _mockCanvas.Verify(x=> x.StrokeColor, Times.Exactly(2));
+    }
+
+    [Fact]
+    public void Receive_WithDrawingToolChangedMessage_SetsCanvasDrawingTool()
+    {
+        // Arrange
+        DrawingToolChangedMessage messageA = new(new BrushTool());
+        DrawingToolChangedMessage messageB = new(new LineTool());
+
+        // Act
+        _sut.Receive(messageA);
+        IDrawingTool actualA = _sut.Canvas.DrawingTool;
+
+        TestMessenger.Send(messageB);
+        IDrawingTool actualB = _sut.Canvas.DrawingTool;
+
+        // Assert
+        Assert.Equal(messageA.Value, actualA);
+        Assert.Equal(messageB.Value, actualB);
+        _mockCanvas.Verify(x => x.DrawingTool, Times.Exactly(2));
     }
 }
