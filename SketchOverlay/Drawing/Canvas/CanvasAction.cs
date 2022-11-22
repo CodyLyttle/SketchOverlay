@@ -1,6 +1,6 @@
 ﻿namespace SketchOverlay.Drawing.Canvas;
 
-internal enum CanvasAction
+public enum CanvasAction
 {
     Undo,
     Redo,
