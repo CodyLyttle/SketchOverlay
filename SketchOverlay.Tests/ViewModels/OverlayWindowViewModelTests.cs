@@ -15,6 +15,7 @@ public class OverlayWindowViewModelTests
     public OverlayWindowViewModelTests()
     {
         _mockCanvas = new Mock<IDrawingCanvas>();
+        _mockCanvas.SetupAllProperties();
         _sut = new OverlayWindowViewModel(_mockCanvas.Object);
     }
 
@@ -64,5 +65,25 @@ public class OverlayWindowViewModelTests
         _mockCanvas.Verify(x => x.Undo(), Times.Never);
         _mockCanvas.Verify(x => x.Redo(), Times.Never);
         _mockCanvas.Verify(x => x.Clear(), Times.Exactly(2));
+    }
+
+    [Fact]
+    public void Receive_WithDrawingColorChangedMessage_SetsCanvasStrokeColor()
+    {
+        // Arrange
+        DrawingColorChangedMessage messageA = new(Colors.Bisque);
+        DrawingColorChangedMessage messageB = new(Colors.BurlyWood);
+
+        // Act
+        _sut.Receive(messageA);
+        Color actualA = _sut.Canvas.StrokeColor;
+
+        TestMessenger.Send(messageB);
+        Color actualB = _sut.Canvas.StrokeColor;
+
+        // Assert
+        Assert.Equal(messageA.Value, actualA);
+        Assert.Equal(messageB.Value, actualB);
+        _mockCanvas.Verify(x=> x.StrokeColor, Times.Exactly(2));
     }
 }

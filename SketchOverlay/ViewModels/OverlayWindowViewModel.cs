@@ -6,7 +6,8 @@ using SketchOverlay.Messages;
 namespace SketchOverlay.ViewModels;
 
 public partial class OverlayWindowViewModel : ObservableObject, 
-    IRecipient<CanvasActionMessage>
+    IRecipient<CanvasActionMessage>,
+    IRecipient<DrawingColorChangedMessage>
 {
     public IDrawingCanvas Canvas { get; }
 
@@ -14,6 +15,7 @@ public partial class OverlayWindowViewModel : ObservableObject,
     {
         Canvas = canvas;
         WeakReferenceMessenger.Default.Register<CanvasActionMessage>(this);
+        WeakReferenceMessenger.Default.Register<DrawingColorChangedMessage>(this);
     }
 
     public void Receive(CanvasActionMessage message)
@@ -32,5 +34,10 @@ public partial class OverlayWindowViewModel : ObservableObject,
             default:
                 throw new ArgumentOutOfRangeException(nameof(message));
         }
+    }
+
+    public void Receive(DrawingColorChangedMessage message)
+    {
+        Canvas.StrokeColor = message.Value;
     }
 }
