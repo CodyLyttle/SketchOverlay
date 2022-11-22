@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:SketchOverlay.Models"
              xmlns:viewModels="clr-namespace:SketchOverlay.ViewModels"
+             xmlns:drawing="clr-namespace:SketchOverlay.Drawing"
              x:Class="SketchOverlay.Views.DrawingToolWindow"
              HeightRequest="300"
              WidthRequest="300"
@@ -16,7 +17,7 @@
             Stroke="Green">
         <VerticalStackLayout>
             <CollectionView x:Name="DrawingToolsCollection"
-                            ItemsSource="{Binding DrawingTools}"
+                            ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingTools}"
                             SelectedItem="{Binding SelectedDrawingTool}"
                             ItemSizingStrategy="MeasureFirstItem"
                             SelectionMode="Single"
@@ -41,7 +42,7 @@
             </CollectionView>
 
             <CollectionView x:Name="DrawingColorsCollection"
-                            ItemsSource="{Binding DrawingColors}"
+                            ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingColors}"
                             SelectedItem="{Binding SelectedDrawingColor, Mode=TwoWay}"
                             ItemSizingStrategy="MeasureFirstItem"
                             SelectionMode="Single"
@@ -60,9 +61,9 @@
 
             <!-- TODO: Add label displaying slider value -->
             <Slider x:Name="drawSizeSlider" WidthRequest="240" 
-                    Minimum="{Binding MinimumDrawingSize}" 
-                    Maximum="{Binding MaximumDrawingSize}" 
-                    Value="{Binding SelectedDrawingSize, Mode=OneWayToSource}"/>
+                    Minimum="{x:Static drawing:GlobalDrawingValues.MinimumDrawingSize}" 
+                    Maximum="{x:Static drawing:GlobalDrawingValues.MaximumDrawingSize}"
+                    Value="{Binding SelectedDrawingSize, Mode=TwoWay}"/>
 
             <HorizontalStackLayout  HorizontalOptions="Center">
                 <Button x:Name="redButton" Background="Red"/>

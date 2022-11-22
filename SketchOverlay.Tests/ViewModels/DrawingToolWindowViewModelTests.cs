@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Messaging;
+using SketchOverlay.Drawing;
 using SketchOverlay.Drawing.Canvas;
 using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Messages;
@@ -66,12 +67,12 @@ public class DrawingToolWindowViewModelTests
     public void SelectedDrawingColor_ValueChanged_SendsDrawingColorChangedMessage()
     {
         // Arrange
-        Color expected = _sut.DrawingColors.Last();
+        Color expected = GlobalDrawingValues.DrawingColors.Last();
         Color? actual = null;
         TestMessenger.Register<DrawingColorChangedMessage>(this, (_, msg) => actual = msg.Value);
 
         // Act
-        _sut.SelectedDrawingColor = _sut.DrawingColors.Last();
+        _sut.SelectedDrawingColor = GlobalDrawingValues.DrawingColors.Last();
 
         // Assert
         Assert.Equal(expected, actual);
@@ -153,10 +154,10 @@ public class DrawingToolWindowViewModelTests
     public void SelectedDrawingSize_SetWithValueBelowMinimumDrawingSize_SetsValueToMinimumDrawingSize()
     {
         // Arrange
-        double expected = _sut.MinimumDrawingSize;
+        double expected = GlobalDrawingValues.MinimumDrawingSize;
 
         // Act
-        _sut.SelectedDrawingSize = _sut.MinimumDrawingSize - 1;
+        _sut.SelectedDrawingSize = GlobalDrawingValues.MinimumDrawingSize - 1;
         
         // Assert
         Assert.Equal(expected, _sut.SelectedDrawingSize);
@@ -166,10 +167,10 @@ public class DrawingToolWindowViewModelTests
     public void SelectedDrawingSize_SetWithValueAboveMaximumDrawingSize_SetsValueToMaximumDrawingSize()
     {
         // Arrange
-        double expected = _sut.MaximumDrawingSize;
+        double expected = GlobalDrawingValues.MaximumDrawingSize;
 
         // Act
-        _sut.SelectedDrawingSize = _sut.MaximumDrawingSize + 1;
+        _sut.SelectedDrawingSize = GlobalDrawingValues.MaximumDrawingSize + 1;
 
         // Assert
         Assert.Equal(expected, _sut.SelectedDrawingSize);

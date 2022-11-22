@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using SketchOverlay.Drawing;
 using SketchOverlay.Drawing.Canvas;
-using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Messages;
 using SketchOverlay.Models;
 
@@ -16,25 +16,13 @@ public partial class DrawingToolWindowViewModel : ObservableObject
 
     public DrawingToolWindowViewModel()
     {
-        SelectedDrawingSize = MinimumDrawingSize;
-        _selectedDrawingColor = DrawingColors[0];
-        _selectedDrawingTool = DrawingTools[0];
+        _selectedDrawingColor = GlobalDrawingValues.DefaultDrawingColor;
+        _selectedDrawingTool = GlobalDrawingValues.DefaultDrawingTool;
         // BUG: CollectionView.SelectedItem reverts to null after this point. See - https://github.com/dotnet/maui/issues/8572
         // Potential workaround: Set initial values when tool window is first displayed.
+
+        SelectedDrawingSize = GlobalDrawingValues.DefaultDrawingSize;
     }
-
-    public Color[] DrawingColors { get; } =
-    {
-        Colors.Red, Colors.Green, Colors.Blue,
-        Colors.Magenta, Colors.Yellow
-    };
-
-    public DrawingToolInfo[] DrawingTools { get; } =
-    {
-        new(new BrushTool(), ImageSource.FromFile("placeholder_paintbrush.png"), "Paintbrush"),
-        new(new LineTool(), ImageSource.FromFile("placeholder_line.png"), "Line"),
-        new(new RectangleTool(), ImageSource.FromFile("placeholder_rectangle.png"), "Rectangle")
-    };
 
     public Color? SelectedDrawingColor
     {
@@ -73,10 +61,6 @@ public partial class DrawingToolWindowViewModel : ObservableObject
         }
     }
 
-    public double MinimumDrawingSize { get; } = 1;
-
-    public double MaximumDrawingSize { get; } = 32;
-
     public double SelectedDrawingSize
     {
         get => _selectedDrawingSize;
@@ -85,10 +69,10 @@ public partial class DrawingToolWindowViewModel : ObservableObject
             if (Math.Abs(value - _selectedDrawingSize) < 0.1)
                 return;
 
-            if (value < MinimumDrawingSize)
-                _selectedDrawingSize = MinimumDrawingSize;
-            else if (value > MaximumDrawingSize)
-                _selectedDrawingSize = MaximumDrawingSize;
+            if (value < GlobalDrawingValues.MinimumDrawingSize)
+                _selectedDrawingSize = GlobalDrawingValues.MinimumDrawingSize;
+            else if (value > GlobalDrawingValues.MaximumDrawingSize)
+                _selectedDrawingSize = GlobalDrawingValues.MaximumDrawingSize;
             else
                 _selectedDrawingSize = value;
 
