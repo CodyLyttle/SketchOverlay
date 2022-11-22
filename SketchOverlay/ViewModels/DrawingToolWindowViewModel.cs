@@ -76,7 +76,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject
             else
                 _selectedDrawingSize = value;
 
-            WeakReferenceMessenger.Default.Send(new DrawingSizeChangedMessage(_selectedDrawingSize));
+            WeakReferenceMessenger.Default.Send(new DrawingSizeChangedMessage((float)_selectedDrawingSize));
         }
     }
 

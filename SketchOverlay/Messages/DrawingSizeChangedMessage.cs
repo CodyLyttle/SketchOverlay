@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
 
 namespace SketchOverlay.Messages;
-internal class DrawingSizeChangedMessage : ValueChangedMessage<double>
+public class DrawingSizeChangedMessage : ValueChangedMessage<float>
 {
-    public DrawingSizeChangedMessage(double value) : base(value)
+    public DrawingSizeChangedMessage(float value) : base(value)
     {
     }
 }
