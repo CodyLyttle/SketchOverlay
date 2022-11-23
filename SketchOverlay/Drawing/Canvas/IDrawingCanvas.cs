@@ -15,4 +15,9 @@ public interface IDrawingCanvas : IDrawable
     void DoDrawingEvent(PointF point);
     void FinalizeDrawingEvent();
     void CancelDrawingEvent();
+
+    event EventHandler? RequestRedraw;
+    event EventHandler<bool>? CanClearChanged;
+    event EventHandler<bool>? CanRedoChanged;
+    event EventHandler<bool>? CanUndoChanged;
 }
