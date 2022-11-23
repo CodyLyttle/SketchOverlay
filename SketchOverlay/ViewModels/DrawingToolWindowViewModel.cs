@@ -17,7 +17,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
     private double _selectedDrawingSize;
     private readonly IMessenger _messenger;
     private bool _isVisible;
-    private bool _isDragging;
+    private bool _isDragInProgress;
 
     public DrawingToolWindowViewModel(IMessenger messenger)
     {
@@ -43,13 +43,25 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
     [ObservableProperty]
     private Thickness _windowMargin;
 
-    [ObservableProperty]
-    private bool _isInputTransparent;
+    public bool IsDragInProgress
+    {
+        get => _isDragInProgress;
+        private set
+        {
+            if (value == _isDragInProgress)
+                return;
+
+            _isDragInProgress = value;
+            OnPropertyChanged();
+
+            _messenger.Send(new DrawingWindowIsDragInProgressChangedMessage(value));
+        }
+    }
 
     public bool IsVisible
     {
         get => _isVisible;
-        set
+        private set
         {
             if (value == _isVisible)
                 return;
@@ -139,17 +151,24 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
         switch (action)
         {
             case DragAction.BeginDrag:
-                _isDragging = true;
-                IsInputTransparent = true;
+                if (_isDragInProgress)
+                {
+                    throw new InvalidOperationException("The window is already being dragged");
+                }
+                IsDragInProgress = true;
                 break;
             case DragAction.ContinueDrag:
-                if (!_isDragging)
-                    throw new InvalidOperationException(
-                        $"{nameof(DragAction.ContinueDrag)} was requested before {nameof(DragAction.ContinueDrag)}");
+                if (!_isDragInProgress)
+                {
+                    throw new InvalidOperationException("The window is not being dragged");
+                }
                 break;
             case DragAction.EndDrag:
-                IsInputTransparent = false;
-                _isDragging = false;
+                if (!_isDragInProgress)
+                {
+                    throw new InvalidOperationException("The window is not being dragged");
+                }
+                IsDragInProgress = false;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(message), "Invalid drag action");

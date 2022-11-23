@@ -10,7 +10,7 @@ namespace SketchOverlay.Tests.ViewModels;
 
 public class OverlayWindowViewModelTests
 {
-    private static readonly IMessenger TestMessenger = WeakReferenceMessenger.Default;
+    private static readonly IMessenger TestMessenger = Globals.Messenger;
     private readonly Mock<IDrawingCanvas> _mockCanvas;
     private readonly OverlayWindowViewModel _sut;
 
@@ -22,13 +22,19 @@ public class OverlayWindowViewModelTests
     }
 
     [Fact]
+    public void MessengerRegistered()
+    {
+        Assert.True(TestMessenger.IsRegistered<RequestCanvasActionMessage>(_sut));
+        Assert.True(TestMessenger.IsRegistered<DrawingColorChangedMessage>(_sut));
+        Assert.True(TestMessenger.IsRegistered<DrawingToolChangedMessage>(_sut));
+        Assert.True(TestMessenger.IsRegistered<DrawingSizeChangedMessage>(_sut));
+    }
+
+    [Fact]
     public void Receive_UndoMessage_CallsCanvasUndo()
     {
-        // Arrange
-        RequestCanvasActionMessage message = new(CanvasAction.Undo);
-
         // Act
-        TestMessenger.Send(message);
+        _sut.Receive(new RequestCanvasActionMessage(CanvasAction.Undo));
 
         // Assert
         _mockCanvas.Verify(x => x.Undo(), Times.Once);
@@ -37,11 +43,8 @@ public class OverlayWindowViewModelTests
     [Fact]
     public void Receive_RedoMessage_CallsCanvasRedo()
     {
-        // Arrange
-        RequestCanvasActionMessage message = new(CanvasAction.Redo);
-
         // Act
-        TestMessenger.Send(message);
+        _sut.Receive(new RequestCanvasActionMessage(CanvasAction.Redo));
 
         // Assert
         _mockCanvas.Verify(x => x.Redo(), Times.Once);
@@ -50,11 +53,8 @@ public class OverlayWindowViewModelTests
     [Fact]
     public void Receive_ClearMessage_CallsCanvasClear()
     {
-        // Arrange
-        RequestCanvasActionMessage message = new(CanvasAction.Clear);
-
         // Act
-        TestMessenger.Send(message);
+        _sut.Receive(new RequestCanvasActionMessage(CanvasAction.Clear));
 
         // Assert
         _mockCanvas.Verify(x => x.Clear(), Times.Once);
@@ -67,7 +67,7 @@ public class OverlayWindowViewModelTests
         DrawingColorChangedMessage message = new(Colors.Bisque);
 
         // Act
-        TestMessenger.Send(message);
+        _sut.Receive(message);
 
         // Assert
         Assert.Equal(message.Value, _sut.Canvas.StrokeColor);
@@ -81,7 +81,7 @@ public class OverlayWindowViewModelTests
         DrawingToolChangedMessage message = new(new BrushTool());
 
         // Act
-        TestMessenger.Send(message);
+        _sut.Receive(message);
 
         // Assert
         Assert.Equal(message.Value, _sut.Canvas.DrawingTool);
@@ -95,7 +95,7 @@ public class OverlayWindowViewModelTests
         DrawingSizeChangedMessage message = new(10);
 
         // Act
-        TestMessenger.Send(message);
+        _sut.Receive(message);
 
         // Assert
         Assert.Equal(message.Value, _sut.Canvas.StrokeSize);

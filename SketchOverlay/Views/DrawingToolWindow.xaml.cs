@@ -14,7 +14,6 @@ public partial class DrawingToolWindow
         InitializeComponent();
         BindingContext = MauiProgram.GetService<DrawingToolWindowViewModel>();
 
-        HideWindow();
         clearButton.IsEnabled = false;
         redoButton.IsEnabled = false;
         undoButton.IsEnabled = false;
@@ -54,53 +53,4 @@ public partial class DrawingToolWindow
     public bool SetCanClear(bool value) 
         => Dispatcher.Dispatch(() 
             => clearButton.IsEnabled = value);
-
-    public void ShowWindow()
-    {
-        IsVisible = true;
-    }
-
-    public void BeginDragWindow(PointF position)
-    {
-        IsDragging = true;
-        InputTransparent = true;
-        MoveWindow(position);
-    }
-
-    public void ContinueDragWindow(PointF position)
-    {
-        if (!IsDragging)
-            throw new InvalidOperationException(
-                $"{nameof(ContinueDragWindow)} was called before {nameof(BeginDragWindow)}");
-
-        MoveWindow(position);
-    }
-
-    public void EndDragWindow(PointF position)
-    {
-        if (!IsDragging)
-            return;
-
-        MoveWindow(position);
-        InputTransparent = false;
-        IsDragging = false;
-    }
-
-    public void HideWindow()
-    {
-        InputTransparent = false;
-        IsVisible = false;
-    }
-
-    private void MoveWindow(PointF position)
-    {
-        // Width is -1 when called too early.
-        double width = Width == -1
-            ? WidthRequest
-            : Width;
-
-        double left = position.X - width / 2;
-        double top = position.Y;
-        Margin = new Thickness(left, top, 0, 0);
-    }
 }

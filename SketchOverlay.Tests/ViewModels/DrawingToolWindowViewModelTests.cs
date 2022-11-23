@@ -10,8 +10,9 @@ namespace SketchOverlay.Tests.ViewModels;
 
 public class DrawingToolWindowViewModelTests
 {
-    private static readonly IMessenger TestMessenger = WeakReferenceMessenger.Default;
+    private static readonly IMessenger TestMessenger = Globals.Messenger;
     private readonly DrawingToolWindowViewModel _sut;
+
 
     public DrawingToolWindowViewModelTests()
     {
@@ -19,162 +20,121 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
+    public void MessengerRegistered()
+    {
+        Assert.True(TestMessenger.IsRegistered<DrawingWindowSetVisibilityMessage>(_sut));
+        Assert.True(TestMessenger.IsRegistered<DrawingWindowDragEventMessage>(_sut));
+    }
+
+    [Fact]
     public void UndoCommand_SendsRequestUndoMessage()
     {
-        // Arrange
-        const CanvasAction expected = CanvasAction.Undo;
-        CanvasAction? actual = null;
-        TestMessenger.Register<RequestCanvasActionMessage>(this, (_, msg) => actual = msg.Value);
-
-        // Act
-        _sut.UndoCommand.Execute(null);
-
-        // Assert
-        Assert.Equal(expected, actual);
+        var received = CommonTests.AssertCommandSendsMessage<RequestCanvasActionMessage>(_sut.UndoCommand);
+        Assert.Equal(CanvasAction.Undo, received.Value);
     }
 
     [Fact]
     public void RedoCommand_SendsRequestRedoMessage()
     {
-        // Arrange
-        CanvasAction? actual = null;
-        TestMessenger.Register<RequestCanvasActionMessage>(this, (_, msg) => actual = msg.Value);
-
-        // Act
-        _sut.RedoCommand.Execute(null);
-
-        // Assert
-        Assert.Equal(CanvasAction.Redo, actual);
+        var received = CommonTests.AssertCommandSendsMessage<RequestCanvasActionMessage>(_sut.RedoCommand);
+        Assert.Equal(CanvasAction.Redo, received.Value);
     }
 
     [Fact]
     public void ClearCommand_SendsRequestClearMessage()
     {
-        // Arrange
-        CanvasAction? actual = null;
-        TestMessenger.Register<RequestCanvasActionMessage>(this, (_, msg) => actual = msg.Value);
+        var received = CommonTests.AssertCommandSendsMessage<RequestCanvasActionMessage>(_sut.ClearCommand);
+        Assert.Equal(CanvasAction.Clear, received.Value);
+    }
 
-        // Act
-        _sut.ClearCommand.Execute(null);
+    [Fact]
+    public void IsDragInProgress_ValueChanged_SendsDrawingWindowIsDragInProgressChangedMessage()
+    {
+        CommonTests.AssertPropertyChangedSendsMessageWithNewValue
+            <DrawingWindowIsDragInProgressChangedMessage, bool>(_sut,
+                nameof(DrawingToolWindowViewModel.IsDragInProgress),
+                !_sut.IsDragInProgress);
+    }
 
-        // Assert
-        Assert.Equal(CanvasAction.Clear, actual);
+    [Fact]
+    public void IsDragInProgress_SetWithExistingValue_DoesNotSendMessage()
+    {
+        CommonTests.AssertSetterWithSameValueDoesNotSendMessage
+            <DrawingWindowIsDragInProgressChangedMessage, bool>(_sut,
+                nameof(DrawingToolWindowViewModel.IsDragInProgress));
     }
 
     [Fact]
     public void IsVisible_ValueChanged_SendsDrawingWindowVisibilityChangedMessage()
     {
-        // Arrange
-        bool expected = !_sut.IsVisible;
-        var actual = false;
-
-        // Act
-        TestMessenger.Register<DrawingWindowVisibilityChangedMessage>(this, (_, msg) => actual = msg.Value);
-        _sut.IsVisible = !_sut.IsVisible;
-
-        // Assert
-        Assert.Equal(expected, actual);
+        CommonTests.AssertPropertyChangedSendsMessageWithNewValue
+            <DrawingWindowVisibilityChangedMessage, bool>(_sut,
+                nameof(DrawingToolWindowViewModel.IsVisible),
+                !_sut.IsVisible);
     }
 
     [Fact]
-    public void IsVisible_SetWithExistingValue_DoesNothing()
+    public void IsVisible_SetWithExistingValue_DoesNotSendMessage()
     {
-        // Arrange
-        var wasMessageReceived = false;
-
-        // Act
-        TestMessenger.Register<DrawingWindowVisibilityChangedMessage>(this, (_, _) => wasMessageReceived = true);
-        _sut.IsVisible = _sut.IsVisible;
-
-        // Assert
-        Assert.False(wasMessageReceived);
+        CommonTests.AssertSetterWithSameValueDoesNotSendMessage
+            <DrawingWindowVisibilityChangedMessage, bool>(_sut,
+                nameof(DrawingToolWindowViewModel.IsVisible));
     }
 
     [Fact]
     public void SelectedDrawingColor_ValueChanged_SendsDrawingColorChangedMessage()
     {
-        // Arrange
-        Color expected = GlobalDrawingValues.DrawingColors.Last();
-        Color? actual = null;
-        TestMessenger.Register<DrawingColorChangedMessage>(this, (_, msg) => actual = msg.Value);
-
-        // Act
-        _sut.SelectedDrawingColor = expected;
-
-        // Assert
-        Assert.Equal(expected, actual);
+        CommonTests.AssertPropertyChangedSendsMessageWithNewValue
+            <DrawingColorChangedMessage, Color>(_sut,
+                nameof(DrawingToolWindowViewModel.SelectedDrawingColor),
+                Colors.Bisque);
     }
 
     [Fact]
-    public void SelectedDrawingColor_SetWithExistingValue_DoesNothing()
+    public void SelectedDrawingColor_SetWithExistingValue_DoesNotSendMessage()
     {
-        // Arrange
-        var wasMessageReceived = false;
-        TestMessenger.Register<DrawingColorChangedMessage>(this, (_, _) => wasMessageReceived = true);
-        
-        // Act
-        _sut.SelectedDrawingColor = _sut.SelectedDrawingColor;
-
-        // Assert
-        Assert.False(wasMessageReceived);
+        CommonTests.AssertSetterWithSameValueDoesNotSendMessage
+            <DrawingColorChangedMessage, Color>(_sut,
+                nameof(DrawingToolWindowViewModel.SelectedDrawingColor));
     }
 
     [Fact]
     public void SelectedDrawingTool_ValueChanged_SendsDrawingToolChangedMessage()
     {
-        // Arrange
-        IDrawingTool expected = new RectangleTool();
-        IDrawingTool? actual = null;
-        TestMessenger.Register<DrawingToolChangedMessage>(this, (_, msg) => actual = msg.Value);
+        IDrawingTool expectedMessageValue = new RectangleTool();
+        DrawingToolInfo newPropertyValue = new(expectedMessageValue, "iconUri", "TestTool");
 
-        // Act
-        _sut.SelectedDrawingTool = new DrawingToolInfo(expected, "iconUri", "TestTool");
-
-        // Assert
-        Assert.Equal(expected, actual);
+        CommonTests.AssertPropertyChangedSendsMessageWithNewValue
+            <DrawingToolChangedMessage, IDrawingTool, DrawingToolInfo>(_sut,
+                nameof(DrawingToolWindowViewModel.SelectedDrawingTool),
+                newPropertyValue,
+                expectedMessageValue);
     }
 
     [Fact]
-    public void SelectedDrawingTool_SetWithExistingValue_DoesNothing()
+    public void SelectedDrawingTool_SetWithExistingValue_DoesNotSendMessage()
     {
-        // Arrange
-        var wasMessageReceived = false;
-        TestMessenger.Register<DrawingToolChangedMessage>(this, (_, _) => wasMessageReceived = true);
-
-        // Act
-        _sut.SelectedDrawingTool = _sut.SelectedDrawingTool;
-
-        // Assert
-        Assert.False(wasMessageReceived);
+        CommonTests.AssertSetterWithSameValueDoesNotSendMessage
+            <DrawingToolChangedMessage, DrawingToolInfo>(_sut,
+                nameof(DrawingToolWindowViewModel.SelectedDrawingTool));
     }
 
     [Fact]
     public void SelectedDrawingSize_ValueChanged_SendsDrawingSizeChangedMessage()
     {
-        // Arrange
-        const double expected = 16;
-        double actual = 0;
-        TestMessenger.Register<DrawingSizeChangedMessage>(this, (_, msg) => actual = msg.Value);
-
-        // Act
-        _sut.SelectedDrawingSize = expected;
-
-        // Assert
-        Assert.Equal(expected, actual);
+        CommonTests.AssertPropertyChangedSendsMessageWithNewValue
+            <DrawingSizeChangedMessage, float, double>(_sut,
+                nameof(DrawingToolWindowViewModel.SelectedDrawingSize),
+                _sut.SelectedDrawingSize + 1,
+                (float)_sut.SelectedDrawingSize + 1);
     }
 
     [Fact]
-    public void SelectedDrawingSize_SetWithExistingValue_DoesNothing()
+    public void SelectedDrawingSize_SetWithExistingValue_DoesNotSendMessage()
     {
-        // Arrange
-        var wasMessageReceived = false;
-        TestMessenger.Register<DrawingSizeChangedMessage>(this, (_, _) => wasMessageReceived = true);
-
-        // Act
-        _sut.SelectedDrawingSize = _sut.SelectedDrawingSize;
-
-        // Assert
-        Assert.False(wasMessageReceived);
+        CommonTests.AssertSetterWithSameValueDoesNotSendMessage
+            <DrawingSizeChangedMessage, double>(_sut,
+                nameof(DrawingToolWindowViewModel.SelectedDrawingSize));
     }
 
     [Fact]
@@ -185,7 +145,7 @@ public class DrawingToolWindowViewModelTests
 
         // Act
         _sut.SelectedDrawingSize = GlobalDrawingValues.MinimumDrawingSize - 1;
-        
+
         // Assert
         Assert.Equal(expected, _sut.SelectedDrawingSize);
     }
@@ -210,40 +170,41 @@ public class DrawingToolWindowViewModelTests
         bool expected = !_sut.IsVisible;
 
         // Act
-        TestMessenger.Send(new DrawingWindowSetVisibilityMessage(expected));
+        _sut.Receive(new DrawingWindowSetVisibilityMessage(expected));
 
         // Act
         Assert.Equal(expected, _sut.IsVisible);
     }
 
     [Fact]
-    public void Receive_BeginDrag_SetsIsInputTransparentToTrue()
+    public void Receive_BeginDrag_SetsIsDragInProgressToTrue()
     {
         // Arrange
-        _sut.IsInputTransparent = false;
+        Assert.False(_sut.IsDragInProgress);
 
         // Act
-        TestMessenger.Send(new DrawingWindowDragEventMessage(DragAction.BeginDrag, new PointF()));
+        _sut.Receive(new DrawingWindowDragEventMessage(DragAction.BeginDrag, new PointF()));
 
         // Assert
-        Assert.True(_sut.IsInputTransparent);
+        Assert.True(_sut.IsDragInProgress);
     }
 
     [Fact]
-    public void Receive_EndDrag_SetsIsInputTransparentToFalse()
+    public void Receive_EndDrag_SetsIsDragInProgressToToFalse()
     {
         // Arrange
-        _sut.IsInputTransparent = true;
+        _sut.Receive(new DrawingWindowDragEventMessage(DragAction.BeginDrag, new PointF()));
+        Assert.True(_sut.IsDragInProgress);
 
         // Act
-        TestMessenger.Send(new DrawingWindowDragEventMessage(DragAction.EndDrag, new PointF()));
+        _sut.Receive(new DrawingWindowDragEventMessage(DragAction.EndDrag, new PointF()));
 
         // Assert
-        Assert.False(_sut.IsInputTransparent);
+        Assert.False(_sut.IsDragInProgress);
     }
 
     [Fact]
-    public void Receive_AllDragActionValues_SetsWindowMargin()
+    public void Receive_AllDragActions_SetsWindowMargin()
     {
         // Fact instead of Theory because BeginDrag must be called before ContinueDrag.
         var actions = new[]
@@ -258,10 +219,10 @@ public class DrawingToolWindowViewModelTests
             // Arrange
             Thickness defaultValue = new();
             _sut.WindowMargin = defaultValue;
-            PointF randomPoint = new (Random.Shared.Next(), Random.Shared.Next());
+            PointF randomPoint = new(Random.Shared.Next(), Random.Shared.Next());
 
             // Act
-            TestMessenger.Send(new DrawingWindowDragEventMessage(action, randomPoint));
+            _sut.Receive(new DrawingWindowDragEventMessage(action, randomPoint));
 
             // Assert
             Assert.NotEqual(defaultValue, _sut.WindowMargin);
@@ -269,9 +230,36 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void Receive_ContinueDragBeforeBeginDrag_ThrowsInvalidOperationException()
+    public void Receive_BeginDragWhileDragging_ThrowsInvalidOperationException()
     {
+        // Arrange
+        _sut.Receive(new DrawingWindowDragEventMessage(DragAction.BeginDrag, new PointF()));
+        Assert.True(_sut.IsDragInProgress);
+
+        // Assert
         Assert.Throws<InvalidOperationException>(() =>
-            TestMessenger.Send(new DrawingWindowDragEventMessage(DragAction.ContinueDrag, new PointF())));
+            _sut.Receive(new DrawingWindowDragEventMessage(DragAction.BeginDrag, new PointF())));
+    }
+
+    [Fact]
+    public void Receive_ContinueDragWhileNotDragging_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        Assert.False(_sut.IsDragInProgress);
+
+        // Assert
+        Assert.Throws<InvalidOperationException>(() =>
+            _sut.Receive(new DrawingWindowDragEventMessage(DragAction.ContinueDrag, new PointF())));
+    }
+
+    [Fact]
+    public void Receive_EndDragWhileNotDragging_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        Assert.False(_sut.IsDragInProgress);
+
+        // Assert
+        Assert.Throws<InvalidOperationException>(() =>
+            _sut.Receive(new DrawingWindowDragEventMessage(DragAction.ContinueDrag, new PointF())));
     }
 }
