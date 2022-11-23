@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing.Canvas;
 using SketchOverlay.Messages;
+using SketchOverlay.Messages.Actions;
 
 namespace SketchOverlay.ViewModels;
 

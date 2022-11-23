@@ -1,4 +1,4 @@
-﻿namespace SketchOverlay.Drawing.Canvas;
+﻿namespace SketchOverlay.Messages.Actions;
 
 public enum CanvasAction
 {

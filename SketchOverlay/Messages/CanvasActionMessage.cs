@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
-using SketchOverlay.Drawing.Canvas;
+using SketchOverlay.Messages.Actions;
 
 namespace SketchOverlay.Messages;
 public class CanvasActionMessage : ValueChangedMessage<CanvasAction>

@@ -3,6 +3,7 @@ using Moq;
 using SketchOverlay.Drawing.Canvas;
 using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Messages;
+using SketchOverlay.Messages.Actions;
 using SketchOverlay.ViewModels;
 
 namespace SketchOverlay.Tests.ViewModels;

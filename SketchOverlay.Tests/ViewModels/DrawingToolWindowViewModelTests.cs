@@ -1,8 +1,8 @@
 using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing;
-using SketchOverlay.Drawing.Canvas;
 using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Messages;
+using SketchOverlay.Messages.Actions;
 using SketchOverlay.Models;
 using SketchOverlay.ViewModels;
 

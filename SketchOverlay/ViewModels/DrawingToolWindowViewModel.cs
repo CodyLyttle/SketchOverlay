@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing;
-using SketchOverlay.Drawing.Canvas;
 using SketchOverlay.Messages;
+using SketchOverlay.Messages.Actions;
 using SketchOverlay.Models;
 
 namespace SketchOverlay.ViewModels;
