@@ -28,13 +28,10 @@ public class OverlayWindowViewModelTests
         RequestCanvasActionMessage message = new(CanvasAction.Undo);
 
         // Act
-        _sut.Receive(message);
         TestMessenger.Send(message);
 
         // Assert
-        _mockCanvas.Verify(x => x.Undo(), Times.Exactly(2));
-        _mockCanvas.Verify(x => x.Redo(), Times.Never);
-        _mockCanvas.Verify(x => x.Clear(), Times.Never);
+        _mockCanvas.Verify(x => x.Undo(), Times.Once);
     }
 
     [Fact]
@@ -44,13 +41,10 @@ public class OverlayWindowViewModelTests
         RequestCanvasActionMessage message = new(CanvasAction.Redo);
 
         // Act
-        _sut.Receive(message);
         TestMessenger.Send(message);
 
         // Assert
-        _mockCanvas.Verify(x => x.Undo(), Times.Never);
-        _mockCanvas.Verify(x => x.Redo(), Times.Exactly(2));
-        _mockCanvas.Verify(x => x.Clear(), Times.Never);
+        _mockCanvas.Verify(x => x.Redo(), Times.Once);
     }
 
     [Fact]
@@ -60,72 +54,51 @@ public class OverlayWindowViewModelTests
         RequestCanvasActionMessage message = new(CanvasAction.Clear);
 
         // Act
-        _sut.Receive(message);
         TestMessenger.Send(message);
 
         // Assert
-        _mockCanvas.Verify(x => x.Undo(), Times.Never);
-        _mockCanvas.Verify(x => x.Redo(), Times.Never);
-        _mockCanvas.Verify(x => x.Clear(), Times.Exactly(2));
+        _mockCanvas.Verify(x => x.Clear(), Times.Once);
     }
 
     [Fact]
-    public void Receive_WithDrawingColorChangedMessage_SetsCanvasStrokeColor()
+    public void Receive_DrawingColorChangedMessage_SetsCanvasStrokeColor()
     {
         // Arrange
-        DrawingColorChangedMessage messageA = new(Colors.Bisque);
-        DrawingColorChangedMessage messageB = new(Colors.BurlyWood);
+        DrawingColorChangedMessage message = new(Colors.Bisque);
 
         // Act
-        _sut.Receive(messageA);
-        Color actualA = _sut.Canvas.StrokeColor;
-
-        TestMessenger.Send(messageB);
-        Color actualB = _sut.Canvas.StrokeColor;
+        TestMessenger.Send(message);
 
         // Assert
-        Assert.Equal(messageA.Value, actualA);
-        Assert.Equal(messageB.Value, actualB);
-        _mockCanvas.Verify(x=> x.StrokeColor, Times.Exactly(2));
+        Assert.Equal(message.Value, _sut.Canvas.StrokeColor);
+        _mockCanvas.Verify(x=> x.StrokeColor, Times.Once);
     }
 
     [Fact]
-    public void Receive_WithDrawingToolChangedMessage_SetsCanvasDrawingTool()
+    public void Receive_DrawingToolChangedMessage_SetsCanvasDrawingTool()
     {
         // Arrange
-        DrawingToolChangedMessage messageA = new(new BrushTool());
-        DrawingToolChangedMessage messageB = new(new LineTool());
+        DrawingToolChangedMessage message = new(new BrushTool());
 
         // Act
-        _sut.Receive(messageA);
-        IDrawingTool actualA = _sut.Canvas.DrawingTool;
-
-        TestMessenger.Send(messageB);
-        IDrawingTool actualB = _sut.Canvas.DrawingTool;
+        TestMessenger.Send(message);
 
         // Assert
-        Assert.Equal(messageA.Value, actualA);
-        Assert.Equal(messageB.Value, actualB);
-        _mockCanvas.Verify(x => x.DrawingTool, Times.Exactly(2));
+        Assert.Equal(message.Value, _sut.Canvas.DrawingTool);
+        _mockCanvas.Verify(x => x.DrawingTool, Times.Once);
     }
 
     [Fact]
-    public void Receive_WithDrawingSizeChangedMessage_SetsCanvasStrokeSize()
+    public void Receive_DrawingSizeChangedMessage_SetsCanvasStrokeSize()
     {
         // Arrange
-        DrawingSizeChangedMessage messageA = new(10);
-        DrawingSizeChangedMessage messageB = new(20);
+        DrawingSizeChangedMessage message = new(10);
 
         // Act
-        _sut.Receive(messageA);
-        float actualA = _sut.Canvas.StrokeSize;
-
-        TestMessenger.Send(messageB);
-        float actualB = _sut.Canvas.StrokeSize;
+        TestMessenger.Send(message);
 
         // Assert
-        Assert.Equal(messageA.Value, actualA);
-        Assert.Equal(messageB.Value, actualB);
-        _mockCanvas.Verify(x => x.StrokeSize, Times.Exactly(2));
+        Assert.Equal(message.Value, _sut.Canvas.StrokeSize);
+        _mockCanvas.Verify(x => x.StrokeSize, Times.Once);
     }
 }

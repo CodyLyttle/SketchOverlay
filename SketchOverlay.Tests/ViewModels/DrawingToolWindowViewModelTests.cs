@@ -37,7 +37,6 @@ public class DrawingToolWindowViewModelTests
     public void RedoCommand_SendsRequestRedoMessage()
     {
         // Arrange
-        const CanvasAction expected = CanvasAction.Redo;
         CanvasAction? actual = null;
         TestMessenger.Register<RequestCanvasActionMessage>(this, (_, msg) => actual = msg.Value);
 
@@ -45,14 +44,13 @@ public class DrawingToolWindowViewModelTests
         _sut.RedoCommand.Execute(null);
 
         // Assert
-        Assert.Equal(expected, actual);
+        Assert.Equal(CanvasAction.Redo, actual);
     }
 
     [Fact]
     public void ClearCommand_SendsRequestClearMessage()
     {
         // Arrange
-        const CanvasAction expected = CanvasAction.Clear;
         CanvasAction? actual = null;
         TestMessenger.Register<RequestCanvasActionMessage>(this, (_, msg) => actual = msg.Value);
 
@@ -60,7 +58,7 @@ public class DrawingToolWindowViewModelTests
         _sut.ClearCommand.Execute(null);
 
         // Assert
-        Assert.Equal(expected, actual);
+        Assert.Equal(CanvasAction.Clear, actual);
     }
 
     [Fact]
@@ -79,7 +77,7 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void IsVisible_SetWithExistingValue_SendsDrawingWindowVisibilityChangedMessage()
+    public void IsVisible_SetWithExistingValue_DoesNothing()
     {
         // Arrange
         var wasMessageReceived = false;
@@ -101,7 +99,7 @@ public class DrawingToolWindowViewModelTests
         TestMessenger.Register<DrawingColorChangedMessage>(this, (_, msg) => actual = msg.Value);
 
         // Act
-        _sut.SelectedDrawingColor = GlobalDrawingValues.DrawingColors.Last();
+        _sut.SelectedDrawingColor = expected;
 
         // Assert
         Assert.Equal(expected, actual);
@@ -154,7 +152,7 @@ public class DrawingToolWindowViewModelTests
     public void SelectedDrawingSize_ValueChanged_SendsDrawingSizeChangedMessage()
     {
         // Arrange
-        double expected = 16;
+        const double expected = 16;
         double actual = 0;
         TestMessenger.Register<DrawingSizeChangedMessage>(this, (_, msg) => actual = msg.Value);
 
@@ -183,7 +181,7 @@ public class DrawingToolWindowViewModelTests
     public void SelectedDrawingSize_SetWithValueBelowMinimumDrawingSize_SetsValueToMinimumDrawingSize()
     {
         // Arrange
-        double expected = GlobalDrawingValues.MinimumDrawingSize;
+        const double expected = GlobalDrawingValues.MinimumDrawingSize;
 
         // Act
         _sut.SelectedDrawingSize = GlobalDrawingValues.MinimumDrawingSize - 1;
@@ -196,7 +194,7 @@ public class DrawingToolWindowViewModelTests
     public void SelectedDrawingSize_SetWithValueAboveMaximumDrawingSize_SetsValueToMaximumDrawingSize()
     {
         // Arrange
-        double expected = GlobalDrawingValues.MaximumDrawingSize;
+        const double expected = GlobalDrawingValues.MaximumDrawingSize;
 
         // Act
         _sut.SelectedDrawingSize = GlobalDrawingValues.MaximumDrawingSize + 1;
@@ -219,7 +217,7 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void Receive_DrawingWindowDragEventMessage_BeginDrag_SetsIsInputTransparentToTrue()
+    public void Receive_BeginDrag_SetsIsInputTransparentToTrue()
     {
         // Arrange
         _sut.IsInputTransparent = false;
@@ -232,7 +230,7 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void Receive_DrawingWindowDragEventMessage_EndDrag_SetsIsInputTransparentToFalse()
+    public void Receive_EndDrag_SetsIsInputTransparentToFalse()
     {
         // Arrange
         _sut.IsInputTransparent = true;
@@ -245,7 +243,7 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void Receive_DrawingWindowDragEventMessage_AllValues_SetsWindowMargin()
+    public void Receive_AllDragActionValues_SetsWindowMargin()
     {
         // Fact instead of Theory because BeginDrag must be called before ContinueDrag.
         var actions = new[]
@@ -271,7 +269,7 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void Receive_DrawingWindowDragEventMessage_ContinueDragBeforeBeginDrag_ThrowsInvalidOperationException()
+    public void Receive_ContinueDragBeforeBeginDrag_ThrowsInvalidOperationException()
     {
         Assert.Throws<InvalidOperationException>(() =>
             TestMessenger.Send(new DrawingWindowDragEventMessage(DragAction.ContinueDrag, new PointF())));
