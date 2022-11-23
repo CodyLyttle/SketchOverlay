@@ -22,10 +22,10 @@ public class OverlayWindowViewModelTests
     }
 
     [Fact]
-    public void Receive_WithUndoMessage_CallsCanvasUndo()
+    public void Receive_UndoMessage_CallsCanvasUndo()
     {
         // Arrange
-        CanvasActionMessage message = new(CanvasAction.Undo);
+        RequestCanvasActionMessage message = new(CanvasAction.Undo);
 
         // Act
         _sut.Receive(message);
@@ -38,10 +38,10 @@ public class OverlayWindowViewModelTests
     }
 
     [Fact]
-    public void Receive_WithRedoMessage_CallsCanvasRedo()
+    public void Receive_RedoMessage_CallsCanvasRedo()
     {
         // Arrange
-        CanvasActionMessage message = new(CanvasAction.Redo);
+        RequestCanvasActionMessage message = new(CanvasAction.Redo);
 
         // Act
         _sut.Receive(message);
@@ -54,10 +54,10 @@ public class OverlayWindowViewModelTests
     }
 
     [Fact]
-    public void Receive_WithClearMessage_CallsCanvasClear()
+    public void Receive_ClearMessage_CallsCanvasClear()
     {
         // Arrange
-        CanvasActionMessage message = new(CanvasAction.Clear);
+        RequestCanvasActionMessage message = new(CanvasAction.Clear);
 
         // Act
         _sut.Receive(message);

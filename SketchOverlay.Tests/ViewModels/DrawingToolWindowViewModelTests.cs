@@ -19,12 +19,12 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void UndoCommand_SendsCanvasActionMessageWithValueUndo()
+    public void UndoCommand_SendsRequestUndoMessage()
     {
         // Arrange
         const CanvasAction expected = CanvasAction.Undo;
         CanvasAction? actual = null;
-        TestMessenger.Register<CanvasActionMessage>(this, (_, msg) => actual = msg.Value);
+        TestMessenger.Register<RequestCanvasActionMessage>(this, (_, msg) => actual = msg.Value);
 
         // Act
         _sut.UndoCommand.Execute(null);
@@ -34,12 +34,12 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void RedoCommand_SendsCanvasActionMessageWithValueRedo()
+    public void RedoCommand_SendsRequestRedoMessage()
     {
         // Arrange
         const CanvasAction expected = CanvasAction.Redo;
         CanvasAction? actual = null;
-        TestMessenger.Register<CanvasActionMessage>(this, (_, msg) => actual = msg.Value);
+        TestMessenger.Register<RequestCanvasActionMessage>(this, (_, msg) => actual = msg.Value);
 
         // Act
         _sut.RedoCommand.Execute(null);
@@ -49,12 +49,12 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void ClearCommand_SendsCanvasActionMessageWithValueClear()
+    public void ClearCommand_SendsRequestClearMessage()
     {
         // Arrange
         const CanvasAction expected = CanvasAction.Clear;
         CanvasAction? actual = null;
-        TestMessenger.Register<CanvasActionMessage>(this, (_, msg) => actual = msg.Value);
+        TestMessenger.Register<RequestCanvasActionMessage>(this, (_, msg) => actual = msg.Value);
 
         // Act
         _sut.ClearCommand.Execute(null);

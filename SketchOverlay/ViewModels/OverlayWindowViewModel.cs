@@ -7,7 +7,7 @@ using SketchOverlay.Messages.Actions;
 namespace SketchOverlay.ViewModels;
 
 public partial class OverlayWindowViewModel : ObservableObject, 
-    IRecipient<CanvasActionMessage>,
+    IRecipient<RequestCanvasActionMessage>,
     IRecipient<DrawingColorChangedMessage>,
     IRecipient<DrawingToolChangedMessage>,
     IRecipient<DrawingSizeChangedMessage>
@@ -17,13 +17,13 @@ public partial class OverlayWindowViewModel : ObservableObject,
     public OverlayWindowViewModel(IDrawingCanvas canvas, IMessenger messenger)
     {
         Canvas = canvas;
-        messenger.Register<CanvasActionMessage>(this);
+        messenger.Register<RequestCanvasActionMessage>(this);
         messenger.Register<DrawingColorChangedMessage>(this);
         messenger.Register<DrawingToolChangedMessage>(this);
         messenger.Register<DrawingSizeChangedMessage>(this);
     }
 
-    public void Receive(CanvasActionMessage message)
+    public void Receive(RequestCanvasActionMessage message)
     {
         switch (message.Value)
         {

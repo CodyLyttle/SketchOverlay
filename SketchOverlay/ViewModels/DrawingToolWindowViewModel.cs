@@ -119,15 +119,15 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
 
     [RelayCommand]
     private void Undo() =>
-        _messenger.Send(new CanvasActionMessage(CanvasAction.Undo));
+        _messenger.Send(new RequestCanvasActionMessage(CanvasAction.Undo));
 
     [RelayCommand]
     private void Redo() =>
-        _messenger.Send(new CanvasActionMessage(CanvasAction.Redo));
+        _messenger.Send(new RequestCanvasActionMessage(CanvasAction.Redo));
 
     [RelayCommand]
     private void Clear() =>
-        _messenger.Send(new CanvasActionMessage(CanvasAction.Clear));
+        _messenger.Send(new RequestCanvasActionMessage(CanvasAction.Clear));
 
     public void Receive(DrawingWindowSetVisibilityMessage message) =>
         IsVisible = message.Value;
