@@ -206,13 +206,13 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void Receive_WithSetDrawingWindowVisibilityMessage_SetsIsVisible()
+    public void Receive_DrawingWindowSetVisibilityMessage_SetsIsVisible()
     {
         // Arrange
         bool expected = !_sut.IsVisible;
 
         // Act
-        TestMessenger.Send(new SetDrawingWindowVisibilityMessage(expected));
+        TestMessenger.Send(new DrawingWindowSetVisibilityMessage(expected));
 
         // Act
         Assert.Equal(expected, _sut.IsVisible);

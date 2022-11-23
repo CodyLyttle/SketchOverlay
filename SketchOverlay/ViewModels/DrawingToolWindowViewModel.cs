@@ -9,7 +9,7 @@ using SketchOverlay.Models;
 namespace SketchOverlay.ViewModels;
 
 public partial class DrawingToolWindowViewModel : ObservableObject,
-    IRecipient<SetDrawingWindowVisibilityMessage>,
+    IRecipient<DrawingWindowSetVisibilityMessage>,
     IRecipient<DrawingWindowDragEventMessage>
 {
     private Color? _selectedDrawingColor;
@@ -30,7 +30,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
         SelectedDrawingSize = GlobalDrawingValues.DefaultDrawingSize;
         IsVisible = false;
 
-        _messenger.Register<SetDrawingWindowVisibilityMessage>(this);
+        _messenger.Register<DrawingWindowSetVisibilityMessage>(this);
         _messenger.Register<DrawingWindowDragEventMessage>(this);
     }
 
@@ -129,7 +129,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
     private void Clear() =>
         _messenger.Send(new CanvasActionMessage(CanvasAction.Clear));
 
-    public void Receive(SetDrawingWindowVisibilityMessage message) =>
+    public void Receive(DrawingWindowSetVisibilityMessage message) =>
         IsVisible = message.Value;
 
     public void Receive(DrawingWindowDragEventMessage message)
