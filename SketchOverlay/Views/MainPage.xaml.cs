@@ -1,8 +1,9 @@
-﻿using System.Diagnostics;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing.Canvas;
-using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Input;
-using SketchOverlay.Native;
+using SketchOverlay.Messages;
+using SketchOverlay.Messages.Actions;
+using SketchOverlay.Models;
 using SketchOverlay.Native.Input.Mouse;
 using SketchOverlay.ViewModels;
 
@@ -11,106 +12,60 @@ namespace SketchOverlay.Views;
 // TODO: Use InputManager.Events to handle the tool window dragging logic. Dragging stops abruptly due to the cursor leaving the bounds of the GraphicsView.
 public partial class MainPage : ContentPage
 {
-    private const MouseButton DrawingButton = MouseButton.Left;
-    private const MouseButton CancelDrawingButton = MouseButton.Right;
-    private const MouseButton ToggleMenuButton = MouseButton.Middle;
-
-    private readonly DrawingCanvas _drawingCanvas = new(new BrushTool());
     private readonly IInputManger _inputManager = new InputManager();
-    private IntPtr _windowHandle;
+    private readonly IMessenger _messenger;
 
-    public MainPage(OverlayWindowViewModel viewModel)
+    // TODO: Inject DrawingCanvas into MainPage & OverlayWindowViewModel.
+    public MainPage(OverlayWindowViewModel viewModel, IMessenger messenger, IDrawingCanvas canvas)
     {
         InitializeComponent();
         BindingContext = viewModel;
+        _messenger = messenger;
+        graphicsView.Drawable = canvas;
 
-        graphicsView.Drawable = _drawingCanvas;
         graphicsView.StartInteraction += GraphicsViewOnStartInteraction;
         graphicsView.DragInteraction += GraphicsViewOnDragInteraction;
         graphicsView.EndInteraction += GraphicsViewOnEndInteraction;
-        _drawingCanvas.RequestRedraw += (_, _) => graphicsView.Invalidate();
-
-        DrawingToolsWindow.PrimaryToolChanged += (_, tool) => _drawingCanvas.DrawingTool = tool;
-        DrawingToolsWindow.PrimaryToolColorChanged += (_, color) => _drawingCanvas.StrokeColor = color;
-        DrawingToolsWindow.PrimaryToolDrawSizeChanged += (_, size) => _drawingCanvas.StrokeSize = (float)size;
-
-        DrawingToolsWindow.RequestUndo += (_, _) => _drawingCanvas.Undo();
-        DrawingToolsWindow.RequestRedo += (_, _) => _drawingCanvas.Redo();
-        DrawingToolsWindow.RequestClear += (_, _) => _drawingCanvas.Clear();
-        _drawingCanvas.CanUndoChanged += (_, isEnabled) => DrawingToolsWindow.SetCanUndo(isEnabled);
-        _drawingCanvas.CanRedoChanged += (_, isEnabled) => DrawingToolsWindow.SetCanRedo(isEnabled);
-        _drawingCanvas.CanClearChanged += (_, isEnabled) => DrawingToolsWindow.SetCanClear(isEnabled);
-
+        canvas.RequestRedraw += (_, _) => graphicsView.Invalidate();
         _inputManager.Events.MouseDown += OnMouseDown;
     }
 
     private void GraphicsViewOnStartInteraction(object? sender, TouchEventArgs e)
     {
-        MouseButton lastMouseButton = _inputManager.State.LastMouseButtonEvent!.Button;
-
-        if (lastMouseButton is DrawingButton)
-        {
-            // Allow drawing to continue when the cursor enters the drawing tool window.
-            DrawingToolsWindow.InputTransparent = true;
-        }
-        else if (lastMouseButton is ToggleMenuButton)
-        {
-            if(DrawingToolsWindow.IsVisible)
-                DrawingToolsWindow.HideWindow();
-            else
-            {
-                DrawingToolsWindow.BeginDragWindow(e.Touches[0]);
-                DrawingToolsWindow.ShowWindow();
-            }
-        }
-
-        GraphicsViewOnDragInteraction(sender, e);
+        _messenger.Send(new OverlayWindowDrawActionMessage(
+            new DrawActionInfo(
+                DrawAction.BeginDraw,
+                (MouseButton)GetLastMouseButton()!,
+                e.Touches[0])));
     }
 
     private void GraphicsViewOnDragInteraction(object? sender, TouchEventArgs e)
     {
-        PointF cursorPos = e.Touches[0];
-        MouseButton lastMouseButton = _inputManager.State.LastMouseButtonEvent!.Button;
-
-        if(lastMouseButton is DrawingButton)
-        {
-            _drawingCanvas.DoDrawingEvent(cursorPos);
-        }
-        else if (lastMouseButton is ToggleMenuButton && DrawingToolsWindow.IsDragging)
-        {
-            DrawingToolsWindow.ContinueDragWindow(cursorPos);
-        }
+        _messenger.Send(new OverlayWindowDrawActionMessage(
+            new DrawActionInfo(
+                DrawAction.ContinueDraw, 
+                (MouseButton)GetLastMouseButton()!, 
+                e.Touches[0])));
     }
 
     private void GraphicsViewOnEndInteraction(object? sender, TouchEventArgs e)
     {
-        MouseButton lastMouseButton = _inputManager.State.LastMouseButtonEvent!.Button;
-
-        if (lastMouseButton is DrawingButton)
-        {
-            _drawingCanvas.FinalizeDrawingEvent();
-            DrawingToolsWindow.InputTransparent = false;
-        }
-        else if (lastMouseButton is ToggleMenuButton)
-        {
-            if (DrawingToolsWindow.IsDragging)
-                DrawingToolsWindow.EndDragWindow(e.Touches[0]);
-        }
+        _messenger.Send(new OverlayWindowDrawActionMessage(
+            new DrawActionInfo(
+                DrawAction.EndDraw,
+                (MouseButton)GetLastMouseButton()!,
+                e.Touches[0])));
     }
 
     private void OnMouseDown(object? sender, MouseButtonEventArgs args)
     {
-        if (args.Button is CancelDrawingButton)
-            _drawingCanvas.CancelDrawingEvent();
+        // TODO: Send cancel drawing message.
+        if (args.Button is MouseButton.Right)
+            return;
     }
-
-    // Will likely come in handy. Move to a relevant class.
-    private PointF GetRelativePosition(System.Drawing.Point absolutePos)
+    
+    private MouseButton? GetLastMouseButton()
     {
-        if (_windowHandle == IntPtr.Zero)
-            _windowHandle = Process.GetCurrentProcess().MainWindowHandle;
-
-        System.Drawing.Point relativePos = absolutePos.RelativeToWindow(_windowHandle);
-        return new PointF(relativePos.X, relativePos.Y);
+        return _inputManager.State.LastMouseButtonEvent?.Button;
     }
 }
