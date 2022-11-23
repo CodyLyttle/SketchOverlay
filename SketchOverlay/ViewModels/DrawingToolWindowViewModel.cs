@@ -8,12 +8,14 @@ using SketchOverlay.Models;
 
 namespace SketchOverlay.ViewModels;
 
-public partial class DrawingToolWindowViewModel : ObservableObject
+public partial class DrawingToolWindowViewModel : ObservableObject,
+    IRecipient<SetDrawingWindowVisibilityMessage>
 {
     private Color? _selectedDrawingColor;
     private DrawingToolInfo? _selectedDrawingTool;
     private double _selectedDrawingSize;
     private readonly IMessenger _messenger;
+    private bool _isVisible;
 
     public DrawingToolWindowViewModel(IMessenger messenger)
     {
@@ -24,6 +26,24 @@ public partial class DrawingToolWindowViewModel : ObservableObject
         // Potential workaround: Set initial values when tool window is first displayed.
 
         SelectedDrawingSize = GlobalDrawingValues.DefaultDrawingSize;
+        IsVisible = false;
+
+        _messenger.Register<SetDrawingWindowVisibilityMessage>(this);
+    }
+
+    public bool IsVisible
+    {
+        get => _isVisible;
+        set
+        {
+            if (value == _isVisible)
+                return;
+
+            _isVisible = value;
+            OnPropertyChanged();
+
+            _messenger.Send(new DrawingWindowVisibilityChangedMessage(value));
+        }
     }
 
     public Color? SelectedDrawingColor
@@ -93,4 +113,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject
     [RelayCommand]
     private void Clear() =>
         _messenger.Send(new CanvasActionMessage(CanvasAction.Clear));
+
+    public void Receive(SetDrawingWindowVisibilityMessage message) =>
+        IsVisible = message.Value;
 }

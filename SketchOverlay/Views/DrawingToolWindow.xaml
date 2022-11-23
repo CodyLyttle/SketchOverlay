@@ -9,7 +9,8 @@
              WidthRequest="300"
              HorizontalOptions="Start"
              VerticalOptions="Start"
-             x:DataType="viewModels:DrawingToolWindowViewModel">
+             x:DataType="viewModels:DrawingToolWindowViewModel"
+             IsVisible="{Binding IsVisible}">
 
     <Border Background="#222222"
             Stroke="Green">

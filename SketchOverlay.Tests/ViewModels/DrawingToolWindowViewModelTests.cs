@@ -64,6 +64,35 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
+    public void IsVisible_ValueChanged_SendsDrawingWindowVisibilityChangedMessage()
+    {
+        // Arrange
+        bool expected = !_sut.IsVisible;
+        var actual = false;
+
+        // Act
+        TestMessenger.Register<DrawingWindowVisibilityChangedMessage>(this, (_, msg) => actual = msg.Value);
+        _sut.IsVisible = !_sut.IsVisible;
+
+        // Assert
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void IsVisible_SetWithExistingValue_SendsDrawingWindowVisibilityChangedMessage()
+    {
+        // Arrange
+        var wasMessageReceived = false;
+
+        // Act
+        TestMessenger.Register<DrawingWindowVisibilityChangedMessage>(this, (_, _) => wasMessageReceived = true);
+        _sut.IsVisible = _sut.IsVisible;
+
+        // Assert
+        Assert.False(wasMessageReceived);
+    }
+
+    [Fact]
     public void SelectedDrawingColor_ValueChanged_SendsDrawingColorChangedMessage()
     {
         // Arrange
@@ -174,5 +203,18 @@ public class DrawingToolWindowViewModelTests
 
         // Assert
         Assert.Equal(expected, _sut.SelectedDrawingSize);
+    }
+
+    [Fact]
+    public void Receive_WithSetDrawingWindowVisibilityMessage_SetsIsVisible()
+    {
+        // Arrange
+        bool expected = !_sut.IsVisible;
+
+        // Act
+        TestMessenger.Send(new SetDrawingWindowVisibilityMessage(expected));
+
+        // Act
+        Assert.Equal(expected, _sut.IsVisible);
     }
 }
