@@ -217,4 +217,63 @@ public class DrawingToolWindowViewModelTests
         // Act
         Assert.Equal(expected, _sut.IsVisible);
     }
+
+    [Fact]
+    public void Receive_DrawingWindowDragEventMessage_BeginDrag_SetsIsInputTransparentToTrue()
+    {
+        // Arrange
+        _sut.IsInputTransparent = false;
+
+        // Act
+        TestMessenger.Send(new DrawingWindowDragEventMessage(DragAction.BeginDrag, new PointF()));
+
+        // Assert
+        Assert.True(_sut.IsInputTransparent);
+    }
+
+    [Fact]
+    public void Receive_DrawingWindowDragEventMessage_EndDrag_SetsIsInputTransparentToFalse()
+    {
+        // Arrange
+        _sut.IsInputTransparent = true;
+
+        // Act
+        TestMessenger.Send(new DrawingWindowDragEventMessage(DragAction.EndDrag, new PointF()));
+
+        // Assert
+        Assert.False(_sut.IsInputTransparent);
+    }
+
+    [Fact]
+    public void Receive_DrawingWindowDragEventMessage_AllValues_SetsWindowMargin()
+    {
+        // Fact instead of Theory because BeginDrag must be called before ContinueDrag.
+        var actions = new[]
+        {
+            DragAction.BeginDrag,
+            DragAction.ContinueDrag,
+            DragAction.EndDrag
+        };
+
+        foreach (DragAction action in actions)
+        {
+            // Arrange
+            Thickness defaultValue = new();
+            _sut.WindowMargin = defaultValue;
+            PointF randomPoint = new (Random.Shared.Next(), Random.Shared.Next());
+
+            // Act
+            TestMessenger.Send(new DrawingWindowDragEventMessage(action, randomPoint));
+
+            // Assert
+            Assert.NotEqual(defaultValue, _sut.WindowMargin);
+        }
+    }
+
+    [Fact]
+    public void Receive_DrawingWindowDragEventMessage_ContinueDragBeforeBeginDrag_ThrowsInvalidOperationException()
+    {
+        Assert.Throws<InvalidOperationException>(() =>
+            TestMessenger.Send(new DrawingWindowDragEventMessage(DragAction.ContinueDrag, new PointF())));
+    }
 }

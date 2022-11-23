@@ -5,12 +5,14 @@
              xmlns:viewModels="clr-namespace:SketchOverlay.ViewModels"
              xmlns:drawing="clr-namespace:SketchOverlay.Drawing"
              x:Class="SketchOverlay.Views.DrawingToolWindow"
-             HeightRequest="300"
-             WidthRequest="300"
              HorizontalOptions="Start"
              VerticalOptions="Start"
              x:DataType="viewModels:DrawingToolWindowViewModel"
-             IsVisible="{Binding IsVisible}">
+             InputTransparent="{Binding IsInputTransparent}"
+             IsVisible="{Binding IsVisible}"
+             Margin="{Binding WindowMargin}"
+             WidthRequest="{Binding WindowWidth}"
+             HeightRequest="{Binding WindowHeight}">
 
     <Border Background="#222222"
             Stroke="Green">

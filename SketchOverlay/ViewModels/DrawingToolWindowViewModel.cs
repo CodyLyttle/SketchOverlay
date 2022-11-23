@@ -9,13 +9,15 @@ using SketchOverlay.Models;
 namespace SketchOverlay.ViewModels;
 
 public partial class DrawingToolWindowViewModel : ObservableObject,
-    IRecipient<SetDrawingWindowVisibilityMessage>
+    IRecipient<SetDrawingWindowVisibilityMessage>,
+    IRecipient<DrawingWindowDragEventMessage>
 {
     private Color? _selectedDrawingColor;
     private DrawingToolInfo? _selectedDrawingTool;
     private double _selectedDrawingSize;
     private readonly IMessenger _messenger;
     private bool _isVisible;
+    private bool _isDragging;
 
     public DrawingToolWindowViewModel(IMessenger messenger)
     {
@@ -29,7 +31,20 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
         IsVisible = false;
 
         _messenger.Register<SetDrawingWindowVisibilityMessage>(this);
+        _messenger.Register<DrawingWindowDragEventMessage>(this);
     }
+
+    [ObservableProperty]
+    private double _windowHeight = 300;
+
+    [ObservableProperty]
+    private double _windowWidth = 300;
+
+    [ObservableProperty]
+    private Thickness _windowMargin;
+
+    [ObservableProperty]
+    private bool _isInputTransparent;
 
     public bool IsVisible
     {
@@ -116,4 +131,32 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
 
     public void Receive(SetDrawingWindowVisibilityMessage message) =>
         IsVisible = message.Value;
+
+    public void Receive(DrawingWindowDragEventMessage message)
+    {
+        (DragAction action, PointF position) = message.Value;
+
+        switch (action)
+        {
+            case DragAction.BeginDrag:
+                _isDragging = true;
+                IsInputTransparent = true;
+                break;
+            case DragAction.ContinueDrag:
+                if (!_isDragging)
+                    throw new InvalidOperationException(
+                        $"{nameof(DragAction.ContinueDrag)} was requested before {nameof(DragAction.ContinueDrag)}");
+                break;
+            case DragAction.EndDrag:
+                IsInputTransparent = false;
+                _isDragging = false;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(message), "Invalid drag action");
+        }
+
+        double left = position.X - WindowWidth / 2;
+        double top = position.Y;
+        WindowMargin = new Thickness(left, top, 0, 0);
+    }
 }
