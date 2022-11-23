@@ -13,16 +13,23 @@
              Margin="{Binding WindowMargin}"
              WidthRequest="{Binding WindowWidth}"
              HeightRequest="{Binding WindowHeight}">
-
     <Border Background="#222222"
             Stroke="Green">
-        <VerticalStackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
             <CollectionView x:Name="DrawingToolsCollection"
+                            Grid.Row="0"
                             ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingTools}"
                             SelectedItem="{Binding SelectedDrawingTool}"
                             ItemSizingStrategy="MeasureFirstItem"
                             SelectionMode="Single"
-                            HorizontalOptions="Center">
+                            HorizontalOptions="Center"
+                            Margin="0,12,0,0">
                 <!-- Strange behaviour when trying to create a simple horizontal list collection.
                      For some reason VerticalGrid is the only layout which gives the desired result.
                      Is this because the CollectionView is contained within a VerticalStackLayout? -->
@@ -43,13 +50,15 @@
             </CollectionView>
 
             <CollectionView x:Name="DrawingColorsCollection"
+                            Grid.Row="1"
                             ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingColors}"
                             SelectedItem="{Binding SelectedDrawingColor, Mode=TwoWay}"
                             ItemSizingStrategy="MeasureFirstItem"
                             SelectionMode="Single"
                             HorizontalOptions="Center">
                 <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical"/>
+                    <GridItemsLayout Orientation="Vertical"
+                                     Span="3"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="Color">
@@ -61,29 +70,22 @@
             </CollectionView>
 
             <!-- TODO: Add label displaying slider value -->
-            <Slider x:Name="drawSizeSlider" WidthRequest="240" 
+            <Slider x:Name="drawSizeSlider"
+                    Grid.Row="2"
+                    VerticalOptions="Start"
+                    WidthRequest="240" 
                     Minimum="{x:Static drawing:GlobalDrawingValues.MinimumDrawingSize}" 
                     Maximum="{x:Static drawing:GlobalDrawingValues.MaximumDrawingSize}"
                     Value="{Binding SelectedDrawingSize, Mode=TwoWay}"/>
 
-            <HorizontalStackLayout  HorizontalOptions="Center">
-                <Button x:Name="redButton" Background="Red"/>
-                <Button x:Name="greenButton" Background="Green"/>
-                <Button x:Name="blueButton" Background="Blue"/>
-            </HorizontalStackLayout>
-
-            <HorizontalStackLayout HorizontalOptions="Center">
-                <Button x:Name="brushToolButton"  Text="brush"/>
-                <Button x:Name="lineToolButton"  Text="line"/>
-                <Button x:Name="rectangleToolButton"  Text="rect"/>
-            </HorizontalStackLayout>
-
-            <HorizontalStackLayout HorizontalOptions="Center">
+            <HorizontalStackLayout Grid.Row="3" 
+                                   HorizontalOptions="Center"
+                                   Margin="0,0,0,12">
                 <Button x:Name="undoButton" Text="undo" Command="{Binding UndoCommand}"/>
                 <Button x:Name="redoButton" Text="redo" Command="{Binding RedoCommand}"/>
                 <Button x:Name="clearButton" Text="clear" Command="{Binding ClearCommand}"/>
             </HorizontalStackLayout>
 
-        </VerticalStackLayout>
+        </Grid>
     </Border>
 </ContentView>

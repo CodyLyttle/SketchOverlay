@@ -11,11 +11,26 @@ internal static class GlobalDrawingValues
 
     public static readonly Color[] DrawingColors =
     {
-        Colors.Red, 
-        Colors.Green, 
-        Colors.Blue, 
-        Colors.Magenta, 
-        Colors.Yellow
+        Colors.Black,
+        Colors.DarkRed, 
+        Colors.Orange,
+        Colors.DarkGreen, 
+        Colors.DarkBlue, 
+        Colors.DarkViolet,
+
+        Colors.Gray,
+        Colors.Red,
+        Colors.Gold,
+        Colors.ForestGreen,
+        Colors.Blue,
+        Colors.Violet,
+
+        Colors.White,
+        Colors.OrangeRed,
+        Colors.Yellow,
+        Colors.LawnGreen,
+        Colors.DeepSkyBlue,
+        Colors.PaleVioletRed,
     };
 
     public static readonly DrawingToolInfo[] DrawingTools =
