@@ -9,7 +9,7 @@ using SketchOverlay.ViewModels;
 
 namespace SketchOverlay.Views;
 
-// TODO: Use InputManager.Events to handle the tool window dragging logic. Dragging stops abruptly due to the cursor leaving the bounds of the GraphicsView.
+// TODO: Replace InputManager with mouse button WinUI handlers.
 public partial class MainPage : ContentPage
 {
     private readonly IInputManger _inputManager = new InputManager();
@@ -56,12 +56,11 @@ public partial class MainPage : ContentPage
                 (MouseButton)GetLastMouseButton()!,
                 e.Touches[0])));
     }
-
+    
     private void OnMouseDown(object? sender, MouseButtonEventArgs args)
     {
-        // TODO: Send cancel drawing message.
         if (args.Button is MouseButton.Right)
-            return;
+            _messenger.Send(new OverlayWindowCancelDrawingMessage());
     }
     
     private MouseButton? GetLastMouseButton()

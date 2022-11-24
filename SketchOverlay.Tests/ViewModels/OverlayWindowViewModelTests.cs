@@ -10,6 +10,8 @@ using SUT = SketchOverlay.ViewModels.OverlayWindowViewModel;
 
 namespace SketchOverlay.Tests.ViewModels;
 
+
+// TODO: Draw actions call canvas draw methods.
 public class OverlayWindowViewModelTests
 {
     private static readonly IMessenger TestMessenger = Globals.Messenger;
@@ -26,9 +28,10 @@ public class OverlayWindowViewModelTests
     [Fact]
     public void MessengerRegistered()
     {
+        Assert.True(TestMessenger.IsRegistered<DrawingWindowPropertyChangedMessage>(_sut));
         Assert.True(TestMessenger.IsRegistered<OverlayWindowCanvasActionMessage>(_sut));
         Assert.True(TestMessenger.IsRegistered<OverlayWindowDrawActionMessage>(_sut));
-        Assert.True(TestMessenger.IsRegistered<DrawingWindowPropertyChangedMessage>(_sut));
+        Assert.True(TestMessenger.IsRegistered<OverlayWindowCancelDrawingMessage>(_sut));
     }
 
     [Fact]
@@ -59,6 +62,16 @@ public class OverlayWindowViewModelTests
 
         // Assert
         _mockCanvas.Verify(x => x.Clear(), Times.Once);
+    }
+
+    [Fact]
+    public void Receive_CancelDrawingMessage_CancelsDrawing()
+    {
+        // Act
+        _sut.Receive(new OverlayWindowCancelDrawingMessage());
+
+        // Assert
+        _mockCanvas.Verify(x=> x.CancelDrawingEvent(), Times.Once);
     }
 
     [Fact]
@@ -106,6 +119,4 @@ public class OverlayWindowViewModelTests
         Assert.Equal(Convert.ToSingle(message.Value), _mockCanvas.Object.StrokeSize);
         _mockCanvas.Verify(x => x.StrokeSize, Times.Once);
     }
-
-    // TODO: Test draw actions call canvas methods.
 }

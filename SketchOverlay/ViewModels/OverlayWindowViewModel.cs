@@ -9,9 +9,10 @@ using SketchOverlay.Native.Input.Mouse;
 namespace SketchOverlay.ViewModels;
 
 public partial class OverlayWindowViewModel : ObservableObject,
+    IRecipient<DrawingWindowPropertyChangedMessage>,
     IRecipient<OverlayWindowCanvasActionMessage>,
     IRecipient<OverlayWindowDrawActionMessage>,
-    IRecipient<DrawingWindowPropertyChangedMessage>
+    IRecipient<OverlayWindowCancelDrawingMessage>
 {
     private readonly IDrawingCanvas _canvas;
     private readonly IMessenger _messenger;
@@ -26,9 +27,10 @@ public partial class OverlayWindowViewModel : ObservableObject,
         _canvas.CanUndoChanged += (_, value) => SetDrawingWindowCanUndo(value);
         
         _messenger = messenger;
+        messenger.Register<DrawingWindowPropertyChangedMessage>(this);
         messenger.Register<OverlayWindowCanvasActionMessage>(this);
         messenger.Register<OverlayWindowDrawActionMessage>(this);
-        messenger.Register<DrawingWindowPropertyChangedMessage>(this); ;
+        messenger.Register<OverlayWindowCancelDrawingMessage>(this);
     }
 
     public void Receive(OverlayWindowCanvasActionMessage message)
@@ -116,6 +118,11 @@ public partial class OverlayWindowViewModel : ObservableObject,
                 EndDraggingToolWindow(cursorPos);
             }
         }
+    }
+
+    public void Receive(OverlayWindowCancelDrawingMessage message)
+    {
+        _canvas.CancelDrawingEvent();
     }
 
     private void DoDraw(PointF point)

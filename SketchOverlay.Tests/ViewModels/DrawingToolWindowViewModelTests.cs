@@ -38,27 +38,27 @@ public class DrawingToolWindowViewModelTests
     }
 
     [Fact]
-    public void UndoCommand_SendsRequestUndoMessage()
+    public async void UndoCommand_SendsRequestUndoMessage()
     {
-        var received = CommonTests.AssertCommandSendsMessage
+        var received = await CommonTests.AssertCommandSendsMessageAsync
             <OverlayWindowCanvasActionMessage>(_sut.UndoCommand);
 
         Assert.Equal(CanvasAction.Undo, received.Value);
     }
 
     [Fact]
-    public void RedoCommand_SendsRequestRedoMessage()
+    public async void RedoCommand_SendsRequestRedoMessage()
     {
-        var received = CommonTests.AssertCommandSendsMessage
+        var received = await CommonTests.AssertCommandSendsMessageAsync
             <OverlayWindowCanvasActionMessage>(_sut.RedoCommand);
 
         Assert.Equal(CanvasAction.Redo, received.Value);
     }
 
     [Fact]
-    public void ClearCommand_SendsRequestClearMessage()
+    public async void ClearCommand_SendsRequestClearMessage()
     {
-        var received = CommonTests.AssertCommandSendsMessage
+        var received = await CommonTests.AssertCommandSendsMessageAsync
             <OverlayWindowCanvasActionMessage>(_sut.ClearCommand);
 
         Assert.Equal(CanvasAction.Clear, received.Value);

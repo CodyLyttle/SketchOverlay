@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using SketchOverlay.Messages;
 using SketchOverlay.Tests.TestHelpers;
 
@@ -55,6 +56,28 @@ internal static class CommonTests
 
         // Act
         command.Execute(parameter);
+
+        // Assert
+        Assert.Equal(1, inbox.MessageCount);
+        Assert.IsType<TMessage>(inbox.GetLastMessage());
+
+        return (TMessage)inbox.GetLastMessage()!;
+    }
+
+    /// <summary>
+    /// Invoke a command and wait a small delay before checking the message inbox.<br/>
+    /// This is a workaround for commands that call async void methods.
+    /// </summary>
+    public static async Task<TMessage> AssertCommandSendsMessageAsync<TMessage>(ICommand command, object? parameter = null, int delayMs = 50)
+        where TMessage : class
+    {
+        // Arrange
+        using MessageInbox inbox = new(Globals.Messenger);
+        inbox.Register<TMessage>();
+
+        // Act
+        command.Execute(parameter);
+        await Task.Delay(delayMs);
 
         // Assert
         Assert.Equal(1, inbox.MessageCount);
