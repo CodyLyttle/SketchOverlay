@@ -8,7 +8,7 @@
              HorizontalOptions="Start"
              VerticalOptions="Start"
              x:DataType="viewModels:DrawingToolWindowViewModel"
-             InputTransparent="{Binding IsDragInProgress, Mode=OneWay}"
+             InputTransparent="{Binding IsInputTransparent, Mode=OneWay}"
              IsVisible="{Binding IsVisible}"
              Margin="{Binding WindowMargin}"
              WidthRequest="{Binding WindowWidth}"

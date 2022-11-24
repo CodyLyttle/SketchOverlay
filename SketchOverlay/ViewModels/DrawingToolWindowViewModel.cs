@@ -9,30 +9,36 @@ using SketchOverlay.Models;
 namespace SketchOverlay.ViewModels;
 
 public partial class DrawingToolWindowViewModel : ObservableObject,
-    IRecipient<DrawingWindowSetVisibilityMessage>,
+    IRecipient<DrawingWindowSetPropertyMessage>,
     IRecipient<DrawingWindowDragEventMessage>
 {
     private Color? _selectedDrawingColor;
     private DrawingToolInfo? _selectedDrawingTool;
     private double _selectedDrawingSize;
     private readonly IMessenger _messenger;
-    private bool _isVisible;
     private bool _isDragInProgress;
+    private bool _isVisible;
 
     public DrawingToolWindowViewModel(IMessenger messenger)
     {
         _messenger = messenger;
+        _messenger.Register<DrawingWindowSetPropertyMessage>(this);
+        _messenger.Register<DrawingWindowDragEventMessage>(this);
+
         _selectedDrawingColor = GlobalDrawingValues.DefaultDrawingColor;
         _selectedDrawingTool = GlobalDrawingValues.DefaultDrawingTool;
+        OnPropertyChanged(nameof(SelectedDrawingColor));
+        OnPropertyChanged(nameof(SelectedDrawingTool));
         // BUG: CollectionView.SelectedItem reverts to null after this point. See - https://github.com/dotnet/maui/issues/8572
         // Potential workaround: Set initial values when tool window is first displayed.
 
         SelectedDrawingSize = GlobalDrawingValues.DefaultDrawingSize;
         IsVisible = false;
 
-        _messenger.Register<DrawingWindowSetVisibilityMessage>(this);
-        _messenger.Register<DrawingWindowDragEventMessage>(this);
     }
+
+    [ObservableProperty]
+    private bool _isInputTransparent;
 
     [ObservableProperty]
     private double _windowHeight = 300;
@@ -42,7 +48,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
 
     [ObservableProperty]
     private Thickness _windowMargin;
-
+    
     public bool IsDragInProgress
     {
         get => _isDragInProgress;
@@ -53,8 +59,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
 
             _isDragInProgress = value;
             OnPropertyChanged();
-
-            _messenger.Send(new DrawingWindowIsDragInProgressChangedMessage(value));
+            _messenger.Send(new DrawingWindowPropertyChangedMessage(value));
         }
     }
 
@@ -68,8 +73,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
 
             _isVisible = value;
             OnPropertyChanged();
-
-            _messenger.Send(new DrawingWindowVisibilityChangedMessage(value));
+            _messenger.Send(new DrawingWindowPropertyChangedMessage(value));
         }
     }
 
@@ -87,8 +91,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
 
             _selectedDrawingColor = value;
             OnPropertyChanged();
-
-            _messenger.Send(new DrawingColorChangedMessage(value));
+            _messenger.Send(new DrawingWindowPropertyChangedMessage(value));
         }
     }
 
@@ -106,8 +109,7 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
 
             _selectedDrawingTool = value;
             OnPropertyChanged();
-
-            _messenger.Send(new DrawingToolChangedMessage(value.Tool));
+            _messenger.Send(new DrawingWindowPropertyChangedMessage(value));
         }
     }
 
@@ -116,34 +118,46 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
         get => _selectedDrawingSize;
         set
         {
+            value = value switch
+            {
+                < GlobalDrawingValues.MinimumDrawingSize => GlobalDrawingValues.MinimumDrawingSize,
+                > GlobalDrawingValues.MaximumDrawingSize => GlobalDrawingValues.MaximumDrawingSize,
+                _ => value
+            };
+
             if (Math.Abs(value - _selectedDrawingSize) < 0.1)
                 return;
 
-            if (value < GlobalDrawingValues.MinimumDrawingSize)
-                _selectedDrawingSize = GlobalDrawingValues.MinimumDrawingSize;
-            else if (value > GlobalDrawingValues.MaximumDrawingSize)
-                _selectedDrawingSize = GlobalDrawingValues.MaximumDrawingSize;
-            else
-                _selectedDrawingSize = value;
-
-            _messenger.Send(new DrawingSizeChangedMessage((float)_selectedDrawingSize));
+            _selectedDrawingSize = value;
+            OnPropertyChanged();
+            _messenger.Send(new DrawingWindowPropertyChangedMessage(value));
         }
     }
 
     [RelayCommand]
     private void Undo() =>
-        _messenger.Send(new RequestCanvasActionMessage(CanvasAction.Undo));
+        _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Undo));
 
     [RelayCommand]
     private void Redo() =>
-        _messenger.Send(new RequestCanvasActionMessage(CanvasAction.Redo));
+        _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Redo));
 
     [RelayCommand]
     private void Clear() =>
-        _messenger.Send(new RequestCanvasActionMessage(CanvasAction.Clear));
+        _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Clear));
 
-    public void Receive(DrawingWindowSetVisibilityMessage message) =>
-        IsVisible = message.Value;
+    public void Receive(DrawingWindowSetPropertyMessage message)
+    {
+        switch (message.PropertyName)
+        {
+            case nameof(IsVisible):
+                IsVisible = (bool)message.Value;
+                break;
+            case nameof(IsInputTransparent):
+                IsInputTransparent = (bool)message.Value;
+                break;
+        }
+    }
 
     public void Receive(DrawingWindowDragEventMessage message)
     {
@@ -152,24 +166,26 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
         switch (action)
         {
             case DragAction.BeginDrag:
-                if (_isDragInProgress)
+                if (IsDragInProgress)
                 {
                     throw new InvalidOperationException("The window is already being dragged");
                 }
                 IsDragInProgress = true;
+                IsInputTransparent = true;
                 break;
             case DragAction.ContinueDrag:
-                if (!_isDragInProgress)
+                if (!IsDragInProgress)
                 {
                     throw new InvalidOperationException("The window is not being dragged");
                 }
                 break;
             case DragAction.EndDrag:
-                if (!_isDragInProgress)
+                if (!IsDragInProgress)
                 {
                     throw new InvalidOperationException("The window is not being dragged");
                 }
                 IsDragInProgress = false;
+                IsInputTransparent = false;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(message), "Invalid drag action");

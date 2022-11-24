@@ -4,6 +4,13 @@ namespace SketchOverlay.Tests.TestHelpers;
 
 internal static class ReflectionExtensions
 {
+    public static object GetPropertyValue(this object objectInstance, string propertyName)
+    {
+        return objectInstance.GetType()
+            .GetProperty(propertyName)!
+            .GetValue(objectInstance)!;
+    }
+
     public static TValue GetPropertyValue<TValue>(this object objectInstance, string propertyName)
     {
         return (TValue)objectInstance.GetType()

@@ -3,79 +3,69 @@ using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing.Canvas;
 using SketchOverlay.Messages;
 using SketchOverlay.Messages.Actions;
+using SketchOverlay.Models;
 using SketchOverlay.Native.Input.Mouse;
 
 namespace SketchOverlay.ViewModels;
 
-public partial class OverlayWindowViewModel : ObservableObject, 
-    IRecipient<RequestCanvasActionMessage>,
-    IRecipient<DrawingColorChangedMessage>,
-    IRecipient<DrawingToolChangedMessage>,
-    IRecipient<DrawingSizeChangedMessage>,
+public partial class OverlayWindowViewModel : ObservableObject,
+    IRecipient<OverlayWindowCanvasActionMessage>,
     IRecipient<OverlayWindowDrawActionMessage>,
-    IRecipient<DrawingWindowVisibilityChangedMessage>,
-    IRecipient<DrawingWindowIsDragInProgressChangedMessage>
+    IRecipient<DrawingWindowPropertyChangedMessage>
 {
+    private readonly IDrawingCanvas _canvas;
     private readonly IMessenger _messenger;
     private bool _isToolWindowDragInProgress;
     private bool _isToolWindowVisible;
 
     public OverlayWindowViewModel(IDrawingCanvas canvas, IMessenger messenger)
     {
+        _canvas = canvas;
         _messenger = messenger;
-        Canvas = canvas;
-        messenger.Register<RequestCanvasActionMessage>(this);
-        messenger.Register<DrawingColorChangedMessage>(this);
-        messenger.Register<DrawingToolChangedMessage>(this);
-        messenger.Register<DrawingSizeChangedMessage>(this);
+        messenger.Register<OverlayWindowCanvasActionMessage>(this);
         messenger.Register<OverlayWindowDrawActionMessage>(this);
-        messenger.Register<DrawingWindowVisibilityChangedMessage>(this);
-        messenger.Register<DrawingWindowIsDragInProgressChangedMessage>(this);
+        messenger.Register<DrawingWindowPropertyChangedMessage>(this); ;
     }
 
-    public IDrawingCanvas Canvas { get; }
 
-    public void Receive(RequestCanvasActionMessage message)
+    public void Receive(OverlayWindowCanvasActionMessage message)
     {
         switch (message.Value)
         {
             case CanvasAction.Undo:
-                Canvas.Undo();
+                _canvas.Undo();
                 break;
             case CanvasAction.Redo:
-                Canvas.Redo();
+                _canvas.Redo();
                 break;
             case CanvasAction.Clear:
-                Canvas.Clear();
+                _canvas.Clear();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(message));
         }
     }
 
-    public void Receive(DrawingColorChangedMessage message)
+    public void Receive(DrawingWindowPropertyChangedMessage message)
     {
-        Canvas.StrokeColor = message.Value;
-    }
-
-    public void Receive(DrawingToolChangedMessage message)
-    {
-        Canvas.DrawingTool = message.Value;
-    }
-
-    public void Receive(DrawingSizeChangedMessage message)
-    {
-        Canvas.StrokeSize = message.Value;
-    }
-
-    public void Receive(DrawingWindowVisibilityChangedMessage message)
-    {
-        _isToolWindowVisible = message.Value;
-    }
-
-    public void Receive(DrawingWindowIsDragInProgressChangedMessage message)
-    {
-        _isToolWindowDragInProgress = message.Value;
+        switch (message.PropertyName)
+        {
+            case nameof(DrawingToolWindowViewModel.SelectedDrawingColor):
+                _canvas.StrokeColor = (Color)message.Value;
+                break;
+            case nameof(DrawingToolWindowViewModel.SelectedDrawingSize):
+                _canvas.StrokeSize = Convert.ToSingle(message.Value);
+                break;
+            case nameof(DrawingToolWindowViewModel.SelectedDrawingTool):
+                _canvas.DrawingTool = ((DrawingToolInfo)message.Value).Tool;
+                break;
+            case nameof(DrawingToolWindowViewModel.IsVisible):
+                _isToolWindowVisible = (bool)message.Value;
+                break;
+            case nameof(DrawingToolWindowViewModel.IsDragInProgress):
+                _isToolWindowDragInProgress = (bool)message.Value;
+                break;
+        }
     }
 
     public void Receive(OverlayWindowDrawActionMessage message)
@@ -127,32 +117,54 @@ public partial class OverlayWindowViewModel : ObservableObject,
 
     private void DoDraw(PointF point)
     {
-        Canvas.DoDrawingEvent(point);
+        SetDrawingWindowInputTransparency(true);
+        _canvas.DoDrawingEvent(point);
     }
 
     private void EndDraw()
     {
-        Canvas.FinalizeDrawingEvent();
+        SetDrawingWindowInputTransparency(false);
+        _canvas.FinalizeDrawingEvent();
     }
 
     private void BeginDraggingToolWindow(PointF cursorPos)
     {
-        _messenger.Send(new DrawingWindowDragEventMessage(DragAction.BeginDrag, cursorPos));
-        _messenger.Send(new DrawingWindowSetVisibilityMessage(true));
+        SendOverlayWindowDragAction(DragAction.BeginDrag, cursorPos);
+        SetDrawingWindowVisibility(true);
     }
 
     private void ContinueDraggingToolWindow(PointF cursorPos)
     {
-        _messenger.Send(new DrawingWindowDragEventMessage(DragAction.ContinueDrag, cursorPos));
+        SendOverlayWindowDragAction(DragAction.ContinueDrag, cursorPos);
     }
-    
+
     private void EndDraggingToolWindow(PointF cursorPos)
     {
-        _messenger.Send(new DrawingWindowDragEventMessage(DragAction.EndDrag, cursorPos));
+        SendOverlayWindowDragAction(DragAction.EndDrag, cursorPos);
     }
 
     private void HideToolWindow()
     {
-        _messenger.Send(new DrawingWindowSetVisibilityMessage(false));
+        SetDrawingWindowVisibility(false);
+    }
+
+    private void SetDrawingWindowVisibility(bool isVisible)
+    {
+
+        _messenger.Send(new DrawingWindowSetPropertyMessage(
+            nameof(DrawingToolWindowViewModel.IsVisible),
+            isVisible));
+    }
+
+    private void SetDrawingWindowInputTransparency(bool isInputTransparent)
+    {
+        _messenger.Send(new DrawingWindowSetPropertyMessage(
+            nameof(DrawingToolWindowViewModel.IsInputTransparent),
+            isInputTransparent));
+    }
+
+    private void SendOverlayWindowDragAction(DragAction action, PointF cursorPos)
+    {
+        _messenger.Send(new DrawingWindowDragEventMessage(action, cursorPos));
     }
 }

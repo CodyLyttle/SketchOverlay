@@ -1,21 +1,85 @@
 ﻿using System.Windows.Input;
-using CommunityToolkit.Mvvm.Messaging.Messages;
+using SketchOverlay.Messages;
 using SketchOverlay.Tests.TestHelpers;
 
 namespace SketchOverlay.Tests;
 
 internal static class CommonTests
 {
-    public static void AssertSetterWithNewValueUpdatesPropertyValue<TValue>(object testTarget, string propertyName, TValue newValue)
+    public static void AssertSetterSetsInputValue<TValue>(object testTarget,
+        string propertyName, TValue inputValue)
+    {
+        // Arrange
+        testTarget.ThrowIfMatchingPropertyValue(propertyName, inputValue);
+
+        // Act
+        testTarget.SetPropertyValue(propertyName, inputValue);
+
+        // Act
+        Assert.Equal(inputValue, testTarget.GetPropertyValue<TValue>(propertyName));
+    }
+
+    public static void AssertSetterModifiesInputValue<TValue>(object testTarget,
+        string propertyName, TValue inputValue, TValue outputValue)
+    {
+        // Arrange
+        testTarget.ThrowIfMatchingPropertyValue(propertyName, outputValue);
+
+        // Act
+        testTarget.SetPropertyValue(propertyName, inputValue);
+
+        // Act
+        Assert.Equal(outputValue, testTarget.GetPropertyValue<TValue>(propertyName));
+    }
+
+    public static void AssertReceiveMessageUpdatesProperty<TMessage>(object testTarget, 
+        Action<TMessage> receiveAction, TMessage message)
+        where TMessage : SimpleSetPropertyMessage
+    {
+        // Arrange
+        testTarget.ThrowIfMatchingPropertyValue(message.PropertyName, message.Value);
+
+        // Act
+        receiveAction.Invoke(message);
+
+        // Assert
+        Assert.Equal(message.Value, testTarget.GetPropertyValue(message.PropertyName));
+    }
+
+    public static TMessage AssertCommandSendsMessage<TMessage>(ICommand command, object? parameter = null) 
+        where TMessage : class
+    {
+        // Arrange
+        using MessageInbox inbox = new(Globals.Messenger);
+        inbox.Register<TMessage>();
+
+        // Act
+        command.Execute(parameter);
+
+        // Assert
+        Assert.Equal(1, inbox.MessageCount);
+        Assert.IsType<TMessage>(inbox.GetLastMessage());
+
+        return (TMessage)inbox.GetLastMessage()!;
+    }
+
+    public static void AssertPropertyChangedSendsSimplePropertyChangedMessage<TMessage, TValue>(object testTarget,
+        string propertyName, TValue newValue) 
+        where TMessage : SimplePropertyChangedMessage
     {
         // Arrange
         testTarget.ThrowIfMatchingPropertyValue(propertyName, newValue);
+        using MessageInbox inbox = new(Globals.Messenger);
+        inbox.Register<TMessage>();
 
         // Act
         testTarget.SetPropertyValue(propertyName, newValue);
+        var message = (TMessage)inbox.GetLastMessage()!;
 
         // Assert
-        Assert.Equal(newValue, testTarget.GetPropertyValue<TValue>(propertyName));
+        Assert.Equal(1, inbox.MessageCount);
+        Assert.Equal(propertyName, message.PropertyName);
+        Assert.Equal(newValue, message.Value);
     }
 
     public static void AssertSetterWithSameValueDoesNotSendMessage<TMessage, TValue>(object testTarget, string propertyName)
@@ -32,57 +96,5 @@ internal static class CommonTests
 
         // Assert
         Assert.Equal(0, inbox.MessageCount);
-    }
-
-    public static void AssertPropertyChangedSendsMessageWithNewValue<TMessage, TValue>(object testTarget, string propertyName, TValue newValue)
-        where TMessage : ValueChangedMessage<TValue>
-    {
-        // Arrange
-        testTarget.ThrowIfMatchingPropertyValue(propertyName, newValue, out TValue currentValue);
-        using MessageInbox inbox = new(Globals.Messenger);
-        inbox.Register<TMessage>();
-
-        // Act
-        testTarget.SetPropertyValue(propertyName, newValue);
-
-        // Assert
-        Assert.Equal(1, inbox.MessageCount);
-        Assert.IsType<TMessage>(inbox.GetLastMessage());
-        Assert.Equal(newValue, ((TMessage)inbox.GetLastMessage()!).Value);
-    }
-
-    // Use this overload when the ValueChangedMessage generic type parameter is different than the property type.
-    public static void AssertPropertyChangedSendsMessageWithNewValue<TMessage, TMessageValue, TPropertyValue>(object testTarget, string propertyName,
-        TPropertyValue newPropertyValue, TMessageValue expectedMessageValue)
-        where TMessage : ValueChangedMessage<TMessageValue>
-    {
-        // Arrange
-        testTarget.ThrowIfMatchingPropertyValue(propertyName, newPropertyValue, out TPropertyValue currentValue);
-        using MessageInbox inbox = new(Globals.Messenger);
-        inbox.Register<TMessage>();
-
-        // Act
-        testTarget.SetPropertyValue(propertyName, newPropertyValue);
-
-        // Assert
-        Assert.Equal(1, inbox.MessageCount);
-        Assert.IsType<TMessage>(inbox.GetLastMessage());
-        Assert.Equal(expectedMessageValue, ((TMessage)inbox.GetLastMessage()!).Value);
-    }
-
-    public static TMessage AssertCommandSendsMessage<TMessage>(ICommand command, object? parameter = null) where TMessage : class
-    {
-        // Arrange
-        using MessageInbox inbox = new(Globals.Messenger);
-        inbox.Register<TMessage>();
-
-        // Act
-        command.Execute(parameter);
-
-        // Assert
-        Assert.Equal(1, inbox.MessageCount);
-        Assert.IsType<TMessage>(inbox.GetLastMessage());
-
-        return (TMessage)inbox.GetLastMessage()!;
     }
 }

@@ -4,7 +4,9 @@ using SketchOverlay.Drawing.Canvas;
 using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Messages;
 using SketchOverlay.Messages.Actions;
+using SketchOverlay.Models;
 using SketchOverlay.ViewModels;
+using SUT = SketchOverlay.ViewModels.OverlayWindowViewModel;
 
 namespace SketchOverlay.Tests.ViewModels;
 
@@ -12,29 +14,28 @@ public class OverlayWindowViewModelTests
 {
     private static readonly IMessenger TestMessenger = Globals.Messenger;
     private readonly Mock<IDrawingCanvas> _mockCanvas;
-    private readonly OverlayWindowViewModel _sut;
+    private readonly SUT _sut;
 
     public OverlayWindowViewModelTests()
     {
         _mockCanvas = new Mock<IDrawingCanvas>();
         _mockCanvas.SetupAllProperties();
-        _sut = new OverlayWindowViewModel(_mockCanvas.Object, TestMessenger);
+        _sut = new SUT(_mockCanvas.Object, TestMessenger);
     }
 
     [Fact]
     public void MessengerRegistered()
     {
-        Assert.True(TestMessenger.IsRegistered<RequestCanvasActionMessage>(_sut));
-        Assert.True(TestMessenger.IsRegistered<DrawingColorChangedMessage>(_sut));
-        Assert.True(TestMessenger.IsRegistered<DrawingToolChangedMessage>(_sut));
-        Assert.True(TestMessenger.IsRegistered<DrawingSizeChangedMessage>(_sut));
+        Assert.True(TestMessenger.IsRegistered<OverlayWindowCanvasActionMessage>(_sut));
+        Assert.True(TestMessenger.IsRegistered<OverlayWindowDrawActionMessage>(_sut));
+        Assert.True(TestMessenger.IsRegistered<DrawingWindowPropertyChangedMessage>(_sut));
     }
 
     [Fact]
     public void Receive_UndoMessage_CallsCanvasUndo()
     {
         // Act
-        _sut.Receive(new RequestCanvasActionMessage(CanvasAction.Undo));
+        _sut.Receive(new OverlayWindowCanvasActionMessage(CanvasAction.Undo));
 
         // Assert
         _mockCanvas.Verify(x => x.Undo(), Times.Once);
@@ -44,7 +45,7 @@ public class OverlayWindowViewModelTests
     public void Receive_RedoMessage_CallsCanvasRedo()
     {
         // Act
-        _sut.Receive(new RequestCanvasActionMessage(CanvasAction.Redo));
+        _sut.Receive(new OverlayWindowCanvasActionMessage(CanvasAction.Redo));
 
         // Assert
         _mockCanvas.Verify(x => x.Redo(), Times.Once);
@@ -54,51 +55,57 @@ public class OverlayWindowViewModelTests
     public void Receive_ClearMessage_CallsCanvasClear()
     {
         // Act
-        _sut.Receive(new RequestCanvasActionMessage(CanvasAction.Clear));
+        _sut.Receive(new OverlayWindowCanvasActionMessage(CanvasAction.Clear));
 
         // Assert
         _mockCanvas.Verify(x => x.Clear(), Times.Once);
     }
 
     [Fact]
-    public void Receive_DrawingColorChangedMessage_SetsCanvasStrokeColor()
+    public void Receive_PropertyChangedMessage_SetsCanvasStrokeColor()
     {
         // Arrange
-        DrawingColorChangedMessage message = new(Colors.Bisque);
+        DrawingWindowPropertyChangedMessage message = new(Colors.Bisque, 
+            nameof(DrawingToolWindowViewModel.SelectedDrawingColor));
 
         // Act
         _sut.Receive(message);
 
         // Assert
-        Assert.Equal(message.Value, _sut.Canvas.StrokeColor);
-        _mockCanvas.Verify(x=> x.StrokeColor, Times.Once);
+        Assert.Equal(message.Value, _mockCanvas.Object.StrokeColor);
+        _mockCanvas.Verify(x => x.StrokeColor, Times.Once);
     }
 
     [Fact]
-    public void Receive_DrawingToolChangedMessage_SetsCanvasDrawingTool()
+    public void Receive_PropertyChangedMessage_SetsCanvasDrawingTool()
     {
         // Arrange
-        DrawingToolChangedMessage message = new(new BrushTool());
+        DrawingWindowPropertyChangedMessage message = new(
+            new DrawingToolInfo(new RectangleTool(), "icon", "name"),
+            nameof(DrawingToolWindowViewModel.SelectedDrawingTool));
 
         // Act
         _sut.Receive(message);
 
         // Assert
-        Assert.Equal(message.Value, _sut.Canvas.DrawingTool);
+        Assert.Equal(((DrawingToolInfo)message.Value).Tool, _mockCanvas.Object.DrawingTool);
         _mockCanvas.Verify(x => x.DrawingTool, Times.Once);
     }
 
     [Fact]
-    public void Receive_DrawingSizeChangedMessage_SetsCanvasStrokeSize()
+    public void Receive_PropertyChangedMessage_SetsCanvasStrokeSize()
     {
         // Arrange
-        DrawingSizeChangedMessage message = new(10);
+        DrawingWindowPropertyChangedMessage message = new(10,
+            nameof(DrawingToolWindowViewModel.SelectedDrawingSize));
 
         // Act
         _sut.Receive(message);
 
         // Assert
-        Assert.Equal(message.Value, _sut.Canvas.StrokeSize);
+        Assert.Equal(Convert.ToSingle(message.Value), _mockCanvas.Object.StrokeSize);
         _mockCanvas.Verify(x => x.StrokeSize, Times.Once);
     }
+
+    // TODO: Test draw actions call canvas methods.
 }
