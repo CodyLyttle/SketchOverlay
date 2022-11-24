@@ -81,9 +81,15 @@
             <HorizontalStackLayout Grid.Row="3" 
                                    HorizontalOptions="Center"
                                    Margin="0,0,0,12">
-                <Button x:Name="undoButton" Text="undo" Command="{Binding UndoCommand}"/>
-                <Button x:Name="redoButton" Text="redo" Command="{Binding RedoCommand}"/>
-                <Button x:Name="clearButton" Text="clear" Command="{Binding ClearCommand}"/>
+                <Button x:Name="undoButton" Text="undo" 
+                        Command="{Binding UndoCommand}"
+                        IsEnabled="{Binding CanUndo}"/>
+                <Button x:Name="redoButton" Text="redo" 
+                        Command="{Binding RedoCommand}"
+                        IsEnabled="{Binding CanRedo}"/>
+                <Button x:Name="clearButton" Text="clear" 
+                        Command="{Binding ClearCommand}"
+                        IsEnabled="{Binding CanClear}"/>
             </HorizontalStackLayout>
 
         </Grid>

@@ -2,6 +2,7 @@
 
 namespace SketchOverlay.Drawing.Canvas;
 
+// TODO: Tests.
 public class DrawingCanvas : IDrawingCanvas
 {
     private bool _isDrawing;
@@ -72,7 +73,6 @@ public class DrawingCanvas : IDrawingCanvas
             _isDrawing = true;
             _redoStack.Clear();
             _drawStack.Push(DrawingTool.BeginDraw(_canvasProperties, point));
-            UpdateAvailableActions();
         }
         else
         {
@@ -84,12 +84,12 @@ public class DrawingCanvas : IDrawingCanvas
 
     public void FinalizeDrawingEvent()
     {
-        if (_isDrawing)
-        {
-            _isDrawing = false;
-            DrawingTool.EndDraw();
-        }
+        if (!_isDrawing)
+            return;
 
+        _isDrawing = false;
+        DrawingTool.EndDraw();
+        UpdateAvailableActions();
         Redraw();
     }
 

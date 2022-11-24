@@ -5,6 +5,7 @@ using SketchOverlay.Drawing;
 using SketchOverlay.Messages;
 using SketchOverlay.Messages.Actions;
 using SketchOverlay.Models;
+using Thickness = Microsoft.Maui.Thickness;
 
 namespace SketchOverlay.ViewModels;
 
@@ -48,7 +49,16 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
 
     [ObservableProperty]
     private Thickness _windowMargin;
-    
+
+    [ObservableProperty] 
+    private bool _canClear;
+
+    [ObservableProperty]
+    private bool _canRedo;
+
+    [ObservableProperty]
+    private bool _canUndo;
+
     public bool IsDragInProgress
     {
         get => _isDragInProgress;
@@ -134,17 +144,29 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
         }
     }
 
+    // BUG: Button.IsEnabled visual state stops updating after a few click events.
+    // See: https://github.com/dotnet/maui/issues/7377
+    // Workaround await Task.Yield() before sending message.
     [RelayCommand]
-    private void Undo() =>
+    private async void Undo()
+    {
+        await Task.Yield();
         _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Undo));
+    }
 
     [RelayCommand]
-    private void Redo() =>
+    private async void Redo()
+    {
+        await Task.Yield();
         _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Redo));
+    }
 
     [RelayCommand]
-    private void Clear() =>
+    private async void Clear()
+    {
+        await Task.Yield();
         _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Clear));
+    }
 
     public void Receive(DrawingWindowSetPropertyMessage message)
     {
@@ -155,6 +177,15 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
                 break;
             case nameof(IsInputTransparent):
                 IsInputTransparent = (bool)message.Value;
+                break;
+            case nameof(CanClear):
+                CanClear = (bool)message.Value;
+                break;
+            case nameof(CanRedo):
+                CanRedo = (bool)message.Value;
+                break;
+            case nameof(CanUndo):
+                CanUndo = (bool)message.Value;
                 break;
         }
     }

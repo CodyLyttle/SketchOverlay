@@ -21,12 +21,15 @@ public partial class OverlayWindowViewModel : ObservableObject,
     public OverlayWindowViewModel(IDrawingCanvas canvas, IMessenger messenger)
     {
         _canvas = canvas;
+        _canvas.CanClearChanged += (_, value) => SetDrawingWindowCanClear(value);
+        _canvas.CanRedoChanged += (_, value) => SetDrawingWindowCanRedo(value);
+        _canvas.CanUndoChanged += (_, value) => SetDrawingWindowCanUndo(value);
+        
         _messenger = messenger;
         messenger.Register<OverlayWindowCanvasActionMessage>(this);
         messenger.Register<OverlayWindowDrawActionMessage>(this);
         messenger.Register<DrawingWindowPropertyChangedMessage>(this); ;
     }
-
 
     public void Receive(OverlayWindowCanvasActionMessage message)
     {
@@ -146,6 +149,27 @@ public partial class OverlayWindowViewModel : ObservableObject,
     private void HideToolWindow()
     {
         SetDrawingWindowVisibility(false);
+    }
+
+    private void SetDrawingWindowCanClear(bool canClear)
+    {
+        _messenger.Send(new DrawingWindowSetPropertyMessage(
+            nameof(DrawingToolWindowViewModel.CanClear), 
+            canClear));
+    }
+
+    private void SetDrawingWindowCanRedo(bool canRedo)
+    {
+        _messenger.Send(new DrawingWindowSetPropertyMessage(
+            nameof(DrawingToolWindowViewModel.CanRedo),
+            canRedo));
+    }
+
+    private void SetDrawingWindowCanUndo(bool canUndo)
+    {
+        _messenger.Send(new DrawingWindowSetPropertyMessage(
+            nameof(DrawingToolWindowViewModel.CanUndo),
+            canUndo));
     }
 
     private void SetDrawingWindowVisibility(bool isVisible)
