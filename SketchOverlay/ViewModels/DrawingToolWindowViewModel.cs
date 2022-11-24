@@ -81,14 +81,14 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
             if (EqualityComparer<Color>.Default.Equals(value, _selectedDrawingColor))
                 return;
 
-            _selectedDrawingColor = value;
-
             // Sending a message while value is null throws a NullReferenceException.
             if (value == null)
                 return;
 
+            _selectedDrawingColor = value;
+            OnPropertyChanged();
+
             _messenger.Send(new DrawingColorChangedMessage(value));
-            OnPropertyChanged(nameof(SelectedDrawingColor));
         }
     }
 
@@ -100,11 +100,12 @@ public partial class DrawingToolWindowViewModel : ObservableObject,
             if (value == _selectedDrawingTool)
                 return;
 
-            _selectedDrawingTool = value;
-
             // Sending a message while value is null throws a NullReferenceException.
             if (value == null)
                 return;
+
+            _selectedDrawingTool = value;
+            OnPropertyChanged();
 
             _messenger.Send(new DrawingToolChangedMessage(value.Tool));
         }
