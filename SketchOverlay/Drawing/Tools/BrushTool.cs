@@ -4,8 +4,6 @@ namespace SketchOverlay.Drawing.Tools;
 
 internal class BrushTool : IDrawingTool
 {
-    // Is there a better way to do this? 
-    // Large brush size causes inaccurate lines to be drawn on sharp angles.
     private class BrushToolOutput : IDrawable
     {
         private readonly PathF _brushPath;
@@ -25,6 +23,8 @@ internal class BrushTool : IDrawingTool
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
             canvas.SetProperties(_canvasProperties);
+            canvas.StrokeLineCap = LineCap.Round;
+            canvas.StrokeLineJoin = LineJoin.Round;
             canvas.DrawPath(_brushPath);
         }
     }
