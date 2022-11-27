@@ -6,8 +6,7 @@ I began working on this app with two goals in mind:
 - To deliver an opensource alternative to subscription model onscreen drawing tools.
 - To familiarise myself with the DotNet MAUI development process.
 
-I've found the MAUI development process to be simple and rewarding as well as confusing and frustrating. My frustrations mainly stem from the fact that basic platform-specific functionality is not exposed through the primary API's and require a fair amount of research.  
-With that said, I've obtained the know-how and implemented the basic features. Except one...
+I've found the MAUI development process to be simple and rewarding as well as confusing and frustrating. My frustrations mainly stem from the fact that basic platform-specific functionality is not exposed through the primary API's and require a fair amount of research. With that said, I've obtained the know-how to implement the basic features. Except one...
 
 WinUI 3 (the windows specific MAUI implementation) lacks support for transparent borderless windows.  
 This should have been the first feature to implement, as it's arguably the most important part of an overlay.  
