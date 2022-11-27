@@ -30,8 +30,6 @@ public class OverlayWindowViewModelTests
     {
         Assert.True(TestMessenger.IsRegistered<DrawingWindowPropertyChangedMessage>(_sut));
         Assert.True(TestMessenger.IsRegistered<OverlayWindowCanvasActionMessage>(_sut));
-        Assert.True(TestMessenger.IsRegistered<OverlayWindowDrawActionMessage>(_sut));
-        Assert.True(TestMessenger.IsRegistered<OverlayWindowCancelDrawingMessage>(_sut));
     }
 
     [Fact]
@@ -62,16 +60,6 @@ public class OverlayWindowViewModelTests
 
         // Assert
         _mockCanvas.Verify(x => x.Clear(), Times.Once);
-    }
-
-    [Fact]
-    public void Receive_CancelDrawingMessage_CancelsDrawing()
-    {
-        // Act
-        _sut.Receive(new OverlayWindowCancelDrawingMessage());
-
-        // Assert
-        _mockCanvas.Verify(x=> x.CancelDrawingEvent(), Times.Once);
     }
 
     [Fact]
