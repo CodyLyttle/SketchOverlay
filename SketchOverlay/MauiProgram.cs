@@ -34,7 +34,8 @@ public static class MauiProgram
             })
             .AddPages()
             .AddServices()
-            .AddViewModels();
+            .AddViewModels()
+            .AddWindowStyling();
 
         MauiApp app = builder.Build();
         _serviceProvider = app.Services;
@@ -58,6 +59,15 @@ public static class MauiProgram
     {
         builder.Services.AddSingleton<OverlayWindowViewModel>();
         builder.Services.AddSingleton<DrawingToolWindowViewModel>();
+        return builder;
+    }
+
+    public static MauiAppBuilder AddWindowStyling(this MauiAppBuilder builder)
+    {
+        // Unfortunately, WinUI doesn't support background transparency in the way WPF does.
+        // It's possible to leverage Win32 to modify the window opacity, however, this also affects the opacity of all child controls.
+        // See issue: https://github.com/microsoft/microsoft-ui-xaml/issues/1247
+
         return builder;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing.Canvas;
 using SketchOverlay.Messages;
@@ -10,9 +11,7 @@ namespace SketchOverlay.ViewModels;
 
 public partial class OverlayWindowViewModel : ObservableObject,
     IRecipient<DrawingWindowPropertyChangedMessage>,
-    IRecipient<OverlayWindowCanvasActionMessage>,
-    IRecipient<OverlayWindowDrawActionMessage>,
-    IRecipient<OverlayWindowCancelDrawingMessage>
+    IRecipient<OverlayWindowCanvasActionMessage>
 {
     private readonly IDrawingCanvas _canvas;
     private readonly IMessenger _messenger;
@@ -25,12 +24,10 @@ public partial class OverlayWindowViewModel : ObservableObject,
         _canvas.CanClearChanged += (_, value) => SetDrawingWindowCanClear(value);
         _canvas.CanRedoChanged += (_, value) => SetDrawingWindowCanRedo(value);
         _canvas.CanUndoChanged += (_, value) => SetDrawingWindowCanUndo(value);
-        
+
         _messenger = messenger;
         messenger.Register<DrawingWindowPropertyChangedMessage>(this);
         messenger.Register<OverlayWindowCanvasActionMessage>(this);
-        messenger.Register<OverlayWindowDrawActionMessage>(this);
-        messenger.Register<OverlayWindowCancelDrawingMessage>(this);
     }
 
     public void Receive(OverlayWindowCanvasActionMessage message)
@@ -73,95 +70,65 @@ public partial class OverlayWindowViewModel : ObservableObject,
         }
     }
 
-    public void Receive(OverlayWindowDrawActionMessage message)
+    [RelayCommand]
+    private void MouseDown(MouseActionInfo info)
     {
-        DrawAction action = message.Value.Action;
-        MouseButton button = message.Value.Button;
-        PointF cursorPos = message.Value.CursorPosition;
-
-        if (action is DrawAction.BeginDraw)
+        if (info.Button is MouseButton.Left)
         {
-            if (button is MouseButton.Left)
-            {
-                // TODO: Allow drawing to continue beneath the tool window by disabling it's hit testing.
-                DoDraw(cursorPos);
-            }
-            else if (button is MouseButton.Middle)
-            {
-                if (_isToolWindowVisible)
-                    HideToolWindow();
-                else
-                    BeginDraggingToolWindow(cursorPos);
-
-            }
+            // Allow drawing to pass behind tool window.
+            SetDrawingWindowInputTransparency(true);
+            _canvas.DoDrawingEvent(info.CursorPosition);
         }
-        else if (action is DrawAction.ContinueDraw)
+        else if (info.Button is MouseButton.Middle)
         {
-            if (button is MouseButton.Left)
+            if (_isToolWindowVisible)
             {
-                DoDraw(cursorPos);
+                SetDrawingWindowVisibility(false);
             }
-            else if (button is MouseButton.Middle && _isToolWindowDragInProgress)
+            else
             {
-                ContinueDraggingToolWindow(cursorPos);
-            }
-        }
-        else if (action is DrawAction.EndDraw)
-        {
-            if (button is MouseButton.Left)
-            {
-                // TODO: Restore hit testing on tool window.
-                EndDraw();
-            }
-            else if (button is MouseButton.Middle && _isToolWindowDragInProgress)
-            {
-                EndDraggingToolWindow(cursorPos);
+                SendOverlayWindowDragAction(DragAction.BeginDrag, info.CursorPosition);
+                SetDrawingWindowVisibility(true);
             }
         }
     }
 
-    public void Receive(OverlayWindowCancelDrawingMessage message)
+    [RelayCommand]
+    private void MouseDrag(MouseActionInfo info)
     {
-        _canvas.CancelDrawingEvent();
+        if (info.Button is MouseButton.Left)
+        {
+            _canvas.DoDrawingEvent(info.CursorPosition);
+        }
+        else if (info.Button is MouseButton.Middle && _isToolWindowDragInProgress)
+        {
+            SendOverlayWindowDragAction(DragAction.ContinueDrag, info.CursorPosition);
+        }
     }
 
-    private void DoDraw(PointF point)
+    [RelayCommand]
+    private void MouseUp(MouseActionInfo info)
     {
-        SetDrawingWindowInputTransparency(true);
-        _canvas.DoDrawingEvent(point);
+        if (info.Button is MouseButton.Left)
+        {
+            SetDrawingWindowInputTransparency(false);
+            _canvas.FinalizeDrawingEvent();
+        }
+        else if (info.Button is MouseButton.Middle && _isToolWindowDragInProgress)
+        {
+            SendOverlayWindowDragAction(DragAction.EndDrag, info.CursorPosition);
+        }
     }
 
-    private void EndDraw()
+    private void SendOverlayWindowDragAction(DragAction action, PointF cursorPos)
     {
-        SetDrawingWindowInputTransparency(false);
-        _canvas.FinalizeDrawingEvent();
-    }
-
-    private void BeginDraggingToolWindow(PointF cursorPos)
-    {
-        SendOverlayWindowDragAction(DragAction.BeginDrag, cursorPos);
-        SetDrawingWindowVisibility(true);
-    }
-
-    private void ContinueDraggingToolWindow(PointF cursorPos)
-    {
-        SendOverlayWindowDragAction(DragAction.ContinueDrag, cursorPos);
-    }
-
-    private void EndDraggingToolWindow(PointF cursorPos)
-    {
-        SendOverlayWindowDragAction(DragAction.EndDrag, cursorPos);
-    }
-
-    private void HideToolWindow()
-    {
-        SetDrawingWindowVisibility(false);
+        _messenger.Send(new DrawingWindowDragEventMessage(action, cursorPos));
     }
 
     private void SetDrawingWindowCanClear(bool canClear)
     {
         _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel.CanClear), 
+            nameof(DrawingToolWindowViewModel.CanClear),
             canClear));
     }
 
@@ -192,10 +159,5 @@ public partial class OverlayWindowViewModel : ObservableObject,
         _messenger.Send(new DrawingWindowSetPropertyMessage(
             nameof(DrawingToolWindowViewModel.IsInputTransparent),
             isInputTransparent));
-    }
-
-    private void SendOverlayWindowDragAction(DragAction action, PointF cursorPos)
-    {
-        _messenger.Send(new DrawingWindowDragEventMessage(action, cursorPos));
     }
 }

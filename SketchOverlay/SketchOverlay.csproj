@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+
+		<!-- xUnit requires a library output, however this causes the "#if WINDOWS" preprocessor directive to not be recognized.
+			 Comment this out to make working with Windows specific code easier -->
+		<!-- <TargetFrameworks>net7.0;</TargetFrameworks> -->
 
 		<!-- Make the project compatible with XUnit by buliding a library instead of an exe when targeting .net7.0. -->
 		<OutputType Condition="'$(TargetFramework)' != 'net7.0'">Exe</OutputType>

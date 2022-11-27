@@ -2,10 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:SketchOverlay.Views"
-             x:Class="SketchOverlay.Views.MainPage">
+             xmlns:viewModels="clr-namespace:SketchOverlay.ViewModels"
+             xmlns:controls="clr-namespace:SketchOverlay.Controls"
+             x:Class="SketchOverlay.Views.MainPage"
+             x:DataType="viewModels:OverlayWindowViewModel">
     <Grid>
-        <Label x:Name="debugLabel" Margin="32,0,0,0"/>
-        <GraphicsView x:Name="graphicsView"/>
+        <controls:WindowsGraphicsView x:Name="graphicsView" 
+                                 MouseDownCommand="{Binding MouseDownCommand}"
+                                 MouseDragCommand="{Binding MouseDragCommand}"
+                                 MouseUpCommand="{Binding MouseUpCommand}"/>
+
         <views:DrawingToolWindow x:Name="DrawingToolsWindow"/>
     </Grid>
 </ContentPage>
