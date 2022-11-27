@@ -1,10 +1,8 @@
-﻿using SketchOverlay.Native.Input.Mouse;
-using System.Windows.Input;
-using SketchOverlay.Models;
+﻿using System.Windows.Input;
+using SketchOverlay.Library.Models;
 
 #if WINDOWS
 using Microsoft.Maui.Handlers;
-
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -15,8 +13,6 @@ namespace SketchOverlay.Controls;
 
 public class WindowsGraphicsView : GraphicsView
 {
-    private MouseButton? _pressedButton;
-
     public ICommand MouseDownCommand
     {
         get => (ICommand)GetValue(MouseDownCommandProperty);
@@ -34,6 +30,10 @@ public class WindowsGraphicsView : GraphicsView
         get => (ICommand)GetValue(MouseUpCommandProperty);
         set => SetValue(MouseUpCommandProperty, value);
     }
+
+#if WINDOWS
+    private MouseButton? _pressedButton;
+#endif
 
     public static void InitializeCustomHandlers()
     {
@@ -113,8 +113,10 @@ public class WindowsGraphicsView : GraphicsView
             button = MouseButton.Middle;
         else if (pointInfo.Properties.IsRightButtonPressed)
             button = MouseButton.Right;
-        else if (pointInfo.Properties.IsXButton1Pressed || pointInfo.Properties.IsXButton2Pressed)
-            button = MouseButton.XButton;
+        else if (pointInfo.Properties.IsXButton1Pressed)
+            button = MouseButton.XButton1;
+        else if (pointInfo.Properties.IsXButton2Pressed)
+            button = MouseButton.XButton2;
 
         return button;
     }
@@ -124,7 +126,7 @@ public class WindowsGraphicsView : GraphicsView
         ArgumentNullException.ThrowIfNull(button);
 
         return new MouseActionInfo((MouseButton)button, 
-            new PointF(cursorPos._x, cursorPos._y));
+            new System.Drawing.PointF(cursorPos._x, cursorPos._y));
     }
 #endif
 

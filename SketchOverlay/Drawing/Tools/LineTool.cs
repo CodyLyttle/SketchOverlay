@@ -1,43 +1,41 @@
-﻿using SketchOverlay.Drawing.Canvas;
+﻿using SketchOverlay.Library.Drawing;
+using SketchOverlay.LibraryAdapters;
 
 namespace SketchOverlay.Drawing.Tools;
 
-internal class LineTool : IDrawingTool
+internal class LineTool : IDrawingTool<IDrawable>
 {
     private class LineToolOutput : IDrawable
     {
-        private readonly CanvasProperties _canvasProperties;
-
-        public LineToolOutput(CanvasProperties canvasProperties, PointF startPoint)
+        public LineToolOutput(PointF startPoint)
         {
-            _canvasProperties = canvasProperties;
             PointB = PointA = startPoint;
         }
 
         public PointF PointA { get; }
+
         public PointF PointB { get; set; }
 
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            canvas.SetProperties(_canvasProperties);
             canvas.DrawLine(PointA, PointB);
         }
     }
 
     private LineToolOutput? _currentOutput;
 
-    public IDrawable BeginDraw(CanvasProperties canvasProperties, PointF startPoint)
+    public IDrawable BeginDraw(System.Drawing.PointF startPoint)
     {
-        _currentOutput = new LineToolOutput(canvasProperties, startPoint);
+        _currentOutput = new LineToolOutput(startPoint.ToMauiPointF());
         return _currentOutput;
     }
 
-    public void ContinueDraw(PointF currentPoint)
+    public void ContinueDraw(System.Drawing.PointF currentPoint)
     {
         if(_currentOutput == null)
             throw new InvalidOperationException($"{nameof(ContinueDraw)} was called before {nameof(BeginDraw)}");
 
-        _currentOutput.PointB = currentPoint;
+        _currentOutput.PointB = currentPoint.ToMauiPointF();
     }
 
     public void EndDraw()

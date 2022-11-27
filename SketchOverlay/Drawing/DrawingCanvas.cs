@@ -1,9 +1,9 @@
-﻿using SketchOverlay.Drawing.Tools;
+﻿using SketchOverlay.Library.Drawing;
 
-namespace SketchOverlay.Drawing.Canvas;
+namespace SketchOverlay.Drawing;
 
 // TODO: Tests.
-public class DrawingCanvas : IDrawingCanvas
+public class DrawingCanvas : IDrawingCanvas<IDrawable>, IDrawable
 {
     private bool _isDrawing;
     private bool _canRedo;
@@ -12,9 +12,8 @@ public class DrawingCanvas : IDrawingCanvas
     // Temporary undo/redo solution. Refactored to support delete tool.
     private readonly Stack<IDrawable> _drawStack = new();
     private readonly Stack<IDrawable> _redoStack = new();
-    private CanvasProperties _canvasProperties = new();
 
-    public DrawingCanvas(IDrawingTool drawingTool)
+    public DrawingCanvas(IDrawingTool<IDrawable> drawingTool)
     {
         DrawingTool = drawingTool;
     }
@@ -24,19 +23,7 @@ public class DrawingCanvas : IDrawingCanvas
     public event EventHandler<bool>? CanRedoChanged;
     public event EventHandler<bool>? CanUndoChanged;
 
-    public IDrawingTool DrawingTool { get; set; }
-
-    public Color StrokeColor
-    {
-        set => _canvasProperties.StrokeColor = value;
-        get => _canvasProperties.StrokeColor;
-    }
-
-    public float StrokeSize
-    {
-        set => _canvasProperties.StrokeSize = value;
-        get => _canvasProperties.StrokeSize;
-    }
+    public IDrawingTool<IDrawable> DrawingTool { get; set; }
 
     public void Undo()
     {
@@ -66,13 +53,13 @@ public class DrawingCanvas : IDrawingCanvas
         Redraw();
     }
 
-    public void DoDrawingEvent(PointF point)
+    public void DoDrawingEvent(System.Drawing.PointF point)
     {
         if (!_isDrawing)
         {
             _isDrawing = true;
             _redoStack.Clear();
-            _drawStack.Push(DrawingTool.BeginDraw(_canvasProperties, point));
+            _drawStack.Push(DrawingTool.BeginDraw(point));
         }
         else
         {

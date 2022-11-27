@@ -1,17 +1,16 @@
-﻿using SketchOverlay.Drawing.Canvas;
+﻿using SketchOverlay.Library.Drawing;
+using SketchOverlay.LibraryAdapters;
 
 namespace SketchOverlay.Drawing.Tools;
 
-internal class BrushTool : IDrawingTool
+internal class BrushTool : IDrawingTool<IDrawable>
 {
     private class BrushToolOutput : IDrawable
     {
         private readonly PathF _brushPath;
-        private readonly CanvasProperties _canvasProperties;
 
-        public BrushToolOutput(CanvasProperties canvasProperties, PointF startPoint)
+        public BrushToolOutput(PointF startPoint)
         {
-            _canvasProperties = canvasProperties;
             _brushPath = new PathF(startPoint);
         }
 
@@ -22,7 +21,8 @@ internal class BrushTool : IDrawingTool
 
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            canvas.SetProperties(_canvasProperties);
+            canvas.StrokeSize = 4;
+            canvas.StrokeColor = Colors.Red;
             canvas.StrokeLineCap = LineCap.Round;
             canvas.StrokeLineJoin = LineJoin.Round;
             canvas.DrawPath(_brushPath);
@@ -31,18 +31,18 @@ internal class BrushTool : IDrawingTool
 
     private BrushToolOutput? _currentOutput;
 
-    public IDrawable BeginDraw(CanvasProperties canvasProperties, PointF startPoint)
+    public IDrawable BeginDraw(System.Drawing.PointF startPoint)
     {
-        _currentOutput = new BrushToolOutput(canvasProperties, startPoint);
+        _currentOutput = new BrushToolOutput(startPoint.ToMauiPointF());
         return _currentOutput;
     }
 
-    public void ContinueDraw(PointF currentPoint)
+    public void ContinueDraw(System.Drawing.PointF currentPoint)
     {
         if (_currentOutput == null)
             throw new InvalidOperationException($"{nameof(ContinueDraw)} was called before {nameof(BeginDraw)}");
 
-        _currentOutput.AddBrushPoint(currentPoint);
+        _currentOutput.AddBrushPoint(currentPoint.ToMauiPointF());
     }
 
     public void EndDraw()

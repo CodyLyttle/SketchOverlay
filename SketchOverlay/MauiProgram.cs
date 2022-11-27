@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing;
-using SketchOverlay.Drawing.Canvas;
-using SketchOverlay.ViewModels;
+using SketchOverlay.Library.Drawing;
+using SketchOverlay.Library.ViewModels;
 using SketchOverlay.Views;
 
 namespace SketchOverlay;
@@ -50,15 +50,15 @@ public static class MauiProgram
 
     public static MauiAppBuilder AddServices(this MauiAppBuilder builder)
     {
-        builder.Services.AddSingleton<IDrawingCanvas>(new DrawingCanvas(GlobalDrawingValues.DefaultDrawingTool.Tool));
+        builder.Services.AddSingleton<IDrawingCanvas<IDrawable>>(new DrawingCanvas(GlobalDrawingValues.DefaultDrawingTool.Tool));
         builder.Services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
         return builder;
     }
 
     public static MauiAppBuilder AddViewModels(this MauiAppBuilder builder)
     {
-        builder.Services.AddSingleton<OverlayWindowViewModel>();
-        builder.Services.AddSingleton<DrawingToolWindowViewModel>();
+        builder.Services.AddSingleton<OverlayWindowViewModel<IDrawable, ImageSource>>();
+        builder.Services.AddSingleton<DrawingToolWindowViewModel<IDrawable, ImageSource>>();
         return builder;
     }
 

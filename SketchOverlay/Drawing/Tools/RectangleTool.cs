@@ -1,25 +1,23 @@
-﻿using SketchOverlay.Drawing.Canvas;
+﻿using SketchOverlay.Library.Drawing;
+using SketchOverlay.LibraryAdapters;
 
 namespace SketchOverlay.Drawing.Tools;
 
-internal class RectangleTool : IDrawingTool
+internal class RectangleTool : IDrawingTool<IDrawable>
 {
     private class RectangleToolOutput : IDrawable
     {
-        private readonly CanvasProperties _canvasProperties;
-
-        public RectangleToolOutput(CanvasProperties canvasProperties, PointF startPoint)
+        public RectangleToolOutput(PointF startPoint)
         {
-            _canvasProperties = canvasProperties;
             PointB = PointA = startPoint;
         }
 
         public PointF PointA { get; }
+
         public PointF PointB { get; set; }
 
         public void Draw(ICanvas canvas, RectF dirtyRect)
         {
-            canvas.SetProperties(_canvasProperties);
             canvas.DrawRectangle(
                 PointA.X,
                 PointA.Y,
@@ -30,18 +28,18 @@ internal class RectangleTool : IDrawingTool
 
     private RectangleToolOutput? _currentOutput;
 
-    public IDrawable BeginDraw(CanvasProperties canvasProperties, PointF startPoint)
+    public IDrawable BeginDraw(System.Drawing.PointF startPoint)
     {
-        _currentOutput = new RectangleToolOutput(canvasProperties, startPoint);
+        _currentOutput = new RectangleToolOutput(startPoint.ToMauiPointF());
         return _currentOutput;
     }
 
-    public void ContinueDraw(PointF currentPoint)
+    public void ContinueDraw(System.Drawing.PointF currentPoint)
     {
         if (_currentOutput is null)
             throw new InvalidOperationException($"{nameof(ContinueDraw)} was called before {nameof(BeginDraw)}");
 
-        _currentOutput.PointB = currentPoint;
+        _currentOutput.PointB = currentPoint.ToMauiPointF();
     }
 
     public void EndDraw()

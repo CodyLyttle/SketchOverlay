@@ -1,5 +1,5 @@
 ﻿using SketchOverlay.Drawing.Tools;
-using SketchOverlay.Models;
+using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Drawing;
 
@@ -33,13 +33,13 @@ internal static class GlobalDrawingValues
         Colors.PaleVioletRed,
     };
 
-    public static readonly DrawingToolInfo[] DrawingTools =
+    public static readonly DrawingToolInfo<IDrawable,ImageSource>[] DrawingTools =
     {
         new(new BrushTool(), ImageSource.FromFile("placeholder_paintbrush.png"), "Paintbrush"),
         new(new LineTool(), ImageSource.FromFile("placeholder_line.png"), "Line"),
         new(new RectangleTool(), ImageSource.FromFile("placeholder_rectangle.png"), "Rectangle")
     };
 
-    public static readonly DrawingToolInfo DefaultDrawingTool = DrawingTools[0];
+    public static readonly DrawingToolInfo<IDrawable, ImageSource> DefaultDrawingTool = DrawingTools[0];
     public static readonly Color DefaultDrawingColor = DrawingColors[0];
 }
