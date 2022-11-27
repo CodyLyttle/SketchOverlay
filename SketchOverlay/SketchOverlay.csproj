@@ -1,12 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net6.0-windows10.0.19041.0</TargetFrameworks>
-		<OutputType>Exe</OutputType>
+
+		<!-- xUnit requires a library output, however this causes the "#if WINDOWS" preprocessor directive to not be recognized.
+			 Comment this out to make working with Windows specific code easier -->
+		<TargetFrameworks>net7.0;</TargetFrameworks>
+
+		<!-- Make the project compatible with XUnit by buliding a library instead of an exe when targeting .net7.0. -->
+		<OutputType Condition="'$(TargetFramework)' != 'net7.0'">Exe</OutputType>
+
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+
 		<RootNamespace>SketchOverlay</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
 		<ApplicationTitle>SketchOverlay</ApplicationTitle>
@@ -21,7 +30,6 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -43,19 +51,43 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\SketchOverlay.Native\SketchOverlay.Native.csproj" />
+		<None Remove="Resources\Images\DrawingTools\placeholder_line.png" />
+		<None Remove="Resources\Images\DrawingTools\placeholder_paintbrush.png" />
+		<None Remove="Resources\Images\DrawingTools\placeholder_rectangle.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="DrawingToolWindow.xaml.cs">
-	    <DependentUpon>DrawingToolWindow.xaml</DependentUpon>
-	  </Compile>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="DrawingToolWindow.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<ProjectReference Include="..\SketchOverlay.Native\SketchOverlay.Native.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Views\DrawingToolWindow.xaml.cs">
+			<DependentUpon>DrawingToolWindow.xaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<MauiXaml Update="Views\DrawingToolWindow.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>SketchOverlay.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+		<MauiImage Include="Resources\Images\DrawingTools\placeholder_line.png">
+			<CopyToOutputDirectory></CopyToOutputDirectory>
+		</MauiImage>
+		<MauiImage Include="Resources\Images\DrawingTools\placeholder_paintbrush.png" />
+		<MauiImage Include="Resources\Images\DrawingTools\placeholder_rectangle.png" />
 	</ItemGroup>
 
 </Project>

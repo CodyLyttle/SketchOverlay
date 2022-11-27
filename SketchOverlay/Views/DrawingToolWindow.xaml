@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SketchOverlay.Models"
+             xmlns:viewModels="clr-namespace:SketchOverlay.ViewModels"
+             xmlns:drawing="clr-namespace:SketchOverlay.Drawing"
+             x:Class="SketchOverlay.Views.DrawingToolWindow"
+             HorizontalOptions="Start"
+             VerticalOptions="Start"
+             x:DataType="viewModels:DrawingToolWindowViewModel"
+             InputTransparent="{Binding IsInputTransparent, Mode=OneWay}"
+             IsVisible="{Binding IsVisible}"
+             Margin="{Binding WindowMargin}"
+             WidthRequest="{Binding WindowWidth}"
+             HeightRequest="{Binding WindowHeight}">
+    <Border Background="#222222"
+            Stroke="Green">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <CollectionView x:Name="DrawingToolsCollection"
+                            Grid.Row="0"
+                            ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingTools}"
+                            SelectedItem="{Binding SelectedDrawingTool}"
+                            ItemSizingStrategy="MeasureFirstItem"
+                            SelectionMode="Single"
+                            HorizontalOptions="Center"
+                            Margin="0,12,0,0">
+                <!-- Strange behaviour when trying to create a simple horizontal list collection.
+                     For some reason VerticalGrid is the only layout which gives the desired result.
+                     Is this because the CollectionView is contained within a VerticalStackLayout? -->
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:DrawingToolInfo">
+                        <Border ToolTipProperties.Text="{Binding Name}" 
+                                Stroke="#222222" 
+                                Background="#333333"
+                                HeightRequest="40"
+                                WidthRequest="40">
+                            <Image Source="{Binding Icon}"/>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <CollectionView x:Name="DrawingColorsCollection"
+                            Grid.Row="1"
+                            ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingColors}"
+                            SelectedItem="{Binding SelectedDrawingColor, Mode=TwoWay}"
+                            ItemSizingStrategy="MeasureFirstItem"
+                            SelectionMode="Single"
+                            HorizontalOptions="Center">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     Span="3"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="Color">
+                        <Rectangle Fill="{Binding}"
+                                   WidthRequest="24"
+                                   HeightRequest="24"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- TODO: Add label displaying slider value -->
+            <Slider x:Name="drawSizeSlider"
+                    Grid.Row="2"
+                    VerticalOptions="Start"
+                    WidthRequest="240" 
+                    Minimum="{x:Static drawing:GlobalDrawingValues.MinimumDrawingSize}" 
+                    Maximum="{x:Static drawing:GlobalDrawingValues.MaximumDrawingSize}"
+                    Value="{Binding SelectedDrawingSize, Mode=TwoWay}"/>
+
+            <HorizontalStackLayout Grid.Row="3" 
+                                   HorizontalOptions="Center"
+                                   Margin="0,0,0,12">
+                <Button x:Name="undoButton" Text="undo" 
+                        Command="{Binding UndoCommand}"
+                        IsEnabled="{Binding CanUndo}"/>
+                <Button x:Name="redoButton" Text="redo" 
+                        Command="{Binding RedoCommand}"
+                        IsEnabled="{Binding CanRedo}"/>
+                <Button x:Name="clearButton" Text="clear" 
+                        Command="{Binding ClearCommand}"
+                        IsEnabled="{Binding CanClear}"/>
+            </HorizontalStackLayout>
+
+        </Grid>
+    </Border>
+</ContentView>
