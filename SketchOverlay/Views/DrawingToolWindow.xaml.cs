@@ -1,4 +1,4 @@
-using SketchOverlay.Library.ViewModels;
+using SketchOverlay.LibraryAdapters;
 
 namespace SketchOverlay.Views;
 
@@ -7,6 +7,6 @@ public partial class DrawingToolWindow
     public DrawingToolWindow()
     {
         InitializeComponent();
-        BindingContext = MauiProgram.GetService<DrawingToolWindowViewModel<IDrawable, ImageSource>>();
+        BindingContext = MauiProgram.GetService<MauiDrawingToolWindowViewModel>();
     }
 }

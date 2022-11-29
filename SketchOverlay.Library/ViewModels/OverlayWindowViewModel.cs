@@ -8,21 +8,21 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Library.ViewModels;
 
-public partial class OverlayWindowViewModel<TDrawing, TImageSource> : ObservableObject,
+public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource> : ObservableObject,
     IRecipient<DrawingWindowPropertyChangedMessage>,
     IRecipient<OverlayWindowCanvasActionMessage>
 {
-    private readonly IDrawingCanvas<TDrawing> _canvas;
+    private readonly ICanvasManager<TOutput> _canvasManager;
     private readonly IMessenger _messenger;
     private bool _isToolWindowDragInProgress;
     private bool _isToolWindowVisible;
 
-    public OverlayWindowViewModel(IDrawingCanvas<TDrawing> canvas, IMessenger messenger)
+    public OverlayWindowViewModel(ICanvasManager<TOutput> canvasManager, IMessenger messenger)
     {
-        _canvas = canvas;
-        _canvas.CanClearChanged += (_, value) => SetDrawingWindowCanClear(value);
-        _canvas.CanRedoChanged += (_, value) => SetDrawingWindowCanRedo(value);
-        _canvas.CanUndoChanged += (_, value) => SetDrawingWindowCanUndo(value);
+        _canvasManager = canvasManager;
+        _canvasManager.CanClearChanged += (_, value) => SetDrawingWindowCanClear(value);
+        _canvasManager.CanRedoChanged += (_, value) => SetDrawingWindowCanRedo(value);
+        _canvasManager.CanUndoChanged += (_, value) => SetDrawingWindowCanUndo(value);
 
         _messenger = messenger;
         messenger.Register<DrawingWindowPropertyChangedMessage>(this);
@@ -34,13 +34,13 @@ public partial class OverlayWindowViewModel<TDrawing, TImageSource> : Observable
         switch (message.Value)
         {
             case CanvasAction.Undo:
-                _canvas.Undo();
+                _canvasManager.Undo();
                 break;
             case CanvasAction.Redo:
-                _canvas.Redo();
+                _canvasManager.Redo();
                 break;
             case CanvasAction.Clear:
-                _canvas.Clear();
+                _canvasManager.Clear();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(message));
@@ -51,9 +51,6 @@ public partial class OverlayWindowViewModel<TDrawing, TImageSource> : Observable
     {
         switch (message.PropertyName)
         {
-            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource>.SelectedDrawingTool):
-                _canvas.DrawingTool = ((DrawingToolInfo<TDrawing, TImageSource>)message.Value).Tool;
-                break;
             case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource>.IsVisible):
                 _isToolWindowVisible = (bool)message.Value;
                 break;
@@ -70,7 +67,7 @@ public partial class OverlayWindowViewModel<TDrawing, TImageSource> : Observable
         {
             // Allow drawing to pass behind tool window.
             SetDrawingWindowInputTransparency(true);
-            _canvas.DoDrawingEvent(info.CursorPosition);
+            _canvasManager.DoDrawingEvent(info.CursorPosition);
         }
         else if (info.Button is MouseButton.Middle)
         {
@@ -91,7 +88,7 @@ public partial class OverlayWindowViewModel<TDrawing, TImageSource> : Observable
     {
         if (info.Button is MouseButton.Left)
         {
-            _canvas.DoDrawingEvent(info.CursorPosition);
+            _canvasManager.DoDrawingEvent(info.CursorPosition);
         }
         else if (info.Button is MouseButton.Middle && _isToolWindowDragInProgress)
         {
@@ -105,7 +102,7 @@ public partial class OverlayWindowViewModel<TDrawing, TImageSource> : Observable
         if (info.Button is MouseButton.Left)
         {
             SetDrawingWindowInputTransparency(false);
-            _canvas.FinalizeDrawingEvent();
+            _canvasManager.FinalizeDrawingEvent();
         }
         else if (info.Button is MouseButton.Middle && _isToolWindowDragInProgress)
         {

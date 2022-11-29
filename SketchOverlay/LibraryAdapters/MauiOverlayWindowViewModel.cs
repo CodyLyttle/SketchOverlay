@@ -5,9 +5,10 @@ using SketchOverlay.Library.ViewModels;
 namespace SketchOverlay.LibraryAdapters;
 
 // Bypass XAML {x:Type} restriction on generic parameters.
-internal class MauiOverlayWindowViewModel : OverlayWindowViewModel<IDrawable, ImageSource>
+public class MauiOverlayWindowViewModel : OverlayWindowViewModel<IDrawable, IDrawable, ImageSource>
 {
-    public MauiOverlayWindowViewModel(IDrawingCanvas<IDrawable> canvas, IMessenger messenger) : base(canvas, messenger)
+    public MauiOverlayWindowViewModel(ICanvasManager<IDrawable> canvasManager, IMessenger messenger) 
+        : base(canvasManager, messenger)
     {
     }
 }

@@ -4,6 +4,9 @@ namespace SketchOverlay.Library.Drawing;
 
 public class ColorPalette : IColorPalette
 {
+    private static ColorPalette? _instance;
+    public static ColorPalette Instance => _instance ??= new ColorPalette(); 
+    
     private static readonly Color[] DarkColors =
     {
         Color.Black,
@@ -34,23 +37,17 @@ public class ColorPalette : IColorPalette
         Color.PaleVioletRed
     };
 
-    public ColorPalette()
+    private ColorPalette()
     {
         PrimaryColor = DefaultPrimaryColor;
         SecondaryColor = DefaultSecondaryColor;
-    }
-
-    public ColorPalette(Color primaryColor, Color secondaryColor)
-    {
-        PrimaryColor = primaryColor;
-        SecondaryColor = secondaryColor;
     }
 
     public IEnumerable<Color> Colors => DarkColors
         .Concat(MediumColors)
         .Concat(LightColors);
 
-    public Color DefaultPrimaryColor => DarkColors[0];
+    public Color DefaultPrimaryColor => DarkColors[1];
     
     public Color DefaultSecondaryColor => LightColors[0];
     

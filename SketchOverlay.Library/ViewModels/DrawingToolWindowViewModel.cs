@@ -1,7 +1,9 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Messages;
 using SketchOverlay.Library.Models;
 
@@ -12,19 +14,21 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : Observ
     IRecipient<DrawingWindowSetPropertyMessage>,
     IRecipient<DrawingWindowDragEventMessage>
 {
-    private DrawingToolInfo<TDrawing, TImageSource>? _selectedDrawingTool;
     private readonly IMessenger _messenger;
     private bool _isDragInProgress;
     private bool _isVisible;
 
-    public DrawingToolWindowViewModel(IMessenger messenger)
+    public DrawingToolWindowViewModel(IDrawingToolCollection<TDrawing, TImageSource> drawingTools, IMessenger messenger)
     {
         _messenger = messenger;
         _messenger.Register<DrawingWindowSetPropertyMessage>(this);
         _messenger.Register<DrawingWindowDragEventMessage>(this);
+        
+        DrawingTools = drawingTools;
+        SelectedToolInfo = DrawingTools.SelectedToolInfo;
         IsVisible = false;
-
     }
+
 
     [ObservableProperty]
     private bool _isInputTransparent;
@@ -34,11 +38,11 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : Observ
 
     [ObservableProperty]
     private double _windowWidth = 300;
-    
+
     [ObservableProperty]
     private ControlMargin _windowMargin;
 
-    [ObservableProperty] 
+    [ObservableProperty]
     private bool _canClear;
 
     [ObservableProperty]
@@ -46,6 +50,27 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : Observ
 
     [ObservableProperty]
     private bool _canUndo;
+
+    // DrawingToolsCollection.SelectedItem was originally bound to DrawingTools.SelectedToolInfo,
+    // however, when the control is loaded, the SelectedItem value gets set to null.
+    // This causes a NullReferenceException when attempting to draw without explicitly selecting a tool.
+    // We workaround this issue by preventing the view from setting the value to null.
+    // Bug: https://github.com/dotnet/maui/issues/8572
+    public DrawingToolInfo<TDrawing, TImageSource> SelectedToolInfo
+    {
+        get => DrawingTools.SelectedToolInfo;
+        set
+        {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+            if (value is null || value == DrawingTools.SelectedToolInfo) 
+                return;
+
+            DrawingTools.SelectedToolInfo = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public IDrawingToolCollection<TDrawing, TImageSource> DrawingTools { get; }
 
     public bool IsDragInProgress
     {
@@ -75,24 +100,7 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : Observ
         }
     }
 
-    public DrawingToolInfo<TDrawing,TImageSource>? SelectedDrawingTool
-    {
-        get => _selectedDrawingTool;
-        set
-        {
-            if (value == _selectedDrawingTool)
-                return;
-
-            // Sending a message while value is null throws a NullReferenceException.
-            if (value == null)
-                return;
-
-            _selectedDrawingTool = value;
-            OnPropertyChanged();
-            _messenger.Send(new DrawingWindowPropertyChangedMessage(value));
-        }
-    }
-
+    // TODO: Move yield tasks to Maui project.
     // BUG: Button.IsEnabled visual state stops updating after a few click events.
     // See: https://github.com/dotnet/maui/issues/7377
     // Workaround await Task.Yield() before sending message.

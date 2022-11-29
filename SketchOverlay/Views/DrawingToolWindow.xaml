@@ -23,8 +23,8 @@
             </Grid.RowDefinitions>
             <CollectionView x:Name="DrawingToolsCollection"
                             Grid.Row="0"
-                            ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingTools}"
-                            SelectedItem="{Binding SelectedDrawingTool}"
+                            ItemsSource="{Binding DrawingTools}"
+                            SelectedItem="{Binding SelectedToolInfo}"
                             ItemSizingStrategy="MeasureFirstItem"
                             SelectionMode="Single"
                             HorizontalOptions="Center"

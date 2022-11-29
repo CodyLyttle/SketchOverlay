@@ -2,9 +2,9 @@
 
 namespace SketchOverlay.Library.Drawing;
 
-public interface IDrawingCanvas<TDrawing>
+public interface ICanvasManager<out TOutput>
 {
-    IDrawingTool<TDrawing> DrawingTool { get; set; }
+    TOutput DrawingOutput { get; }
 
     void Undo();
     void Redo();
