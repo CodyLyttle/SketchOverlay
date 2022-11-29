@@ -13,10 +13,16 @@ internal class RectangleDrawable : IDrawable
         canvas.FillColor = FillColor;
         canvas.StrokeColor = StrokeColor;
         canvas.StrokeSize = StrokeSize;
-        canvas.DrawRectangle(
-            PointA.X,
-            PointA.Y,
-            PointB.X - PointA.X,
+
+        RectF rect = new(
+            PointA.X, 
+            PointA.Y, 
+            PointB.X - PointA.X, 
             PointB.Y - PointA.Y);
+
+        if(FillColor is not null)
+            canvas.FillRectangle(rect);
+
+        canvas.DrawRectangle(rect);
     }
 }

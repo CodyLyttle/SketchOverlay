@@ -9,6 +9,8 @@ internal class LineDrawable : IDrawable
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
+        canvas.StrokeColor = StrokeColor;
+        canvas.StrokeSize = StrokeSize;
         canvas.DrawLine(PointA, PointB);
     }
 }

@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing;
-using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Library.Drawing;
-using SketchOverlay.Library.Models;
 using SketchOverlay.LibraryAdapters;
 using SketchOverlay.Views;
 
@@ -52,38 +50,29 @@ public static class MauiProgram
 
     public static MauiAppBuilder AddServices(this MauiAppBuilder builder)
     {
-        System.Drawing.Color primaryColor = ColorPalette.Instance.DefaultPrimaryColor;
-        System.Drawing.Color? secondaryColor = ColorPalette.Instance.DefaultSecondaryColor;
-        float strokeSize = 4;
+        DrawingToolCollection<IDrawable, ImageSource> drawingToolCollection = 
+            new MauiDrawingToolFactory().CreateDrawingToolCollection();
 
-        DrawingToolCollection<IDrawable, ImageSource> drawingTools = new(
-            new DrawingToolInfo<IDrawable, ImageSource>(new MauiPaintBrushTool(primaryColor, strokeSize),
-                ImageSource.FromFile("placeholder_paintbrush.png"), "Paintbrush"),
-            new DrawingToolInfo<IDrawable, ImageSource>(new MauiLineTool(primaryColor, strokeSize),
-                ImageSource.FromFile("placeholder_line.png"), "Line"),
-            new DrawingToolInfo<IDrawable, ImageSource>(new MauiRectangleTool(secondaryColor, primaryColor, strokeSize),
-                ImageSource.FromFile("placeholder_rectangle.png"), "Rectangle"));
-
-        builder.Services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
-        builder.Services.AddSingleton<IDrawingToolCollection<IDrawable, ImageSource>>(drawingTools);
-        builder.Services.AddSingleton<IDrawingToolRetriever<IDrawable>>(drawingTools);
+        builder.Services.AddSingleton<IDrawingToolCollection<IDrawable, ImageSource>>(drawingToolCollection);
+        builder.Services.AddSingleton<IDrawingToolRetriever<IDrawable>>(drawingToolCollection);
         builder.Services.AddSingleton<ICanvasManager<IDrawable>, MauiCanvasManager>();
+        builder.Services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
         return builder;
     }
 
-public static MauiAppBuilder AddViewModels(this MauiAppBuilder builder)
-{
-    builder.Services.AddSingleton<MauiOverlayWindowViewModel>();
-    builder.Services.AddSingleton<MauiDrawingToolWindowViewModel>();
-    return builder;
-}
+    public static MauiAppBuilder AddViewModels(this MauiAppBuilder builder)
+    {
+        builder.Services.AddSingleton<MauiOverlayWindowViewModel>();
+        builder.Services.AddSingleton<MauiDrawingToolWindowViewModel>();
+        return builder;
+    }
 
-public static MauiAppBuilder AddWindowStyling(this MauiAppBuilder builder)
-{
-    // Unfortunately, WinUI doesn't support background transparency in the way WPF does.
-    // It's possible to leverage Win32 to modify the window opacity, however, this also affects the opacity of all child controls.
-    // See issue: https://github.com/microsoft/microsoft-ui-xaml/issues/1247
+    public static MauiAppBuilder AddWindowStyling(this MauiAppBuilder builder)
+    {
+        // Unfortunately, WinUI doesn't support background transparency in the way WPF does.
+        // It's possible to leverage Win32 to modify the window opacity, however, this also affects the opacity of all child controls.
+        // See issue: https://github.com/microsoft/microsoft-ui-xaml/issues/1247
 
-    return builder;
-}
+        return builder;
+    }
 }

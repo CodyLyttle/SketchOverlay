@@ -7,16 +7,16 @@ namespace SketchOverlay.Library.Drawing;
 public class DrawingToolCollection<TDrawing, TImageSource> : IDrawingToolCollection<TDrawing, TImageSource>,
     IDrawingToolRetriever<TDrawing>
 {
-    private readonly DrawingToolInfo<TDrawing, TImageSource>[] _items;
+    private readonly DrawingToolInfo<TDrawing, TImageSource>[] _tools;
 
-    public DrawingToolCollection(params DrawingToolInfo<TDrawing, TImageSource>[] items)
+    public DrawingToolCollection(IEnumerable<DrawingToolInfo<TDrawing, TImageSource>> tools)
     {
-        _items = items;
-        DefaultTool = _items[0].Tool;
-        SelectedToolInfo = _items[0];
+        _tools = tools.ToArray();
+        DefaultTool = _tools[0].Tool;
+        SelectedToolInfo = _tools[0];
     }
 
-    public int Count => _items.Length;
+    public int Count => _tools.Length;
 
     public IDrawingTool<TDrawing> DefaultTool { get; }
 
@@ -26,7 +26,7 @@ public class DrawingToolCollection<TDrawing, TImageSource> : IDrawingToolCollect
 
     public IEnumerator<DrawingToolInfo<TDrawing, TImageSource>> GetEnumerator()
     {
-        return ((IEnumerable<DrawingToolInfo<TDrawing, TImageSource>>)_items)
+        return ((IEnumerable<DrawingToolInfo<TDrawing, TImageSource>>)_tools)
             .GetEnumerator();
     }
 
