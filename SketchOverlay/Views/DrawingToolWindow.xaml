@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:library="clr-namespace:SketchOverlay.LibraryAdapters"
+             xmlns:converters="clr-namespace:SketchOverlay.BindingConverters"
              xmlns:drawing="clr-namespace:SketchOverlay.Drawing"
+             xmlns:library="clr-namespace:SketchOverlay.LibraryAdapters"
              x:Class="SketchOverlay.Views.DrawingToolWindow"
              HorizontalOptions="Start"
              VerticalOptions="Start"
              x:DataType="library:MauiDrawingToolWindowViewModel"
+             Margin="{Binding WindowMargin, Converter={StaticResource libThicknessConverter}}"
              InputTransparent="{Binding IsInputTransparent, Mode=OneWay}"
              IsVisible="{Binding IsVisible}"
-             Margin="{Binding WindowMargin}"
              WidthRequest="{Binding WindowWidth}"
              HeightRequest="{Binding WindowHeight}">
     <Border Background="#222222"

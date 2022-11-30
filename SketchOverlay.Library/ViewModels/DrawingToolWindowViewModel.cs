@@ -40,7 +40,7 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : Observ
     private double _windowWidth = 300;
 
     [ObservableProperty]
-    private ControlMargin _windowMargin;
+    private LibraryThickness _windowMargin;
 
     [ObservableProperty]
     private bool _canClear;
@@ -181,6 +181,6 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : Observ
 
         double left = position.X - WindowWidth / 2;
         double top = position.Y;
-        WindowMargin = new ControlMargin(left, top);
+        WindowMargin = new LibraryThickness(left, top);
     }
 }
