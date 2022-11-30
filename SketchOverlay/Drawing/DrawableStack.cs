@@ -27,7 +27,7 @@ public class DrawableStack : IDrawingStack<IDrawable, IDrawable>, IDrawable
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
-        foreach (IDrawable drawable in _drawables)
+        foreach (IDrawable drawable in _drawables.Reverse())
         {
             drawable.Draw(canvas, dirtyRect);
         }
