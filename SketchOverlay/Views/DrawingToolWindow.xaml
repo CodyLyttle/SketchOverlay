@@ -2,8 +2,8 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:SketchOverlay.BindingConverters"
-             xmlns:drawing="clr-namespace:SketchOverlay.Drawing"
              xmlns:library="clr-namespace:SketchOverlay.LibraryAdapters"
+             xmlns:local="clr-namespace:SketchOverlay.Views"
              x:Class="SketchOverlay.Views.DrawingToolWindow"
              HorizontalOptions="Start"
              VerticalOptions="Start"
@@ -15,15 +15,8 @@
              HeightRequest="{Binding WindowHeight}">
     <Border Background="#222222"
             Stroke="Green">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
+        <VerticalStackLayout>
             <CollectionView x:Name="DrawingToolsCollection"
-                            Grid.Row="0"
                             ItemsSource="{Binding DrawingTools}"
                             SelectedItem="{Binding SelectedToolInfo}"
                             ItemSizingStrategy="MeasureFirstItem"
@@ -49,34 +42,9 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <CollectionView x:Name="DrawingColorsCollection"
-                            Grid.Row="1"
-                            ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingColors}"
-                            ItemSizingStrategy="MeasureFirstItem"
-                            SelectionMode="Single"
-                            HorizontalOptions="Center">
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical"
-                                     Span="3"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="Color">
-                        <Rectangle Fill="{Binding}"
-                                   WidthRequest="24"
-                                   HeightRequest="24"/>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <local:ToolEditor x:Name="SelectedToolEditor"/>
 
-            <!-- TODO: Add label displaying slider value -->
-            <Slider x:Name="drawSizeSlider"
-                    Grid.Row="2"
-                    VerticalOptions="Start"
-                    WidthRequest="240" 
-                    Minimum="{x:Static drawing:GlobalDrawingValues.MinimumDrawingSize}" 
-                    Maximum="{x:Static drawing:GlobalDrawingValues.MaximumDrawingSize}"/>
-
-            <HorizontalStackLayout Grid.Row="3" 
+            <HorizontalStackLayout x:Name="CanvasActionLayout"
                                    HorizontalOptions="Center"
                                    Margin="0,0,0,12">
                 <Button x:Name="undoButton" Text="undo" 
@@ -90,6 +58,6 @@
                         IsEnabled="{Binding CanClear}"/>
             </HorizontalStackLayout>
 
-        </Grid>
+        </VerticalStackLayout>
     </Border>
 </ContentView>
