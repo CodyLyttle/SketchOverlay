@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <ResourceDictionary>
                     <converters:LibraryThicknessToThicknessConverter x:Key="libThicknessConverter"/>
+                    <converters:DrawingToolToViewModelConverter x:Key="drawingToolViewModelConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
