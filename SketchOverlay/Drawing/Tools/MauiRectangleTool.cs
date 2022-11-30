@@ -6,14 +6,14 @@ namespace SketchOverlay.Drawing.Tools;
 
 internal class MauiRectangleTool : DrawingTool<RectangleDrawable>, IRectangleTool<RectangleDrawable>
 {
-    public MauiRectangleTool(System.Drawing.Color? fillColor, System.Drawing.Color strokeColor, float strokeSize)
+    public MauiRectangleTool(System.Drawing.Color fillColor, System.Drawing.Color strokeColor, float strokeSize)
     {
         FillColor = fillColor;
         StrokeColor = strokeColor;
         StrokeSize = strokeSize;
     }
 
-    public System.Drawing.Color? FillColor { get; set; }
+    public System.Drawing.Color FillColor { get; set; }
     public System.Drawing.Color StrokeColor { get; set; }
     public float StrokeSize { get; set; }
 

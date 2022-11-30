@@ -48,8 +48,8 @@ public class ColorPalette : IColorPalette
         .Concat(LightColors);
 
     public Color DefaultPrimaryColor => DarkColors[1];
-    
-    public Color DefaultSecondaryColor => LightColors[0];
+
+    public Color DefaultSecondaryColor => Color.Transparent;
     
     public Color PrimaryColor { get; set; }
     

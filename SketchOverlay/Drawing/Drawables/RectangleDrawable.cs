@@ -2,7 +2,7 @@
 
 internal class RectangleDrawable : IDrawable
 {
-    public Color? FillColor { get; set; } = null;
+    public Color FillColor { get; set; } = Colors.Transparent;
     public Color StrokeColor { get; set; } = Colors.Gray;
     public float StrokeSize { get; set; } = 4;
     public PointF PointA { get; set; }
@@ -19,9 +19,6 @@ internal class RectangleDrawable : IDrawable
             PointA.Y, 
             PointB.X - PointA.X, 
             PointB.Y - PointA.Y);
-
-        if(FillColor is not null)
-            canvas.FillRectangle(rect);
 
         canvas.DrawRectangle(rect);
     }
