@@ -42,9 +42,33 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <local:ToolEditor x:Name="SelectedToolEditor"
-                              BindingContext="{Binding SelectedToolInfo.Tool, Mode=OneWay,
-                Converter={StaticResource drawingToolViewModelConverter}}"/>
+            <CollectionView x:Name="DrawingColorsCollection"
+                            Grid.Row="1"
+                            ItemsSource="{Binding DrawingColors.Colors, Mode=OneTime}"
+                            SelectedItem="{Binding StrokeColor}"
+                            ItemSizingStrategy="MeasureFirstItem"
+                            SelectionMode="Single"
+                            HorizontalOptions="Center">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                                     Span="3"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="Color">
+                        <Rectangle Fill="{Binding}"
+                                   WidthRequest="24"
+                                   HeightRequest="24"/>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- TODO: Add label displaying slider value -->
+            <Slider x:Name="drawSizeSlider"
+                    VerticalOptions="Start"
+                    WidthRequest="240" 
+                    Minimum="1" 
+                    Maximum="64"
+                    Value="{Binding StrokeSize}"/>
 
             <HorizontalStackLayout x:Name="CanvasActionLayout"
                                    HorizontalOptions="Center"

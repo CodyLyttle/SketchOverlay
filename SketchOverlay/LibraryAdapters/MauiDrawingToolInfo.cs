@@ -4,9 +4,9 @@ using SketchOverlay.Library.Models;
 namespace SketchOverlay.LibraryAdapters;
 
 // Bypass XAML {x:Type} restriction on generic parameters.
-internal class MauiDrawingToolInfo : DrawingToolInfo<IDrawable, ImageSource>
+internal class MauiDrawingToolInfo : DrawingToolInfo<IDrawable, ImageSource, Color>
 {
-    public MauiDrawingToolInfo(IDrawingTool<IDrawable> tool, ImageSource iconSource, string name) 
+    public MauiDrawingToolInfo(IDrawingTool<IDrawable, Color> tool, ImageSource iconSource, string name) 
         : base(tool, iconSource, name)
     {
     }

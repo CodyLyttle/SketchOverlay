@@ -3,12 +3,14 @@ using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.ViewModels;
 
 namespace SketchOverlay.LibraryAdapters;
- 
-// Bypass XAML {x:Type} restriction on generic parameters.
-internal class MauiDrawingToolWindowViewModel : DrawingToolWindowViewModel<IDrawable, ImageSource>
+
+internal class MauiDrawingToolWindowViewModel : DrawingToolWindowViewModel<IDrawable, ImageSource, Color>
 {
-    public MauiDrawingToolWindowViewModel(IDrawingToolCollection<IDrawable, ImageSource> drawingTools, IMessenger messenger)
-        : base( drawingTools, messenger)
+    public MauiDrawingToolWindowViewModel(
+        ICanvasProperties<Color> canvasProps,
+        IColorPalette<Color> drawingColors,
+        IDrawingToolCollection<IDrawable, ImageSource, Color> drawingTools,
+        IMessenger messenger) : base(canvasProps, drawingColors, drawingTools, messenger)
     {
     }
 }

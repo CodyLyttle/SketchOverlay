@@ -4,12 +4,12 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Library.Drawing;
 
-public class DrawingToolCollection<TDrawing, TImageSource> : IDrawingToolCollection<TDrawing, TImageSource>,
-    IDrawingToolRetriever<TDrawing>
+public class DrawingToolCollection<TDrawing, TImageSource, TColor> : IDrawingToolCollection<TDrawing, TImageSource, TColor>,
+    IDrawingToolRetriever<TDrawing, TColor>
 {
-    private readonly DrawingToolInfo<TDrawing, TImageSource>[] _tools;
+    private readonly DrawingToolInfo<TDrawing, TImageSource, TColor>[] _tools;
 
-    public DrawingToolCollection(IEnumerable<DrawingToolInfo<TDrawing, TImageSource>> tools)
+    public DrawingToolCollection(IEnumerable<DrawingToolInfo<TDrawing, TImageSource, TColor>> tools)
     {
         _tools = tools.ToArray();
         DefaultTool = _tools[0].Tool;
@@ -18,15 +18,15 @@ public class DrawingToolCollection<TDrawing, TImageSource> : IDrawingToolCollect
 
     public int Count => _tools.Length;
 
-    public IDrawingTool<TDrawing> DefaultTool { get; }
+    public IDrawingTool<TDrawing, TColor> DefaultTool { get; }
 
-    public IDrawingTool<TDrawing> SelectedTool => SelectedToolInfo.Tool;
+    public IDrawingTool<TDrawing, TColor> SelectedTool => SelectedToolInfo.Tool;
 
-    public DrawingToolInfo<TDrawing, TImageSource> SelectedToolInfo { get; set; }
+    public DrawingToolInfo<TDrawing, TImageSource, TColor> SelectedToolInfo { get; set; }
 
-    public TTool GetTool<TTool>() where TTool : IDrawingTool<TDrawing>
+    public TTool GetTool<TTool>() where TTool : IDrawingTool<TDrawing, TColor>
     {
-        foreach (DrawingToolInfo<TDrawing, TImageSource> toolInfo in this)
+        foreach (DrawingToolInfo<TDrawing, TImageSource, TColor> toolInfo in this)
         {
             if (toolInfo.Tool is TTool tool)
                 return tool;
@@ -36,9 +36,9 @@ public class DrawingToolCollection<TDrawing, TImageSource> : IDrawingToolCollect
             $"{typeof(TTool).Name} doesn't exist");
     }
 
-    public IEnumerator<DrawingToolInfo<TDrawing, TImageSource>> GetEnumerator()
+    public IEnumerator<DrawingToolInfo<TDrawing, TImageSource, TColor>> GetEnumerator()
     {
-        return ((IEnumerable<DrawingToolInfo<TDrawing, TImageSource>>)_tools)
+        return ((IEnumerable<DrawingToolInfo<TDrawing, TImageSource, TColor>>)_tools)
             .GetEnumerator();
     }
 

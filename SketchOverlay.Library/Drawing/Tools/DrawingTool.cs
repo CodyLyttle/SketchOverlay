@@ -2,7 +2,7 @@
 
 namespace SketchOverlay.Library.Drawing.Tools;
 
-public abstract class DrawingTool<TDrawing> : IDrawingTool<TDrawing>
+public abstract class DrawingTool<TDrawing, TColor> : IDrawingTool<TDrawing, TColor>
     where TDrawing : class, new()
 {
     private TDrawing? _currentDrawing;
@@ -12,16 +12,16 @@ public abstract class DrawingTool<TDrawing> : IDrawingTool<TDrawing>
         private set => _currentDrawing = value;
     }
 
-    public TDrawing CreateDrawing(PointF startPoint)
+    public TDrawing CreateDrawing(ICanvasProperties<TColor> canvasProps, PointF startPoint)
     {
         if (_currentDrawing is not null)
             throw new InvalidOperationException(
                 "Cannot create a new drawing before finishing the current drawing");
         
-        return DoCreateDrawing(startPoint);
+        return DoCreateDrawing(canvasProps, startPoint);
     }
 
-    protected virtual TDrawing DoCreateDrawing(PointF startPoint)
+    protected virtual TDrawing DoCreateDrawing(ICanvasProperties<TColor> canvasProps, PointF startPoint)
     {
         CurrentDrawing = new TDrawing();
         UpdateDrawing(startPoint);

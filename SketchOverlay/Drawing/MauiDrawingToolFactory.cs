@@ -13,16 +13,16 @@ internal class MauiDrawingToolFactory : DrawingToolFactory<IDrawable, ImageSourc
 
     protected override IPaintBrushTool<IDrawable, Color> CreatePaintBrushTool()
     {
-        return new MauiPaintBrushTool(Colors.Aqua, 16);
+        return new MauiPaintBrushTool();
     }
 
     protected override ILineTool<IDrawable, Color> CreateLineTool()
     {
-        return new MauiLineTool(Colors.Red, 6);
+        return new MauiLineTool();
     }
 
     protected override IRectangleTool<IDrawable, Color>? CreateRectangleTool()
     {
-        return new MauiRectangleTool(Colors.Navy, Colors.Green, 6);
+        return new MauiRectangleTool();
     }
 }

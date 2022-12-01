@@ -6,24 +6,24 @@ namespace SketchOverlay.Library.Drawing;
 public abstract class DrawingToolFactory<TDrawing, TImageSource, TColor>
 {
     // We return the concrete collection because it contains multiple interfaces, which simplifies dependency injection.
-    public DrawingToolCollection<TDrawing, TImageSource> CreateDrawingToolCollection()
+    public DrawingToolCollection<TDrawing, TImageSource, TColor> CreateDrawingToolCollection()
     {
-        List<DrawingToolInfo<TDrawing, TImageSource>> tools = new();
+        List<DrawingToolInfo<TDrawing, TImageSource, TColor>> tools = new();
         AddTool(tools, CreatePaintBrushTool(), "placeholder_paintbrush.png", "Paintbrush");
         AddTool(tools, CreateLineTool(), "placeholder_line.png", "Line");
         AddTool(tools, CreateRectangleTool(), "placeholder_rectangle.png", "Rectangle");
 
-        return new DrawingToolCollection<TDrawing, TImageSource>(tools);
+        return new DrawingToolCollection<TDrawing, TImageSource, TColor>(tools);
     }
 
-    private void AddTool(ICollection<DrawingToolInfo<TDrawing, TImageSource>> toolList,
-        IDrawingTool<TDrawing>? tool, string iconPath, string name, string description = "")
+    private void AddTool(ICollection<DrawingToolInfo<TDrawing, TImageSource, TColor>> toolList,
+        IDrawingTool<TDrawing, TColor>? tool, string iconPath, string name, string description = "")
     {
         if (tool is null)
             return;
 
         TImageSource icon = CreateImageSource(iconPath);
-        toolList.Add(new DrawingToolInfo<TDrawing, TImageSource>(tool, icon, name)
+        toolList.Add(new DrawingToolInfo<TDrawing, TImageSource, TColor>(tool, icon, name)
         {
             Description = description
         });

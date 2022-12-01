@@ -69,17 +69,11 @@
 		<Compile Update="Views\DrawingToolWindow.xaml.cs">
 			<DependentUpon>DrawingToolWindow.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="Views\ToolEditor.xaml.cs">
-		  <DependentUpon>ToolEditor.xaml</DependentUpon>
-		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
 		<MauiXaml Update="Views\DrawingToolWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Views\ToolEditor.xaml">
-		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
 

@@ -8,25 +8,34 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Library.ViewModels;
 
-public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : ObservableObject,
+public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> : ObservableObject,
     IRecipient<DrawingWindowSetPropertyMessage>,
     IRecipient<DrawingWindowDragEventMessage>
 {
     private readonly IMessenger _messenger;
     private bool _isDragInProgress;
     private bool _isVisible;
+    private readonly ICanvasProperties<TColor> _canvasProps;
 
-    public DrawingToolWindowViewModel(IDrawingToolCollection<TDrawing, TImageSource> drawingTools, IMessenger messenger)
+    public DrawingToolWindowViewModel(
+        ICanvasProperties<TColor> canvasProps, 
+        IColorPalette<TColor> drawingColors,
+        IDrawingToolCollection<TDrawing, TImageSource, TColor> drawingTools, 
+        IMessenger messenger)
     {
         _messenger = messenger;
         _messenger.Register<DrawingWindowSetPropertyMessage>(this);
         _messenger.Register<DrawingWindowDragEventMessage>(this);
-        
+
+        _canvasProps = canvasProps;
+        _drawingColors = drawingColors;
         DrawingTools = drawingTools;
         SelectedToolInfo = DrawingTools.SelectedToolInfo;
         IsVisible = false;
     }
 
+    [ObservableProperty] 
+    private IColorPalette<TColor> _drawingColors;
 
     [ObservableProperty]
     private bool _isInputTransparent;
@@ -49,18 +58,55 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : Observ
     [ObservableProperty]
     private bool _canUndo;
 
+    public TColor StrokeColor
+    {
+        get => _canvasProps.StrokeColor;
+        set
+        {
+            if (value is null)
+                return;
+
+            _canvasProps.StrokeColor = value;
+        }
+    }
+
+    public TColor FillColor
+    {
+        get => _canvasProps.FillColor;
+        set
+        {
+            if (value is null)
+                return;
+
+            _canvasProps.FillColor = value;
+        }
+    }
+
+    public float StrokeSize
+    {
+        get => _canvasProps.StrokeSize;
+        set
+        {
+            if (value is < ICanvasProperties<TColor>.MinimumStrokeSize
+                      or > ICanvasProperties<TColor>.MaximumStrokeSize)
+                return;
+
+            _canvasProps.StrokeSize = value;
+        }
+    }
+
     // DrawingToolsCollection.SelectedItem was originally bound to DrawingTools.SelectedToolInfo,
     // however, when the control is loaded, the SelectedItem value gets set to null.
     // This causes a NullReferenceException when attempting to draw without explicitly selecting a tool.
     // We workaround this issue by preventing the view from setting the value to null.
     // Bug: https://github.com/dotnet/maui/issues/8572
-    public DrawingToolInfo<TDrawing, TImageSource> SelectedToolInfo
+    public DrawingToolInfo<TDrawing, TImageSource, TColor> SelectedToolInfo
     {
         get => DrawingTools.SelectedToolInfo;
         set
         {
             // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-            if (value is null || value == DrawingTools.SelectedToolInfo) 
+            if (value is null || value == DrawingTools.SelectedToolInfo)
                 return;
 
             DrawingTools.SelectedToolInfo = value;
@@ -68,7 +114,7 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : Observ
         }
     }
 
-    public IDrawingToolCollection<TDrawing, TImageSource> DrawingTools { get; }
+    public IDrawingToolCollection<TDrawing, TImageSource, TColor> DrawingTools { get; }
 
     public bool IsDragInProgress
     {

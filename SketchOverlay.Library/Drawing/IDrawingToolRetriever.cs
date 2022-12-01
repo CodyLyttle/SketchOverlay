@@ -2,8 +2,8 @@
 
 namespace SketchOverlay.Library.Drawing;
 
-public interface IDrawingToolRetriever <out TDrawing>
+public interface IDrawingToolRetriever <out TDrawing, TColor>
 {
-    public IDrawingTool<TDrawing> DefaultTool { get; }
-    public IDrawingTool<TDrawing> SelectedTool { get; }
+    public IDrawingTool<TDrawing, TColor> DefaultTool { get; }
+    public IDrawingTool<TDrawing, TColor> SelectedTool { get; }
 }

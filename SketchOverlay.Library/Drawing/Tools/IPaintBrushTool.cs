@@ -1,7 +1,7 @@
 ﻿namespace SketchOverlay.Library.Drawing.Tools;
 
-public interface IPaintBrushTool<out TDrawing, TColor> : IDrawingTool<TDrawing>
+public interface IPaintBrushTool<out TDrawing, TColor> : IDrawingTool<TDrawing, TColor>
 {
-     TColor StrokeColor { get; set; }
-     float StrokeSize { get; set; }
+    // Keep empty tool interfaces until we're sure that tools won't require their own properties & logic.
+    // Tearing them down would require refactoring DrawingToolFactory.
 }

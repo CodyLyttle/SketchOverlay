@@ -1,9 +1,7 @@
-﻿using System.Drawing;
+﻿namespace SketchOverlay.Library.Drawing.Tools;
 
-namespace SketchOverlay.Library.Drawing.Tools;
-
-public interface ILineTool<out TDrawing, TColor> : IDrawingTool<TDrawing>
+public interface ILineTool<out TDrawing, TColor> : IDrawingTool<TDrawing, TColor>
 {
-    public TColor StrokeColor { get; set; }
-    public float StrokeSize { get; set; }
+    // Keep empty tool interfaces until we're sure that tools won't require their own properties & logic.
+    // Tearing them down would require refactoring DrawingToolFactory.
 }

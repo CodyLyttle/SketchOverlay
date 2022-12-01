@@ -3,7 +3,7 @@ using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Library.Drawing;
 
-public class CanvasManager<TDrawStack, TDrawing, TOutput> : ICanvasManager<TOutput>
+public class CanvasManager<TDrawStack, TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
     where TDrawStack : IDrawingStack<TDrawing, TOutput>, new()
 {
     private bool _canRedo;
@@ -11,11 +11,13 @@ public class CanvasManager<TDrawStack, TDrawing, TOutput> : ICanvasManager<TOutp
 
     // Temporary undo/redo solution. Refactored to support delete tool.
     private readonly Stack<TDrawing> _redoStack = new();
-    private readonly IDrawingToolRetriever<TDrawing> _toolRetriever;
+    private readonly IDrawingToolRetriever<TDrawing, TColor> _toolRetriever;
     private readonly TDrawStack _drawStack = new();
+    private readonly ICanvasProperties<TColor> _canvasProperties;
 
-    public CanvasManager(IDrawingToolRetriever<TDrawing> toolRetriever)
+    public CanvasManager(ICanvasProperties<TColor> canvasProperties, IDrawingToolRetriever<TDrawing, TColor> toolRetriever)
     {
+        _canvasProperties = canvasProperties;
         _toolRetriever = toolRetriever;
     }
 
@@ -24,7 +26,7 @@ public class CanvasManager<TDrawStack, TDrawing, TOutput> : ICanvasManager<TOutp
     public event EventHandler<bool>? CanRedoChanged;
     public event EventHandler<bool>? CanUndoChanged;
 
-    private IDrawingTool<TDrawing> DrawingTool => _toolRetriever.SelectedTool;
+    private IDrawingTool<TDrawing, TColor> DrawingTool => _toolRetriever.SelectedTool;
     
     protected bool IsDrawing { get; private set; }
 
@@ -59,7 +61,7 @@ public class CanvasManager<TDrawStack, TDrawing, TOutput> : ICanvasManager<TOutp
         {
             IsDrawing = true;
             _redoStack.Clear();
-            _drawStack.PushDrawing(DrawingTool.CreateDrawing(point));
+            _drawStack.PushDrawing(DrawingTool.CreateDrawing(_canvasProperties, point));
         }
         else
         {

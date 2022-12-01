@@ -4,8 +4,9 @@ namespace SketchOverlay.LibraryAdapters;
 
 internal class MauiColorPalette : IColorPalette<Color>
 {
-    public MauiColorPalette(DrawingColors colors)
+    public MauiColorPalette()
     {
+        DrawingColors colors = new();
         Colors = colors.Colors.Select(c => c.ToMauiColor());
         DefaultPrimaryColor = colors.DefaultPrimaryColor.ToMauiColor();
         DefaultSecondaryColor = colors.DefaultSecondaryColor.ToMauiColor();

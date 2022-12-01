@@ -8,7 +8,7 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Library.ViewModels;
 
-public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource> : ObservableObject,
+public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TColor> : ObservableObject,
     IRecipient<DrawingWindowPropertyChangedMessage>,
     IRecipient<OverlayWindowCanvasActionMessage>
 {
@@ -51,10 +51,10 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource> : O
     {
         switch (message.PropertyName)
         {
-            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource>.IsVisible):
+            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsVisible):
                 _isToolWindowVisible = (bool)message.Value;
                 break;
-            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource>.IsDragInProgress):
+            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsDragInProgress):
                 _isToolWindowDragInProgress = (bool)message.Value;
                 break;
         }
@@ -118,21 +118,21 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource> : O
     private void SetDrawingWindowCanClear(bool canClear)
     {
         _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource>.CanClear),
+            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.CanClear),
             canClear));
     }
 
     private void SetDrawingWindowCanRedo(bool canRedo)
     {
         _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource>.CanRedo),
+            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.CanRedo),
             canRedo));
     }
 
     private void SetDrawingWindowCanUndo(bool canUndo)
     {
         _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource>.CanUndo),
+            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.CanUndo),
             canUndo));
     }
 
@@ -140,14 +140,14 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource> : O
     {
 
         _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource>.IsVisible),
+            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsVisible),
             isVisible));
     }
 
     private void SetDrawingWindowInputTransparency(bool isInputTransparent)
     {
         _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource>.IsInputTransparent),
+            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsInputTransparent),
             isInputTransparent));
     }
 }
