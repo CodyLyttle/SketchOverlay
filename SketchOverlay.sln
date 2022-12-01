@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Library", "Sk
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Library.Tests", "SketchOverlay.Library.Tests\SketchOverlay.Library.Tests.csproj", "{4E3D10F4-4E8D-4FE0-A79F-301D4EB08A0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SketchOverlay.Wpf", "SketchOverlay.Wpf\SketchOverlay.Wpf.csproj", "{BD9F1B37-45A6-41AB-8226-C5317112ED5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{4E3D10F4-4E8D-4FE0-A79F-301D4EB08A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E3D10F4-4E8D-4FE0-A79F-301D4EB08A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E3D10F4-4E8D-4FE0-A79F-301D4EB08A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD9F1B37-45A6-41AB-8226-C5317112ED5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD9F1B37-45A6-41AB-8226-C5317112ED5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD9F1B37-45A6-41AB-8226-C5317112ED5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD9F1B37-45A6-41AB-8226-C5317112ED5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
