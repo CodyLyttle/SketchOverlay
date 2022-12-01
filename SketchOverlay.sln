@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay", "SketchOverlay\SketchOverlay.csproj", "{5FD10638-ADD0-43E8-BE41-BC9309F27D64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Maui", "SketchOverlay.Maui\SketchOverlay.Maui.csproj", "{5FD10638-ADD0-43E8-BE41-BC9309F27D64}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Native", "SketchOverlay.Native\SketchOverlay.Native.csproj", "{CAD73054-975B-49CA-AAA4-F5AF8CD7AC5A}"
 EndProject
@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Tests", "Sket
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Library", "SketchOverlay.Library\SketchOverlay.Library.csproj", "{B7CD9B41-D5D2-4BE3-A351-E0783142ED06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SketchOverlay.Library.Tests", "SketchOverlay.Library.Tests\SketchOverlay.Library.Tests.csproj", "{4E3D10F4-4E8D-4FE0-A79F-301D4EB08A0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Library.Tests", "SketchOverlay.Library.Tests\SketchOverlay.Library.Tests.csproj", "{4E3D10F4-4E8D-4FE0-A79F-301D4EB08A0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
