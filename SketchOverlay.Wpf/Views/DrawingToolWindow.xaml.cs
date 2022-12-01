@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SketchOverlay.Wpf
+namespace SketchOverlay.Wpf.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for DrawingToolWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DrawingToolWindow : UserControl
     {
-        public MainWindow()
+        public DrawingToolWindow()
         {
             InitializeComponent();
         }
