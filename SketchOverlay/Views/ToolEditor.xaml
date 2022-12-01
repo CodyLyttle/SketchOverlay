@@ -6,7 +6,7 @@
     <VerticalStackLayout>
         <CollectionView x:Name="DrawingColorsCollection"
                             Grid.Row="1"
-                            ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingColors}"
+                            ItemsSource="{Binding ColorPalette.Colors, Mode=OneTime}"
                             ItemSizingStrategy="MeasureFirstItem"
                             SelectionMode="Single"
                             HorizontalOptions="Center">

@@ -72,6 +72,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<MauiOverlayWindowViewModel>();
         builder.Services.AddSingleton<MauiDrawingToolWindowViewModel>();
         builder.Services.AddTransient<PaintBrushToolViewModel<IDrawable>>();
+        builder.Services.AddTransient<LineToolViewModel<IDrawable>>();
+        builder.Services.AddTransient<RectangleToolViewModel<IDrawable>>();
         return builder;
     }
 

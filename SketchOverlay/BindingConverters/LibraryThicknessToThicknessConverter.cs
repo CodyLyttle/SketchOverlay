@@ -8,8 +8,7 @@ internal class LibraryThicknessToThicknessConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not LibraryThickness libraryMargin)
-            throw new ArgumentOutOfRangeException(nameof(value), 
-                $"{nameof(value)} must be of type {nameof(LibraryThickness)}");
+            throw new ValueConverterTypeException<LibraryThickness>(value);
 
         return new Thickness
         {
@@ -21,8 +20,7 @@ internal class LibraryThicknessToThicknessConverter : IValueConverter
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not Thickness mauiThickness)
-            throw new ArgumentOutOfRangeException(nameof(value),
-                $"{nameof(value)} must be of type {nameof(Thickness)}");
+            throw new ValueConverterTypeException<Thickness>(value);
 
         return new LibraryThickness
         {

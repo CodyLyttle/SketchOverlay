@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Library.Drawing.Tools;
+using SketchOverlay.Library.ViewModels.Tools;
 
 namespace SketchOverlay.BindingConverters;
 internal class DrawingToolToViewModelConverter : IValueConverter
@@ -8,14 +9,13 @@ internal class DrawingToolToViewModelConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not IDrawingTool<IDrawable> tool)
-            throw new ArgumentOutOfRangeException(nameof(value),
-                $"{nameof(value)} must be of type {nameof(IDrawingTool<IDrawable>)}");
+            throw new ValueConverterTypeException<IDrawingTool<IDrawable>>(value);
 
         return tool switch
         {
-            MauiPaintBrushTool => MauiProgram.GetService<IPaintBrushTool<IDrawable>>(),
-            MauiLineTool => MauiProgram.GetService<ILineTool<IDrawable>>(),
-            MauiRectangleTool => MauiProgram.GetService<IRectangleTool<IDrawable>>(),
+            MauiPaintBrushTool => MauiProgram.GetService<PaintBrushToolViewModel<IDrawable>>(),
+            MauiLineTool => MauiProgram.GetService<LineToolViewModel<IDrawable>>(),
+            MauiRectangleTool => MauiProgram.GetService<RectangleToolViewModel<IDrawable>>(),
             _ => throw new NotImplementedException("Drawing tool conversion not implemented")
         };
     }

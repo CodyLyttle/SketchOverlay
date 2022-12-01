@@ -34,7 +34,7 @@ public class ColorPalette : IColorPalette
         Color.PaleVioletRed
     };
 
-    private ColorPalette()
+    public ColorPalette()
     {
         PrimaryColor = DefaultPrimaryColor;
         SecondaryColor = DefaultSecondaryColor;
