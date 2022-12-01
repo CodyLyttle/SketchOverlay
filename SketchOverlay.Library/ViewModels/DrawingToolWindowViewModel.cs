@@ -41,7 +41,7 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
     private bool _isInputTransparent;
 
     [ObservableProperty]
-    private double _windowHeight = 300;
+    private double _windowHeight = 310;
 
     [ObservableProperty]
     private double _windowWidth = 300;
@@ -91,7 +91,8 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
                       or > ICanvasProperties<TColor>.MaximumStrokeSize)
                 return;
 
-            _canvasProps.StrokeSize = value;
+            _canvasProps.StrokeSize = (float)Math.Round(value);
+            OnPropertyChanged();
         }
     }
 

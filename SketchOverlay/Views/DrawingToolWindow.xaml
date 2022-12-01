@@ -63,13 +63,18 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- TODO: Add label displaying slider value -->
-            <Slider x:Name="drawSizeSlider"
-                    VerticalOptions="Start"
-                    WidthRequest="240" 
-                    Minimum="1" 
-                    Maximum="64"
-                    Value="{Binding StrokeSize}"/>
+
+            <Label Text="{Binding StrokeSize}"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,-6,0,-4"/>
+
+                <Slider x:Name="drawSizeSlider"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Start"
+                        WidthRequest="240" 
+                        Minimum="1" 
+                        Maximum="64"
+                        Value="{Binding StrokeSize}"/>
 
             <HorizontalStackLayout x:Name="CanvasActionLayout"
                                    HorizontalOptions="Center"
