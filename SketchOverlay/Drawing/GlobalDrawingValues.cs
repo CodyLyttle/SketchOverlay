@@ -1,7 +1,4 @@
-﻿using SketchOverlay.Drawing.Tools;
-using SketchOverlay.Library.Models;
-
-namespace SketchOverlay.Drawing;
+﻿namespace SketchOverlay.Drawing;
 
 internal static class GlobalDrawingValues
 {

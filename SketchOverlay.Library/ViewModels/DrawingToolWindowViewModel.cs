@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Drawing;
+﻿using System.Drawing;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -9,7 +8,6 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Library.ViewModels;
 
-// TODO: Give tools their own view model.
 public partial class DrawingToolWindowViewModel<TDrawing, TImageSource> : ObservableObject,
     IRecipient<DrawingWindowSetPropertyMessage>,
     IRecipient<DrawingWindowDragEventMessage>
