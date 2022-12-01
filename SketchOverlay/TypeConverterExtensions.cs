@@ -1,4 +1,4 @@
-﻿namespace SketchOverlay.LibraryAdapters;
+﻿namespace SketchOverlay;
 
 internal static class LibraryAdapterExtensions
 {
@@ -27,7 +27,7 @@ internal static class LibraryAdapterExtensions
         if (drawingColor == null) return null;
         return Color.FromInt(drawingColor.Value.ToArgb());
     }
-    
+
     public static System.Drawing.Color? ToNullableDrawingColor(this Color? mauiColor)
     {
         if (mauiColor is null) return null;

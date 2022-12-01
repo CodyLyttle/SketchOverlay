@@ -1,6 +1,6 @@
 ﻿using SketchOverlay.Library.Drawing;
 
-namespace SketchOverlay.LibraryAdapters;
+namespace SketchOverlay.Drawing;
 
 internal class MauiColorPalette : IColorPalette<Color>
 {

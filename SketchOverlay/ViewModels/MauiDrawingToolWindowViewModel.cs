@@ -2,7 +2,7 @@
 using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.ViewModels;
 
-namespace SketchOverlay.LibraryAdapters;
+namespace SketchOverlay.ViewModels;
 
 internal class MauiDrawingToolWindowViewModel : DrawingToolWindowViewModel<IDrawable, ImageSource, Color>
 {

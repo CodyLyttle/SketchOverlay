@@ -2,10 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:SketchOverlay.Views"
-             xmlns:library="clr-namespace:SketchOverlay.LibraryAdapters"
+             xmlns:viewModels="clr-namespace:SketchOverlay.ViewModels"
              xmlns:controls="clr-namespace:SketchOverlay.Controls"
              x:Class="SketchOverlay.Views.MainPage"
-             x:DataType="library:MauiOverlayWindowViewModel">
+             x:DataType="viewModels:MauiOverlayWindowViewModel">
     <Grid>
         <controls:WindowsGraphicsView x:Name="graphicsView" 
                                  MouseDownCommand="{Binding MouseDownCommand}"

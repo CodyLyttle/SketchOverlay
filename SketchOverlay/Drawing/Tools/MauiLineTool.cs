@@ -1,7 +1,6 @@
 ﻿using SketchOverlay.Drawing.Drawables;
 using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Tools;
-using SketchOverlay.LibraryAdapters;
 
 namespace SketchOverlay.Drawing.Tools;
 
