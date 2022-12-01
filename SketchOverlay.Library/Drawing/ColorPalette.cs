@@ -4,9 +4,6 @@ namespace SketchOverlay.Library.Drawing;
 
 public class ColorPalette : IColorPalette
 {
-    private static ColorPalette? _instance;
-    public static ColorPalette Instance => _instance ??= new ColorPalette(); 
-    
     private static readonly Color[] DarkColors =
     {
         Color.Black,

@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing;
+using SketchOverlay.Drawing.Tools;
 using SketchOverlay.Library.Drawing;
+using SketchOverlay.Library.Drawing.Tools;
+using SketchOverlay.Library.ViewModels.Tools;
 using SketchOverlay.LibraryAdapters;
 using SketchOverlay.Views;
 
@@ -55,6 +58,10 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<IDrawingToolCollection<IDrawable, ImageSource>>(drawingToolCollection);
         builder.Services.AddSingleton<IDrawingToolRetriever<IDrawable>>(drawingToolCollection);
+        builder.Services.AddSingleton<IPaintBrushTool<IDrawable>>(drawingToolCollection.GetTool<MauiPaintBrushTool>());
+        builder.Services.AddSingleton<ILineTool<IDrawable>>(drawingToolCollection.GetTool<MauiLineTool>());
+        builder.Services.AddSingleton<IRectangleTool<IDrawable>>(drawingToolCollection.GetTool<MauiRectangleTool>());
+        builder.Services.AddSingleton<IColorPalette, ColorPalette>();
         builder.Services.AddSingleton<ICanvasManager<IDrawable>, MauiCanvasManager>();
         builder.Services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
         return builder;
@@ -64,6 +71,7 @@ public static class MauiProgram
     {
         builder.Services.AddSingleton<MauiOverlayWindowViewModel>();
         builder.Services.AddSingleton<MauiDrawingToolWindowViewModel>();
+        builder.Services.AddTransient<PaintBrushToolViewModel<IDrawable>>();
         return builder;
     }
 

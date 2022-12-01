@@ -3,13 +3,14 @@ using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Library.ViewModels.Tools;
-public class PaintBrushToolViewModel<TDrawing>
+
+public class LineToolViewModel<TDrawing>
 {
     public const float DefaultStrokeSize = 4f;
 
-    private readonly IPaintBrushTool<TDrawing> _tool;
+    private readonly ILineTool<TDrawing> _tool;
 
-    public PaintBrushToolViewModel(IColorPalette colorPalette, IPaintBrushTool<TDrawing> tool)
+    public LineToolViewModel(IColorPalette colorPalette, ILineTool<TDrawing> tool)
     {
         ColorPalette = colorPalette;
         _tool = tool;
@@ -18,7 +19,7 @@ public class PaintBrushToolViewModel<TDrawing>
     }
 
     public IColorPalette ColorPalette { get; set; }
-
+    
     public Color StrokeColor
     {
         get => _tool.StrokeColor;

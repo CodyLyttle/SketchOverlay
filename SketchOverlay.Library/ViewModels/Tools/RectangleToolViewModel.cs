@@ -3,21 +3,29 @@ using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Library.ViewModels.Tools;
-public class PaintBrushToolViewModel<TDrawing>
+
+public class RectangleToolViewModel<TDrawing>
 {
     public const float DefaultStrokeSize = 4f;
 
-    private readonly IPaintBrushTool<TDrawing> _tool;
+    private readonly IRectangleTool<TDrawing> _tool;
 
-    public PaintBrushToolViewModel(IColorPalette colorPalette, IPaintBrushTool<TDrawing> tool)
+    public RectangleToolViewModel(IColorPalette colorPalette, IRectangleTool<TDrawing> tool)
     {
         ColorPalette = colorPalette;
         _tool = tool;
+        _tool.FillColor = colorPalette.SecondaryColor;
         _tool.StrokeColor = colorPalette.PrimaryColor;
         _tool.StrokeSize = DefaultStrokeSize;
     }
 
     public IColorPalette ColorPalette { get; set; }
+
+    public Color FillColor
+    {
+        get => _tool.FillColor;
+        set => _tool.FillColor = value;
+    }
 
     public Color StrokeColor
     {

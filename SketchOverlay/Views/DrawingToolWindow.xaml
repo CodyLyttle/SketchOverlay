@@ -42,7 +42,9 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <local:ToolEditor x:Name="SelectedToolEditor"/>
+            <local:ToolEditor x:Name="SelectedToolEditor"
+                              BindingContext="{Binding SelectedToolInfo.Tool, Mode=OneWay,
+                Converter={StaticResource drawingToolViewModelConverter}}"/>
 
             <HorizontalStackLayout x:Name="CanvasActionLayout"
                                    HorizontalOptions="Center"
