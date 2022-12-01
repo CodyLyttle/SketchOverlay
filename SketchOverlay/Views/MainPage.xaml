@@ -5,7 +5,7 @@
              xmlns:viewModels="clr-namespace:SketchOverlay.ViewModels"
              xmlns:controls="clr-namespace:SketchOverlay.Controls"
              x:Class="SketchOverlay.Views.MainPage"
-             x:DataType="viewModels:OverlayWindowViewModel">
+             x:DataType="viewModels:MauiOverlayWindowViewModel">
     <Grid>
         <controls:WindowsGraphicsView x:Name="graphicsView" 
                                  MouseDownCommand="{Binding MouseDownCommand}"

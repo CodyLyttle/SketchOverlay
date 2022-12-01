@@ -7,6 +7,6 @@ public partial class DrawingToolWindow
     public DrawingToolWindow()
     {
         InitializeComponent();
-        BindingContext = MauiProgram.GetService<DrawingToolWindowViewModel>();
+        BindingContext = MauiProgram.GetService<MauiDrawingToolWindowViewModel>();
     }
 }

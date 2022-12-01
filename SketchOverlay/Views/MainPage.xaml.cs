@@ -1,15 +1,15 @@
-﻿using SketchOverlay.Drawing.Canvas;
+﻿using SketchOverlay.Library.Drawing;
 using SketchOverlay.ViewModels;
 
 namespace SketchOverlay.Views;
 
 public partial class MainPage : ContentPage
 {
-    public MainPage(OverlayWindowViewModel viewModel, IDrawingCanvas canvas)
+    public MainPage(MauiOverlayWindowViewModel viewModel, ICanvasManager<IDrawable> canvasManager)
     {
         InitializeComponent();
         BindingContext = viewModel;
-        graphicsView.Drawable = canvas;
-        canvas.RequestRedraw += (_, _) => graphicsView.Invalidate();
+        graphicsView.Drawable = canvasManager.DrawingOutput;
+        canvasManager.RequestRedraw += (_, _) => graphicsView.Invalidate();
     }
 }

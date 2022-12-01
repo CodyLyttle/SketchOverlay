@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:SketchOverlay.BindingConverters"
              xmlns:models="clr-namespace:SketchOverlay.Models"
              xmlns:viewModels="clr-namespace:SketchOverlay.ViewModels"
-             xmlns:drawing="clr-namespace:SketchOverlay.Drawing"
+             xmlns:local="clr-namespace:SketchOverlay.Views"
              x:Class="SketchOverlay.Views.DrawingToolWindow"
              HorizontalOptions="Start"
              VerticalOptions="Start"
-             x:DataType="viewModels:DrawingToolWindowViewModel"
+             x:DataType="viewModels:MauiDrawingToolWindowViewModel"
+             Margin="{Binding WindowMargin, Converter={StaticResource libThicknessConverter}}"
              InputTransparent="{Binding IsInputTransparent, Mode=OneWay}"
              IsVisible="{Binding IsVisible}"
-             Margin="{Binding WindowMargin}"
              WidthRequest="{Binding WindowWidth}"
              HeightRequest="{Binding WindowHeight}">
     <Border Background="#222222"
             Stroke="Green">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
+        <VerticalStackLayout>
             <CollectionView x:Name="DrawingToolsCollection"
-                            Grid.Row="0"
-                            ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingTools}"
-                            SelectedItem="{Binding SelectedDrawingTool}"
+                            ItemsSource="{Binding DrawingTools}"
+                            SelectedItem="{Binding SelectedToolInfo}"
                             ItemSizingStrategy="MeasureFirstItem"
                             SelectionMode="Single"
                             HorizontalOptions="Center"
@@ -37,13 +31,13 @@
                     <GridItemsLayout Orientation="Vertical"/>
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:DrawingToolInfo">
+                    <DataTemplate x:DataType="models:MauiDrawingToolInfo">
                         <Border ToolTipProperties.Text="{Binding Name}" 
                                 Stroke="#222222" 
                                 Background="#333333"
                                 HeightRequest="40"
                                 WidthRequest="40">
-                            <Image Source="{Binding Icon}"/>
+                            <Image Source="{Binding IconSource}"/>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
@@ -51,8 +45,8 @@
 
             <CollectionView x:Name="DrawingColorsCollection"
                             Grid.Row="1"
-                            ItemsSource="{x:Static drawing:GlobalDrawingValues.DrawingColors}"
-                            SelectedItem="{Binding SelectedDrawingColor, Mode=TwoWay}"
+                            ItemsSource="{Binding DrawingColors.Colors, Mode=OneTime}"
+                            SelectedItem="{Binding StrokeColor}"
                             ItemSizingStrategy="MeasureFirstItem"
                             SelectionMode="Single"
                             HorizontalOptions="Center">
@@ -69,16 +63,20 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- TODO: Add label displaying slider value -->
-            <Slider x:Name="drawSizeSlider"
-                    Grid.Row="2"
-                    VerticalOptions="Start"
-                    WidthRequest="240" 
-                    Minimum="{x:Static drawing:GlobalDrawingValues.MinimumDrawingSize}" 
-                    Maximum="{x:Static drawing:GlobalDrawingValues.MaximumDrawingSize}"
-                    Value="{Binding SelectedDrawingSize, Mode=TwoWay}"/>
 
-            <HorizontalStackLayout Grid.Row="3" 
+            <Label Text="{Binding StrokeSize}"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,-6,0,-4"/>
+
+                <Slider x:Name="drawSizeSlider"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Start"
+                        WidthRequest="240" 
+                        Minimum="1" 
+                        Maximum="64"
+                        Value="{Binding StrokeSize}"/>
+
+            <HorizontalStackLayout x:Name="CanvasActionLayout"
                                    HorizontalOptions="Center"
                                    Margin="0,0,0,12">
                 <Button x:Name="undoButton" Text="undo" 
@@ -92,6 +90,6 @@
                         IsEnabled="{Binding CanClear}"/>
             </HorizontalStackLayout>
 
-        </Grid>
+        </VerticalStackLayout>
     </Border>
 </ContentView>

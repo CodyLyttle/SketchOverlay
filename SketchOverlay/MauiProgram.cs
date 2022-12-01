@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Drawing;
-using SketchOverlay.Drawing.Canvas;
+using SketchOverlay.Drawing.Tools;
+using SketchOverlay.Library.Drawing;
+using SketchOverlay.Library.Drawing.Tools;
 using SketchOverlay.ViewModels;
 using SketchOverlay.Views;
 
@@ -50,15 +52,29 @@ public static class MauiProgram
 
     public static MauiAppBuilder AddServices(this MauiAppBuilder builder)
     {
-        builder.Services.AddSingleton<IDrawingCanvas>(new DrawingCanvas(GlobalDrawingValues.DefaultDrawingTool.Tool));
         builder.Services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
+
+        // Drawing
+        builder.Services.AddSingleton<IColorPalette<Color>, MauiColorPalette>();
+        builder.Services.AddSingleton<ICanvasProperties<Color>, MauiCanvasProperties>();
+        builder.Services.AddSingleton<ICanvasManager<IDrawable>, MauiCanvasManager>();
+
+        // Tools
+        DrawingToolCollection<IDrawable, ImageSource, Color> drawingToolCollection = 
+            new MauiDrawingToolFactory().CreateDrawingToolCollection();
+
+        builder.Services.AddSingleton<IDrawingToolCollection<IDrawable, ImageSource, Color>>(drawingToolCollection);
+        builder.Services.AddSingleton<IDrawingToolRetriever<IDrawable, Color>>(drawingToolCollection);
+        builder.Services.AddSingleton<IPaintBrushTool<IDrawable, Color>>(drawingToolCollection.GetTool<MauiPaintBrushTool>());
+        builder.Services.AddSingleton<ILineTool<IDrawable, Color>>(drawingToolCollection.GetTool<MauiLineTool>());
+        builder.Services.AddSingleton<IRectangleTool<IDrawable, Color>>(drawingToolCollection.GetTool<MauiRectangleTool>());
         return builder;
     }
 
     public static MauiAppBuilder AddViewModels(this MauiAppBuilder builder)
     {
-        builder.Services.AddSingleton<OverlayWindowViewModel>();
-        builder.Services.AddSingleton<DrawingToolWindowViewModel>();
+        builder.Services.AddSingleton<MauiOverlayWindowViewModel>();
+        builder.Services.AddSingleton<MauiDrawingToolWindowViewModel>();
         return builder;
     }
 
