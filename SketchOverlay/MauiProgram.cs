@@ -55,13 +55,14 @@ public static class MauiProgram
     {
         DrawingToolCollection<IDrawable, ImageSource> drawingToolCollection = 
             new MauiDrawingToolFactory().CreateDrawingToolCollection();
-
+        
         builder.Services.AddSingleton<IDrawingToolCollection<IDrawable, ImageSource>>(drawingToolCollection);
         builder.Services.AddSingleton<IDrawingToolRetriever<IDrawable>>(drawingToolCollection);
-        builder.Services.AddSingleton<IPaintBrushTool<IDrawable>>(drawingToolCollection.GetTool<MauiPaintBrushTool>());
-        builder.Services.AddSingleton<ILineTool<IDrawable>>(drawingToolCollection.GetTool<MauiLineTool>());
-        builder.Services.AddSingleton<IRectangleTool<IDrawable>>(drawingToolCollection.GetTool<MauiRectangleTool>());
-        builder.Services.AddSingleton<IColorPalette, ColorPalette>();
+        builder.Services.AddSingleton<IPaintBrushTool<IDrawable, Color>>(drawingToolCollection.GetTool<MauiPaintBrushTool>());
+        builder.Services.AddSingleton<ILineTool<IDrawable, Color>>(drawingToolCollection.GetTool<MauiLineTool>());
+        builder.Services.AddSingleton<IRectangleTool<IDrawable, Color>>(drawingToolCollection.GetTool<MauiRectangleTool>());
+        builder.Services.AddSingleton<DrawingColors>();
+        builder.Services.AddSingleton<IColorPalette<Color>, MauiColorPalette>();
         builder.Services.AddSingleton<ICanvasManager<IDrawable>, MauiCanvasManager>();
         builder.Services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
         return builder;
@@ -71,9 +72,9 @@ public static class MauiProgram
     {
         builder.Services.AddSingleton<MauiOverlayWindowViewModel>();
         builder.Services.AddSingleton<MauiDrawingToolWindowViewModel>();
-        builder.Services.AddTransient<PaintBrushToolViewModel<IDrawable>>();
-        builder.Services.AddTransient<LineToolViewModel<IDrawable>>();
-        builder.Services.AddTransient<RectangleToolViewModel<IDrawable>>();
+        builder.Services.AddTransient<PaintBrushToolViewModel<IDrawable, Color>>();
+        builder.Services.AddTransient<LineToolViewModel<IDrawable, Color>>();
+        builder.Services.AddTransient<RectangleToolViewModel<IDrawable, Color>>();
         return builder;
     }
 

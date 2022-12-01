@@ -4,25 +4,25 @@ using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Drawing;
 
-internal class MauiDrawingToolFactory : DrawingToolFactory<IDrawable, ImageSource>
+internal class MauiDrawingToolFactory : DrawingToolFactory<IDrawable, ImageSource, Color>
 {
     protected override ImageSource CreateImageSource(string fileName)
     {
         return ImageSource.FromFile(fileName);
     }
 
-    protected override IPaintBrushTool<IDrawable> CreatePaintBrushTool()
+    protected override IPaintBrushTool<IDrawable, Color> CreatePaintBrushTool()
     {
-        return new MauiPaintBrushTool(System.Drawing.Color.Aqua, 16);
+        return new MauiPaintBrushTool(Colors.Aqua, 16);
     }
 
-    protected override ILineTool<IDrawable> CreateLineTool()
+    protected override ILineTool<IDrawable, Color> CreateLineTool()
     {
-        return new MauiLineTool(System.Drawing.Color.BlanchedAlmond, 6);
+        return new MauiLineTool(Colors.Red, 6);
     }
 
-    protected override IRectangleTool<IDrawable>? CreateRectangleTool()
+    protected override IRectangleTool<IDrawable, Color>? CreateRectangleTool()
     {
-        return new MauiRectangleTool(System.Drawing.Color.Navy, System.Drawing.Color.Green, 6);
+        return new MauiRectangleTool(Colors.Navy, Colors.Green, 6);
     }
 }

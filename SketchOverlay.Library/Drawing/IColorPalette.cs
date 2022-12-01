@@ -2,11 +2,11 @@
 
 namespace SketchOverlay.Library.Drawing;
 
-public interface IColorPalette
+public interface IColorPalette<TColor>
 {
-    public IEnumerable<Color> Colors { get; }
-    public Color DefaultPrimaryColor { get; }
-    public Color DefaultSecondaryColor { get; }
-    public Color PrimaryColor { get; set; }
-    public Color SecondaryColor { get; set; }
+    public IEnumerable<TColor> Colors { get; }
+    public TColor DefaultPrimaryColor { get; }
+    public TColor DefaultSecondaryColor { get; }
+    public TColor PrimaryColor { get; set; }
+    public TColor SecondaryColor { get; set; }
 }

@@ -4,21 +4,21 @@ using SketchOverlay.LibraryAdapters;
 
 namespace SketchOverlay.Drawing.Tools;
 
-internal class MauiLineTool : DrawingTool<LineDrawable>, ILineTool<LineDrawable>
+internal class MauiLineTool : DrawingTool<LineDrawable>, ILineTool<LineDrawable, Color>
 {
-    public MauiLineTool(System.Drawing.Color strokeColor, float strokeSize)
+    public MauiLineTool(Color strokeColor, float strokeSize)
     {
         StrokeColor = strokeColor;
         StrokeSize = strokeSize;
     }
 
-    public System.Drawing.Color StrokeColor { get; set; }
+    public Color StrokeColor { get; set; }
     public float StrokeSize { get; set; }
 
     protected override LineDrawable DoCreateDrawing(System.Drawing.PointF startPoint)
     {
         LineDrawable drawable = base.DoCreateDrawing(startPoint);
-        drawable.StrokeColor = StrokeColor.ToMauiColor();
+        drawable.StrokeColor = StrokeColor;
         drawable.StrokeSize = StrokeSize;
         drawable.PointA = startPoint.ToMauiPointF();
         return drawable;

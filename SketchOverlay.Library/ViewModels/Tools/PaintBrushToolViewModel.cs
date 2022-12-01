@@ -1,15 +1,14 @@
-﻿using System.Drawing;
-using SketchOverlay.Library.Drawing;
+﻿using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Library.ViewModels.Tools;
-public class PaintBrushToolViewModel<TDrawing>
+public class PaintBrushToolViewModel<TDrawing, TColor>
 {
     public const float DefaultStrokeSize = 4f;
 
-    private readonly IPaintBrushTool<TDrawing> _tool;
+    private readonly IPaintBrushTool<TDrawing, TColor> _tool;
 
-    public PaintBrushToolViewModel(IColorPalette colorPalette, IPaintBrushTool<TDrawing> tool)
+    public PaintBrushToolViewModel(IColorPalette<TColor> colorPalette, IPaintBrushTool<TDrawing, TColor> tool)
     {
         ColorPalette = colorPalette;
         _tool = tool;
@@ -17,12 +16,20 @@ public class PaintBrushToolViewModel<TDrawing>
         _tool.StrokeSize = DefaultStrokeSize;
     }
 
-    public IColorPalette ColorPalette { get; set; }
+    public IColorPalette<TColor> ColorPalette { get; set; }
 
-    public Color StrokeColor
+    public TColor StrokeColor
     {
         get => _tool.StrokeColor;
-        set => _tool.StrokeColor = value;
+        set
+        {
+            // Prevent MAUI CollectionView from setting the StrokeColor to null on CollectionView initialization.
+            if (value is null)
+                return;
+
+            ColorPalette.PrimaryColor = value;
+            _tool.StrokeColor = value;
+        } 
     }
 
     public float StrokeSize

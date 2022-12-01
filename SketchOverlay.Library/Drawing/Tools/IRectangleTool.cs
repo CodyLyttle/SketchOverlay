@@ -2,9 +2,9 @@
 
 namespace SketchOverlay.Library.Drawing.Tools;
 
-public interface IRectangleTool<out TDrawing> : IDrawingTool<TDrawing>
+public interface IRectangleTool<out TDrawing, TColor> : IDrawingTool<TDrawing>
 {
-    public Color StrokeColor { get; set; }
-    public Color FillColor { get; set; }
+    public TColor StrokeColor { get; set; }
+    public TColor FillColor { get; set; }
     public float StrokeSize { get; set; }
 }

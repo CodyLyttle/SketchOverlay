@@ -4,24 +4,24 @@ using SketchOverlay.LibraryAdapters;
 
 namespace SketchOverlay.Drawing.Tools;
 
-internal class MauiRectangleTool : DrawingTool<RectangleDrawable>, IRectangleTool<RectangleDrawable>
+internal class MauiRectangleTool : DrawingTool<RectangleDrawable>, IRectangleTool<RectangleDrawable, Color>
 {
-    public MauiRectangleTool(System.Drawing.Color fillColor, System.Drawing.Color strokeColor, float strokeSize)
+    public MauiRectangleTool(Color fillColor, Color strokeColor, float strokeSize)
     {
         FillColor = fillColor;
         StrokeColor = strokeColor;
         StrokeSize = strokeSize;
     }
 
-    public System.Drawing.Color FillColor { get; set; }
-    public System.Drawing.Color StrokeColor { get; set; }
+    public Color FillColor { get; set; }
+    public Color StrokeColor { get; set; }
     public float StrokeSize { get; set; }
 
     protected override RectangleDrawable DoCreateDrawing(System.Drawing.PointF startPoint)
     {
         RectangleDrawable drawable =  base.DoCreateDrawing(startPoint);
-        drawable.FillColor = FillColor.ToMauiColor();
-        drawable.StrokeColor = StrokeColor.ToMauiColor();
+        drawable.FillColor = FillColor;
+        drawable.StrokeColor = StrokeColor;
         drawable.StrokeSize = StrokeSize;
         drawable.PointA = startPoint.ToMauiPointF();
         return drawable;

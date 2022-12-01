@@ -13,9 +13,9 @@ internal class DrawingToolToViewModelConverter : IValueConverter
 
         return tool switch
         {
-            MauiPaintBrushTool => MauiProgram.GetService<PaintBrushToolViewModel<IDrawable>>(),
-            MauiLineTool => MauiProgram.GetService<LineToolViewModel<IDrawable>>(),
-            MauiRectangleTool => MauiProgram.GetService<RectangleToolViewModel<IDrawable>>(),
+            MauiPaintBrushTool => MauiProgram.GetService<PaintBrushToolViewModel<IDrawable, Color>>(),
+            MauiLineTool => MauiProgram.GetService<LineToolViewModel<IDrawable, Color>>(),
+            MauiRectangleTool => MauiProgram.GetService<RectangleToolViewModel<IDrawable, Color>>(),
             _ => throw new NotImplementedException("Drawing tool conversion not implemented")
         };
     }

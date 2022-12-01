@@ -23,6 +23,7 @@ public class DrawingToolCollection<TDrawing, TImageSource> : IDrawingToolCollect
     public IDrawingTool<TDrawing> SelectedTool => SelectedToolInfo.Tool;
 
     public DrawingToolInfo<TDrawing, TImageSource> SelectedToolInfo { get; set; }
+
     public TTool GetTool<TTool>() where TTool : IDrawingTool<TDrawing>
     {
         foreach (DrawingToolInfo<TDrawing, TImageSource> toolInfo in this)

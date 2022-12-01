@@ -1,16 +1,15 @@
-﻿using System.Drawing;
-using SketchOverlay.Library.Drawing;
+﻿using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Library.ViewModels.Tools;
 
-public class RectangleToolViewModel<TDrawing>
+public class RectangleToolViewModel<TDrawing, TColor>
 {
     public const float DefaultStrokeSize = 4f;
 
-    private readonly IRectangleTool<TDrawing> _tool;
+    private readonly IRectangleTool<TDrawing, TColor> _tool;
 
-    public RectangleToolViewModel(IColorPalette colorPalette, IRectangleTool<TDrawing> tool)
+    public RectangleToolViewModel(IColorPalette<TColor> colorPalette, IRectangleTool<TDrawing, TColor> tool)
     {
         ColorPalette = colorPalette;
         _tool = tool;
@@ -19,18 +18,34 @@ public class RectangleToolViewModel<TDrawing>
         _tool.StrokeSize = DefaultStrokeSize;
     }
 
-    public IColorPalette ColorPalette { get; set; }
-
-    public Color FillColor
+    public IColorPalette<TColor> ColorPalette { get; set; }
+    
+    public TColor FillColor
     {
         get => _tool.FillColor;
-        set => _tool.FillColor = value;
+        set
+        {
+            // Prevent MAUI CollectionView from setting the FillColor to null on CollectionView initialization.
+            if (value is null)
+                return;
+
+            ColorPalette.SecondaryColor = value;
+            _tool.FillColor = value;
+        }
     }
 
-    public Color StrokeColor
+    public TColor StrokeColor
     {
         get => _tool.StrokeColor;
-        set => _tool.StrokeColor = value;
+        set
+        {
+            // Prevent MAUI CollectionView from setting the StrokeColor to null on CollectionView initialization.
+            if (value is null)
+                return;
+
+            ColorPalette.PrimaryColor = value;
+            _tool.StrokeColor = value;
+        }
     }
 
     public float StrokeSize

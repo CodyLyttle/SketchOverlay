@@ -3,7 +3,7 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Library.Drawing;
 
-public abstract class DrawingToolFactory<TDrawing, TImageSource>
+public abstract class DrawingToolFactory<TDrawing, TImageSource, TColor>
 {
     // We return the concrete collection because it contains multiple interfaces, which simplifies dependency injection.
     public DrawingToolCollection<TDrawing, TImageSource> CreateDrawingToolCollection()
@@ -29,17 +29,17 @@ public abstract class DrawingToolFactory<TDrawing, TImageSource>
         });
     }
 
-    protected virtual IPaintBrushTool<TDrawing>? CreatePaintBrushTool()
+    protected virtual IPaintBrushTool<TDrawing, TColor>? CreatePaintBrushTool()
     {
         return null;
     }
 
-    protected virtual ILineTool<TDrawing>? CreateLineTool()
+    protected virtual ILineTool<TDrawing, TColor>? CreateLineTool()
     {
         return null;
     }
 
-    protected virtual IRectangleTool<TDrawing>? CreateRectangleTool()
+    protected virtual IRectangleTool<TDrawing, TColor>? CreateRectangleTool()
     {
         return null;
     }

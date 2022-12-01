@@ -2,7 +2,7 @@
 
 namespace SketchOverlay.Library.Drawing;
 
-public class ColorPalette : IColorPalette
+public class DrawingColors : IColorPalette<Color>
 {
     private static readonly Color[] DarkColors =
     {
@@ -34,7 +34,7 @@ public class ColorPalette : IColorPalette
         Color.PaleVioletRed
     };
 
-    public ColorPalette()
+    public DrawingColors()
     {
         PrimaryColor = DefaultPrimaryColor;
         SecondaryColor = DefaultSecondaryColor;

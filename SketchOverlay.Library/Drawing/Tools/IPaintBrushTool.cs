@@ -1,9 +1,7 @@
-﻿using System.Drawing;
+﻿namespace SketchOverlay.Library.Drawing.Tools;
 
-namespace SketchOverlay.Library.Drawing.Tools;
-
-public interface IPaintBrushTool<out TDrawing> : IDrawingTool<TDrawing>
+public interface IPaintBrushTool<out TDrawing, TColor> : IDrawingTool<TDrawing>
 {
-     Color StrokeColor { get; set; }
+     TColor StrokeColor { get; set; }
      float StrokeSize { get; set; }
 }
