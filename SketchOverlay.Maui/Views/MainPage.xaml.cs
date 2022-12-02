@@ -1,4 +1,4 @@
-﻿using SketchOverlay.Library.Drawing;
+﻿using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Maui.ViewModels;
 
 namespace SketchOverlay.Maui.Views;

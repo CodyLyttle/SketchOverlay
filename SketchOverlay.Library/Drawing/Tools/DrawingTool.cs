@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using SketchOverlay.Library.Drawing.Canvas;
 
 namespace SketchOverlay.Library.Drawing.Tools;
 

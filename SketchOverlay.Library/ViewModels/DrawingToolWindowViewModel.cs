@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Library.Drawing;
+using SketchOverlay.Library.Drawing.Canvas;
+using SketchOverlay.Library.Drawing.Tools;
 using SketchOverlay.Library.Messages;
 using SketchOverlay.Library.Models;
 

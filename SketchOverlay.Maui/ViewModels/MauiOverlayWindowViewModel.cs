@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using SketchOverlay.Library.Drawing;
+using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.ViewModels;
 
 namespace SketchOverlay.Maui.ViewModels;

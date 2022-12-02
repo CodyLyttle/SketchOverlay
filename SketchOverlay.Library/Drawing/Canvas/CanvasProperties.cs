@@ -1,4 +1,4 @@
-﻿namespace SketchOverlay.Library.Drawing;
+﻿namespace SketchOverlay.Library.Drawing.Canvas;
 
 public class CanvasProperties<TColor> : ICanvasProperties<TColor>
 {

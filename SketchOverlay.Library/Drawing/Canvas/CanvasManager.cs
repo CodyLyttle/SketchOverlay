@@ -1,7 +1,7 @@
 using System.Drawing;
 using SketchOverlay.Library.Drawing.Tools;
 
-namespace SketchOverlay.Library.Drawing;
+namespace SketchOverlay.Library.Drawing.Canvas;
 
 public class CanvasManager<TDrawStack, TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
     where TDrawStack : IDrawingStack<TDrawing, TOutput>, new()
@@ -27,7 +27,7 @@ public class CanvasManager<TDrawStack, TDrawing, TOutput, TColor> : ICanvasManag
     public event EventHandler<bool>? CanUndoChanged;
 
     private IDrawingTool<TDrawing, TColor> DrawingTool => _toolRetriever.SelectedTool;
-    
+
     protected bool IsDrawing { get; private set; }
 
     public TOutput DrawingOutput => _drawStack.Output;
@@ -35,7 +35,7 @@ public class CanvasManager<TDrawStack, TDrawing, TOutput, TColor> : ICanvasManag
     public void Undo()
     {
         if (_drawStack.Count is 0) return;
-        
+
         _redoStack.Push(_drawStack.PopDrawing());
         Update();
     }

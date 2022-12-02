@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Library.Drawing;
+using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.Drawing.Tools;
 using SketchOverlay.Maui.Drawing;
 using SketchOverlay.Maui.Drawing.Tools;

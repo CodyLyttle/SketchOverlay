@@ -1,7 +1,6 @@
-﻿using SketchOverlay.Library.Drawing.Tools;
-using SketchOverlay.Library.Models;
+﻿using SketchOverlay.Library.Models;
 
-namespace SketchOverlay.Library.Drawing;
+namespace SketchOverlay.Library.Drawing.Tools;
 
 public abstract class DrawingToolFactory<TDrawing, TImageSource, TColor>
 {

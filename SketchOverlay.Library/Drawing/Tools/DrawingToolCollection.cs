@@ -1,8 +1,7 @@
 ﻿using System.Collections;
-using SketchOverlay.Library.Drawing.Tools;
 using SketchOverlay.Library.Models;
 
-namespace SketchOverlay.Library.Drawing;
+namespace SketchOverlay.Library.Drawing.Tools;
 
 public class DrawingToolCollection<TDrawing, TImageSource, TColor> : IDrawingToolCollection<TDrawing, TImageSource, TColor>,
     IDrawingToolRetriever<TDrawing, TColor>
@@ -32,7 +31,7 @@ public class DrawingToolCollection<TDrawing, TImageSource, TColor> : IDrawingToo
                 return tool;
         }
 
-        throw new ArgumentOutOfRangeException(nameof(TTool), 
+        throw new ArgumentOutOfRangeException(nameof(TTool),
             $"{typeof(TTool).Name} doesn't exist");
     }
 

@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace SketchOverlay.Library.Drawing;
+namespace SketchOverlay.Library.Drawing.Canvas;
 
 public interface ICanvasManager<out TOutput>
 {

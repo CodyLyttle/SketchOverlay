@@ -1,4 +1,5 @@
-﻿using SketchOverlay.Library.Drawing;
+﻿using SketchOverlay.Library.Drawing.Canvas;
+using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Maui.Drawing;
 
