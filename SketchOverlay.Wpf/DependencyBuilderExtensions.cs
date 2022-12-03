@@ -1,12 +1,10 @@
-﻿using System.Windows.Media;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.Drawing.Tools;
 using SketchOverlay.Wpf.Drawing;
 using SketchOverlay.Wpf.ViewModels;
-using Color = System.Drawing.Color;
 
 namespace SketchOverlay.Wpf;
 
@@ -17,16 +15,16 @@ public static class DependencyBuilderExtensions
         builder.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
 
         // Drawing
-        builder.AddSingleton<IColorPalette<Color>, DrawingColors>();
-        builder.AddSingleton<ICanvasProperties<Color>, CanvasProperties<Color>>();
-        builder.AddSingleton<ICanvasManager<DrawingGroup>, WpfCanvasManager>();
+        builder.AddSingleton<IColorPalette<WpfColor>, DrawingColors>();
+        builder.AddSingleton<ICanvasProperties<WpfColor>, CanvasProperties<WpfColor>>();
+        builder.AddSingleton<ICanvasManager<WpfDrawingOutput>, WpfCanvasManager>();
 
         // Tools
-        DrawingToolCollection<System.Windows.Media.Drawing, ImageSource, Color> drawingToolCollection =
+        DrawingToolCollection<WpfDrawing, WpfImageSource, WpfColor> drawingToolCollection =
             new WpfDrawingToolFactory().CreateDrawingToolCollection();
 
-        builder.AddSingleton<IDrawingToolCollection<System.Windows.Media.Drawing, ImageSource, Color>>(drawingToolCollection);
-        builder.AddSingleton<IDrawingToolRetriever<System.Windows.Media.Drawing, Color>>(drawingToolCollection);
+        builder.AddSingleton<IDrawingToolCollection<WpfDrawing, WpfImageSource, WpfColor>>(drawingToolCollection);
+        builder.AddSingleton<IDrawingToolRetriever<WpfDrawing, WpfColor>>(drawingToolCollection);
         return builder;
     }
 

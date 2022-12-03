@@ -6,7 +6,7 @@ using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Wpf.Drawing;
 
-internal class WpfDrawingToolFactory : DrawingToolFactory<System.Windows.Media.Drawing, ImageSource, System.Drawing.Color>
+internal class WpfDrawingToolFactory : DrawingToolFactory<WpfDrawing, WpfImageSource, WpfColor>
 {
     protected override ImageSource CreateImageSource(string fileName)
     {
@@ -15,21 +15,22 @@ internal class WpfDrawingToolFactory : DrawingToolFactory<System.Windows.Media.D
         image.UriSource = new Uri(
             Path.Combine("..", "Resources", "Images", "DrawingTools", fileName),
             UriKind.Relative);
+       
         image.EndInit();
         return image;
     }
 
-    protected override ILineTool<System.Windows.Media.Drawing, System.Drawing.Color>? CreateLineTool()
+    protected override ILineTool<WpfDrawing, WpfColor>? CreateLineTool()
     {
         return base.CreateLineTool();
     }
 
-    protected override IPaintBrushTool<System.Windows.Media.Drawing, System.Drawing.Color>? CreatePaintBrushTool()
+    protected override IPaintBrushTool<WpfDrawing, WpfColor>? CreatePaintBrushTool()
     {
         return base.CreatePaintBrushTool();
     }
 
-    protected override IRectangleTool<System.Windows.Media.Drawing, System.Drawing.Color>? CreateRectangleTool()
+    protected override IRectangleTool<WpfDrawing, WpfColor>? CreateRectangleTool()
     {
         return base.CreateRectangleTool();
     }

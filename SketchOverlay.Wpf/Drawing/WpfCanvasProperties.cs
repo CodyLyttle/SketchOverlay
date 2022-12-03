@@ -1,12 +1,11 @@
-﻿using System.Drawing;
-using SketchOverlay.Library.Drawing;
+﻿using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Canvas;
 
 namespace SketchOverlay.Wpf.Drawing;
 
-internal class WpfCanvasProperties : CanvasProperties<Color>
+internal class WpfCanvasProperties : CanvasProperties<WpfColor>
 {
-    public WpfCanvasProperties(IColorPalette<Color> drawingColors) : base(drawingColors)
+    public WpfCanvasProperties(IColorPalette<WpfColor> drawingColors) : base(drawingColors)
     {
     }
 }

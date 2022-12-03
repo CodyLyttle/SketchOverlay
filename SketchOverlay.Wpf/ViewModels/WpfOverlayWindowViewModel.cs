@@ -1,13 +1,12 @@
-﻿using System.Windows.Media;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.ViewModels;
 
 namespace SketchOverlay.Wpf.ViewModels;
 
-internal class WpfOverlayWindowViewModel : OverlayWindowViewModel<System.Windows.Media.Drawing, DrawingGroup, ImageSource, Color>
+internal class WpfOverlayWindowViewModel : OverlayWindowViewModel<WpfDrawing, WpfDrawingOutput, WpfImageSource, WpfColor>
 {
-    public WpfOverlayWindowViewModel(ICanvasManager<DrawingGroup> canvasManager, IMessenger messenger) 
+    public WpfOverlayWindowViewModel(ICanvasManager<WpfDrawingOutput> canvasManager, IMessenger messenger) 
         : base(canvasManager, messenger)
     {
     }
