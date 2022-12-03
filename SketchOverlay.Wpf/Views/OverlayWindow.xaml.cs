@@ -1,15 +1,14 @@
 ﻿using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+using SketchOverlay.Wpf.ViewModels;
 
-namespace SketchOverlay.Wpf.Views
+namespace SketchOverlay.Wpf.Views;
+
+public partial class OverlayWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for OverlayWindow.xaml
-    /// </summary>
-    public partial class OverlayWindow : Window
+    public OverlayWindow()
     {
-        public OverlayWindow()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        DataContext = App.Current.Services.GetService<WpfOverlayWindowViewModel>();
     }
 }

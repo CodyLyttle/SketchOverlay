@@ -14,5 +14,7 @@ public partial class App : Application
             .BuildServiceProvider();
     }
 
+    public new static App Current => (App)Application.Current;
+
     public IServiceProvider Services { get; }
 }
