@@ -4,6 +4,16 @@ namespace SketchOverlay.Wpf;
 
 internal static class TypeConverterExtensions
 {
+    public static System.Windows.Point ToWpfPoint(this System.Drawing.PointF drawingPoint)
+    {
+        return new System.Windows.Point(drawingPoint.X, drawingPoint.Y);
+    }
+
+    public static System.Drawing.PointF ToDrawingPointF(this System.Windows.Point wpfPoint)
+    {
+        return new System.Drawing.PointF((float)wpfPoint.X, (float)wpfPoint.Y);
+    }
+
     public static Color ToWindowsColor(this System.Drawing.Color drawingColor)
     {
         return Color.FromArgb(drawingColor.A, drawingColor.R, drawingColor.G, drawingColor.B);

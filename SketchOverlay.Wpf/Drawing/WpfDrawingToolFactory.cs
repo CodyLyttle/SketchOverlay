@@ -23,16 +23,16 @@ internal class WpfDrawingToolFactory : DrawingToolFactory<WpfDrawing, WpfImageSo
 
     protected override ILineTool<WpfDrawing, WpfBrush>? CreateLineTool()
     {
-        return base.CreateLineTool();
+        return new WpfLineTool();
     }
 
     protected override IPaintBrushTool<WpfDrawing, WpfBrush>? CreatePaintBrushTool()
     {
-        return base.CreatePaintBrushTool();
+        return new WpfPaintbrushTool();
     }
 
     protected override IRectangleTool<WpfDrawing, WpfBrush>? CreateRectangleTool()
     {
-        return base.CreateRectangleTool();
+        return new WpfRectangleTool();
     }
 }
