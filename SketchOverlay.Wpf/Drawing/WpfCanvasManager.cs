@@ -3,10 +3,10 @@ using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Wpf.Drawing;
 
-internal class WpfCanvasManager : CanvasManager<DrawingStack, WpfDrawing, WpfDrawingOutput, WpfColor>
+internal class WpfCanvasManager : CanvasManager<DrawingStack, WpfDrawing, WpfDrawingOutput, WpfBrush>
 {
-    public WpfCanvasManager(ICanvasProperties<WpfColor> canvasProperties,
-        IDrawingToolRetriever<WpfDrawing, WpfColor> toolRetriever) 
+    public WpfCanvasManager(ICanvasProperties<WpfBrush> canvasProperties,
+        IDrawingToolRetriever<WpfDrawing, WpfBrush> toolRetriever) 
         : base(canvasProperties, toolRetriever)
     {
     }

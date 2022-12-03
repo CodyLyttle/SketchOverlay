@@ -15,16 +15,16 @@ public static class DependencyBuilderExtensions
         builder.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
 
         // Drawing
-        builder.AddSingleton<IColorPalette<WpfColor>, DrawingColors>();
-        builder.AddSingleton<ICanvasProperties<WpfColor>, CanvasProperties<WpfColor>>();
+        builder.AddSingleton<IColorPalette<WpfBrush>, WpfColorPalette>();
+        builder.AddSingleton<ICanvasProperties<WpfBrush>, CanvasProperties<WpfBrush>>();
         builder.AddSingleton<ICanvasManager<WpfDrawingOutput>, WpfCanvasManager>();
 
         // Tools
-        DrawingToolCollection<WpfDrawing, WpfImageSource, WpfColor> drawingToolCollection =
+        DrawingToolCollection<WpfDrawing, WpfImageSource, WpfBrush> drawingToolCollection =
             new WpfDrawingToolFactory().CreateDrawingToolCollection();
 
-        builder.AddSingleton<IDrawingToolCollection<WpfDrawing, WpfImageSource, WpfColor>>(drawingToolCollection);
-        builder.AddSingleton<IDrawingToolRetriever<WpfDrawing, WpfColor>>(drawingToolCollection);
+        builder.AddSingleton<IDrawingToolCollection<WpfDrawing, WpfImageSource, WpfBrush>>(drawingToolCollection);
+        builder.AddSingleton<IDrawingToolRetriever<WpfDrawing, WpfBrush>>(drawingToolCollection);
         return builder;
     }
 

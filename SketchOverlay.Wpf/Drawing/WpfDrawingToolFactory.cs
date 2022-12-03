@@ -3,10 +3,11 @@ using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SketchOverlay.Library.Drawing.Tools;
+using SketchOverlay.Wpf.Drawing.Tools;
 
 namespace SketchOverlay.Wpf.Drawing;
 
-internal class WpfDrawingToolFactory : DrawingToolFactory<WpfDrawing, WpfImageSource, WpfColor>
+internal class WpfDrawingToolFactory : DrawingToolFactory<WpfDrawing, WpfImageSource, WpfBrush>
 {
     protected override ImageSource CreateImageSource(string fileName)
     {
@@ -20,17 +21,17 @@ internal class WpfDrawingToolFactory : DrawingToolFactory<WpfDrawing, WpfImageSo
         return image;
     }
 
-    protected override ILineTool<WpfDrawing, WpfColor>? CreateLineTool()
+    protected override ILineTool<WpfDrawing, WpfBrush>? CreateLineTool()
     {
         return base.CreateLineTool();
     }
 
-    protected override IPaintBrushTool<WpfDrawing, WpfColor>? CreatePaintBrushTool()
+    protected override IPaintBrushTool<WpfDrawing, WpfBrush>? CreatePaintBrushTool()
     {
         return base.CreatePaintBrushTool();
     }
 
-    protected override IRectangleTool<WpfDrawing, WpfColor>? CreateRectangleTool()
+    protected override IRectangleTool<WpfDrawing, WpfBrush>? CreateRectangleTool()
     {
         return base.CreateRectangleTool();
     }

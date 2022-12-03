@@ -4,7 +4,7 @@ using SketchOverlay.Library.ViewModels;
 
 namespace SketchOverlay.Wpf.ViewModels;
 
-internal class WpfOverlayWindowViewModel : OverlayWindowViewModel<WpfDrawing, WpfDrawingOutput, WpfImageSource, WpfColor>
+internal class WpfOverlayWindowViewModel : OverlayWindowViewModel<WpfDrawing, WpfDrawingOutput, WpfImageSource, WpfBrush>
 {
     public WpfOverlayWindowViewModel(ICanvasManager<WpfDrawingOutput> canvasManager, IMessenger messenger) 
         : base(canvasManager, messenger)

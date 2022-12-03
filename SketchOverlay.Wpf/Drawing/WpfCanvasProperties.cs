@@ -3,9 +3,9 @@ using SketchOverlay.Library.Drawing.Canvas;
 
 namespace SketchOverlay.Wpf.Drawing;
 
-internal class WpfCanvasProperties : CanvasProperties<WpfColor>
+internal class WpfCanvasProperties : CanvasProperties<WpfBrush>
 {
-    public WpfCanvasProperties(IColorPalette<WpfColor> drawingColors) : base(drawingColors)
+    public WpfCanvasProperties(IColorPalette<WpfBrush> drawingColors) : base(drawingColors)
     {
     }
 }
