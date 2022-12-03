@@ -29,10 +29,23 @@ public abstract class DrawingTool<TDrawing, TColor> : IDrawingTool<TDrawing, TCo
         return CurrentDrawing;
     }
 
-    public abstract void UpdateDrawing(PointF currentPoint);
+    public void UpdateDrawing(PointF currentPoint)
+    {
+        if (_currentDrawing is null)
+            throw new InvalidOperationException(
+                "Cannot update a drawing before creating a drawing");
+
+        DoUpdateDrawing(currentPoint);
+    }
+
+    public abstract void DoUpdateDrawing(PointF currentPoint);
 
     public void FinishDrawing()
     {
+        if (_currentDrawing is null)
+            throw new InvalidOperationException(
+                "Cannot finish a drawing before creating a drawing");
+
         DoFinishDrawing();
         _currentDrawing = null;
     }

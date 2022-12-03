@@ -15,7 +15,7 @@ internal class MauiLineTool : DrawingTool<LineDrawable, MauiColor>, ILineTool<Li
         return drawable;
     }
 
-    public override void UpdateDrawing(System.Drawing.PointF currentPoint)
+    public override void DoUpdateDrawing(System.Drawing.PointF currentPoint)
     {
         CurrentDrawing.PointB = currentPoint.ToMauiPointF();
     }

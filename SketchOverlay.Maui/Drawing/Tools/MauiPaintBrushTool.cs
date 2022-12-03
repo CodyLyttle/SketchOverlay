@@ -14,7 +14,7 @@ internal class MauiPaintBrushTool : DrawingTool<PaintBrushDrawable, MauiColor>, 
         return drawable;
     }
 
-    public override void UpdateDrawing(System.Drawing.PointF currentPoint)
+    public override void DoUpdateDrawing(System.Drawing.PointF currentPoint)
     {
         CurrentDrawing.AddDrawingPoint(currentPoint.ToMauiPointF());
     }

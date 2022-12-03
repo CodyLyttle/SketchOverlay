@@ -16,7 +16,7 @@ internal class MauiRectangleTool : DrawingTool<RectangleDrawable, MauiColor>, IR
         return drawable;
     }
 
-    public override void UpdateDrawing(System.Drawing.PointF currentPoint)
+    public override void DoUpdateDrawing(System.Drawing.PointF currentPoint)
     {
         CurrentDrawing.PointB = currentPoint.ToMauiPointF();
     }
