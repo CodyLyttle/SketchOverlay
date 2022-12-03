@@ -1,4 +1,6 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
+using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Wpf;
 
@@ -36,5 +38,18 @@ internal static class TypeConverterExtensions
         Pen pen = new(brush, size);
         if(freeze) pen.Freeze();
         return pen;
+    }
+
+    public static MouseButton ToLibraryMouseButton(this System.Windows.Input.MouseButton button)
+    {
+        return button switch
+        {
+            System.Windows.Input.MouseButton.Left => MouseButton.Left,
+            System.Windows.Input.MouseButton.Right => MouseButton.Right,
+            System.Windows.Input.MouseButton.Middle => MouseButton.Middle,
+            System.Windows.Input.MouseButton.XButton1 => MouseButton.XButton1,
+            System.Windows.Input.MouseButton.XButton2 => MouseButton.XButton2,
+            _ => throw new ArgumentOutOfRangeException(nameof(button), button, null)
+        };
     }
 }

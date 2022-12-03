@@ -4,9 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SketchOverlay.Wpf.Views"
+        xmlns:viewmodel="clr-namespace:SketchOverlay.Wpf.ViewModels"
+        xmlns:controls="clr-namespace:SketchOverlay.Wpf.Controls"
         mc:Ignorable="d"
         Title="OverlayWindow" Height="450" Width="800">
     <Grid>
-
+        <controls:DrawingCanvas x:Name="drawingCanvas"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                MouseDownCommand="{Binding MouseDownCommand}"
+                                MouseDragCommand="{Binding MouseDragCommand}"
+                                MouseUpCommand="{Binding MouseUpCommand}"/>
     </Grid>
 </Window>
