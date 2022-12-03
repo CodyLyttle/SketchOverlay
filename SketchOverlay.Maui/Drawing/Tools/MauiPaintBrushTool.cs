@@ -4,9 +4,9 @@ using SketchOverlay.Maui.Drawing.Drawables;
 
 namespace SketchOverlay.Maui.Drawing.Tools;
 
-internal class MauiPaintBrushTool : DrawingTool<PaintBrushDrawable, Color>, IPaintBrushTool<PaintBrushDrawable, Color>
+internal class MauiPaintBrushTool : DrawingTool<PaintBrushDrawable, MauiColor>, IPaintBrushTool<PaintBrushDrawable, MauiColor>
 {
-    protected override PaintBrushDrawable DoCreateDrawing(ICanvasProperties<Color> canvasProps, System.Drawing.PointF startPoint)
+    protected override PaintBrushDrawable DoCreateDrawing(ICanvasProperties<MauiColor> canvasProps, System.Drawing.PointF startPoint)
     {
         PaintBrushDrawable drawable = base.DoCreateDrawing(canvasProps, startPoint);
         drawable.StrokeColor = canvasProps.StrokeColor;

@@ -1,9 +1,9 @@
 ﻿namespace SketchOverlay.Maui.Drawing.Drawables;
 
-internal class RectangleDrawable : IDrawable
+internal class RectangleDrawable : MauiDrawing
 {
-    public Color FillColor { get; set; } = Colors.Transparent;
-    public Color StrokeColor { get; set; } = Colors.Gray;
+    public MauiColor FillColor { get; set; } = Colors.Transparent;
+    public MauiColor StrokeColor { get; set; } = Colors.Gray;
     public float StrokeSize { get; set; } = 4;
     public PointF PointA { get; set; }
     public PointF PointB { get; set; }

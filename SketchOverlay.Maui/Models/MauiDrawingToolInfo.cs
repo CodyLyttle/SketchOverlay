@@ -3,9 +3,9 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Maui.Models;
 
-internal class MauiDrawingToolInfo : DrawingToolInfo<IDrawable, ImageSource, Color>
+internal class MauiDrawingToolInfo : DrawingToolInfo<MauiDrawing, MauiImageSource, MauiColor>
 {
-    public MauiDrawingToolInfo(IDrawingTool<IDrawable, Color> tool, ImageSource iconSource, string name)
+    public MauiDrawingToolInfo(IDrawingTool<MauiDrawing, MauiColor> tool, MauiImageSource iconSource, string name)
         : base(tool, iconSource, name)
     {
     }

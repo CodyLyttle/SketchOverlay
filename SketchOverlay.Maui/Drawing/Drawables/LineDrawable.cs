@@ -1,8 +1,8 @@
 ﻿namespace SketchOverlay.Maui.Drawing.Drawables;
 
-internal class LineDrawable : IDrawable
+internal class LineDrawable : MauiDrawing
 {
-    public Color StrokeColor { get; set; } = Colors.Gray;
+    public MauiColor StrokeColor { get; set; } = Colors.Gray;
     public float StrokeSize { get; set; } = 4;
     public PointF PointA { get; set; }
     public PointF PointB { get; set; }

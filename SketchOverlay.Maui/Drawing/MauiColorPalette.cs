@@ -2,7 +2,7 @@
 
 namespace SketchOverlay.Maui.Drawing;
 
-internal class MauiColorPalette : IColorPalette<Color>
+internal class MauiColorPalette : IColorPalette<MauiColor>
 {
     public MauiColorPalette()
     {
@@ -14,9 +14,9 @@ internal class MauiColorPalette : IColorPalette<Color>
         SecondaryColor = colors.SecondaryColor.ToMauiColor();
     }
 
-    public IEnumerable<Color> Colors { get; }
-    public Color DefaultPrimaryColor { get; }
-    public Color DefaultSecondaryColor { get; }
-    public Color PrimaryColor { get; set; }
-    public Color SecondaryColor { get; set; }
+    public IEnumerable<MauiColor> Colors { get; }
+    public MauiColor DefaultPrimaryColor { get; }
+    public MauiColor DefaultSecondaryColor { get; }
+    public MauiColor PrimaryColor { get; set; }
+    public MauiColor SecondaryColor { get; set; }
 }

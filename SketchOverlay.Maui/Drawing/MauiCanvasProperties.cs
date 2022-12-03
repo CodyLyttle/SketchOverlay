@@ -3,9 +3,9 @@ using SketchOverlay.Library.Drawing.Canvas;
 
 namespace SketchOverlay.Maui.Drawing;
 
-public class MauiCanvasProperties : CanvasProperties<Color>
+public class MauiCanvasProperties : CanvasProperties<MauiColor>
 {
-    public MauiCanvasProperties(IColorPalette<Color> drawingColors) : base(drawingColors)
+    public MauiCanvasProperties(IColorPalette<MauiColor> drawingColors) : base(drawingColors)
     {
     }
 }

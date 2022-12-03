@@ -56,19 +56,19 @@ public static class MauiProgram
         builder.Services.AddSingleton<IMessenger>(WeakReferenceMessenger.Default);
 
         // Drawing
-        builder.Services.AddSingleton<IColorPalette<Color>, MauiColorPalette>();
-        builder.Services.AddSingleton<ICanvasProperties<Color>, MauiCanvasProperties>();
-        builder.Services.AddSingleton<ICanvasManager<IDrawable>, MauiCanvasManager>();
+        builder.Services.AddSingleton<IColorPalette<MauiColor>, MauiColorPalette>();
+        builder.Services.AddSingleton<ICanvasProperties<MauiColor>, MauiCanvasProperties>();
+        builder.Services.AddSingleton<ICanvasManager<MauiDrawing>, MauiCanvasManager>();
 
         // Tools
-        DrawingToolCollection<IDrawable, ImageSource, Color> drawingToolCollection = 
+        DrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor> drawingToolCollection = 
             new MauiDrawingToolFactory().CreateDrawingToolCollection();
 
-        builder.Services.AddSingleton<IDrawingToolCollection<IDrawable, ImageSource, Color>>(drawingToolCollection);
-        builder.Services.AddSingleton<IDrawingToolRetriever<IDrawable, Color>>(drawingToolCollection);
-        builder.Services.AddSingleton<IPaintBrushTool<IDrawable, Color>>(drawingToolCollection.GetTool<MauiPaintBrushTool>());
-        builder.Services.AddSingleton<ILineTool<IDrawable, Color>>(drawingToolCollection.GetTool<MauiLineTool>());
-        builder.Services.AddSingleton<IRectangleTool<IDrawable, Color>>(drawingToolCollection.GetTool<MauiRectangleTool>());
+        builder.Services.AddSingleton<IDrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor>>(drawingToolCollection);
+        builder.Services.AddSingleton<IDrawingToolRetriever<MauiDrawing, MauiColor>>(drawingToolCollection);
+        builder.Services.AddSingleton<IPaintBrushTool<MauiDrawing, MauiColor>>(drawingToolCollection.GetTool<MauiPaintBrushTool>());
+        builder.Services.AddSingleton<ILineTool<MauiDrawing, MauiColor>>(drawingToolCollection.GetTool<MauiLineTool>());
+        builder.Services.AddSingleton<IRectangleTool<MauiDrawing, MauiColor>>(drawingToolCollection.GetTool<MauiRectangleTool>());
         return builder;
     }
 

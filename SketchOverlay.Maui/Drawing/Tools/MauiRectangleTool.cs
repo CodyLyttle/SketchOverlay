@@ -4,9 +4,9 @@ using SketchOverlay.Maui.Drawing.Drawables;
 
 namespace SketchOverlay.Maui.Drawing.Tools;
 
-internal class MauiRectangleTool : DrawingTool<RectangleDrawable, Color>, IRectangleTool<RectangleDrawable, Color>
+internal class MauiRectangleTool : DrawingTool<RectangleDrawable, MauiColor>, IRectangleTool<RectangleDrawable, MauiColor>
 {
-    protected override RectangleDrawable DoCreateDrawing(ICanvasProperties<Color> canvasProps, System.Drawing.PointF startPoint)
+    protected override RectangleDrawable DoCreateDrawing(ICanvasProperties<MauiColor> canvasProps, System.Drawing.PointF startPoint)
     {
         RectangleDrawable drawable =  base.DoCreateDrawing(canvasProps, startPoint);
         drawable.FillColor = canvasProps.FillColor;

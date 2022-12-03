@@ -1,6 +1,6 @@
 ﻿namespace SketchOverlay.Maui.Drawing.Drawables;
 
-internal class PaintBrushDrawable : IDrawable
+internal class PaintBrushDrawable : MauiDrawing
 {
     private readonly PathF _brushPath;
     
@@ -9,7 +9,7 @@ internal class PaintBrushDrawable : IDrawable
         _brushPath = new PathF();
     }
 
-    public Color StrokeColor { get; set; } = Colors.Gray;
+    public MauiColor StrokeColor { get; set; } = Colors.Gray;
     public float StrokeSize { get; set; } = 4;
 
     public void AddDrawingPoint(PointF point)

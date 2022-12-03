@@ -4,9 +4,9 @@ using SketchOverlay.Library.ViewModels;
 
 namespace SketchOverlay.Maui.ViewModels;
 
-public class MauiOverlayWindowViewModel : OverlayWindowViewModel<IDrawable, IDrawable, ImageSource, Color>
+public class MauiOverlayWindowViewModel : OverlayWindowViewModel<MauiDrawing, MauiDrawingOutput, MauiImageSource, MauiColor>
 {
-    public MauiOverlayWindowViewModel(ICanvasManager<IDrawable> canvasManager, IMessenger messenger) 
+    public MauiOverlayWindowViewModel(ICanvasManager<MauiDrawing> canvasManager, IMessenger messenger) 
         : base(canvasManager, messenger)
     {
     }

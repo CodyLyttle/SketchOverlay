@@ -6,12 +6,12 @@ using SketchOverlay.Library.ViewModels;
 
 namespace SketchOverlay.Maui.ViewModels;
 
-internal class MauiDrawingToolWindowViewModel : DrawingToolWindowViewModel<IDrawable, ImageSource, Color>
+internal class MauiDrawingToolWindowViewModel : DrawingToolWindowViewModel<MauiDrawing, MauiImageSource, MauiColor>
 {
     public MauiDrawingToolWindowViewModel(
-        ICanvasProperties<Color> canvasProps,
-        IColorPalette<Color> drawingColors,
-        IDrawingToolCollection<IDrawable, ImageSource, Color> drawingTools,
+        ICanvasProperties<MauiColor> canvasProps,
+        IColorPalette<MauiColor> drawingColors,
+        IDrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor> drawingTools,
         IMessenger messenger) : base(canvasProps, drawingColors, drawingTools, messenger)
     {
     }

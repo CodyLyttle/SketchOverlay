@@ -3,10 +3,10 @@ using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Maui.Drawing;
 
-public class MauiCanvasManager : CanvasManager<DrawableStack, IDrawable, IDrawable, Color>
+public class MauiCanvasManager : CanvasManager<DrawableStack, MauiDrawing, MauiDrawingOutput, MauiColor>
 {
-    public MauiCanvasManager(ICanvasProperties<Color> canvasProps, 
-        IDrawingToolRetriever<IDrawable, Color> toolRetriever) : base(canvasProps, toolRetriever)
+    public MauiCanvasManager(ICanvasProperties<MauiColor> canvasProps, 
+        IDrawingToolRetriever<MauiDrawing, MauiColor> toolRetriever) : base(canvasProps, toolRetriever)
     {
     }
 }
