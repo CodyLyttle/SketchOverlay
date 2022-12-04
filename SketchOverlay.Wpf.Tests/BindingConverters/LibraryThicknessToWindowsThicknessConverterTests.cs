@@ -2,7 +2,7 @@
 using SketchOverlay.Library.Models;
 using SketchOverlay.Wpf.BindingConverters;
 
-namespace SketchOverlay.Wpf.Tests;
+namespace SketchOverlay.Wpf.Tests.BindingConverters;
 
 public class LibraryThicknessToWindowsThicknessConverterTests
 {
