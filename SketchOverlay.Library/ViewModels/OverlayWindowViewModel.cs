@@ -29,6 +29,15 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         messenger.Register<OverlayWindowCanvasActionMessage>(this);
     }
 
+    [ObservableProperty] 
+    private bool _isCanvasVisible = true;
+
+    [RelayCommand]
+    private void ToggleCanvasVisibility()
+    {
+        IsCanvasVisible = !IsCanvasVisible;
+    }
+
     public void Receive(OverlayWindowCanvasActionMessage message)
     {
         switch (message.Value)
