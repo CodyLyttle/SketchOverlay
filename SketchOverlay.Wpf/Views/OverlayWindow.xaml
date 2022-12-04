@@ -15,5 +15,6 @@
                                 MouseDownCommand="{Binding MouseDownCommand}"
                                 MouseDragCommand="{Binding MouseDragCommand}"
                                 MouseUpCommand="{Binding MouseUpCommand}"/>
+        <local:DrawingToolWindow/>
     </Grid>
 </Window>
