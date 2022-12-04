@@ -7,6 +7,10 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+	<ItemGroup>
+        <InternalsVisibleTo Include="$(AssemblyName).Tests" />
+	</ItemGroup>
+
     <ItemGroup>
       <None Remove="Resources\Images\DrawingTools\placeholder_line.png" />
       <None Remove="Resources\Images\DrawingTools\placeholder_paintbrush.png" />
