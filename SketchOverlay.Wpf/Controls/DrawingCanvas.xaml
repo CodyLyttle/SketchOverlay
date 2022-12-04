@@ -8,5 +8,5 @@
              PreviewMouseDown="UserControl_PreviewMouseDown"
              PreviewMouseMove="UserControl_PreviewMouseMove"
              PreviewMouseUp="UserControl_PreviewMouseUp"
-             Background="LightBlue">
+             Background="Transparent">
 </Canvas>

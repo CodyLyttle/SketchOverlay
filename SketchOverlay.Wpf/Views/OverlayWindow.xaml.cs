@@ -13,7 +13,7 @@ public partial class OverlayWindow : Window
         DataContext = App.Current.Services.GetService<WpfOverlayWindowViewModel>();
 
         var canvasManager = App.Current.Services.GetService<ICanvasManager<WpfDrawingOutput>>();
-        canvasManager!.RequestRedraw += (_, _) => drawingCanvas.Redraw();
-        drawingCanvas.AddDrawingElement(canvasManager.DrawingOutput);
+        canvasManager!.RequestRedraw += (_, _) => DrawingCanvas.Redraw();
+        DrawingCanvas.AddDrawingElement(canvasManager.DrawingOutput);
     }
 }
