@@ -56,6 +56,18 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+            <Label Content="{Binding StrokeSize}"
+                   HorizontalContentAlignment="Center"
+                   Margin="0,6,0,-4"/>
+            <!-- TODO: Bind minimum/maximum slider values -->
+            <Slider x:Name="DrawSizeSlider"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Width="240"
+                    Minimum="1"
+                    Maximum="64"
+                    Value="{Binding StrokeSize}"/>
+
         </StackPanel>
     </Border>
 </UserControl>
