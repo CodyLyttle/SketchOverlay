@@ -12,6 +12,7 @@
 	</ItemGroup>
 
     <ItemGroup>
+      <None Remove="Resources\Images\DrawingTools\placeholder_ellipse.png" />
       <None Remove="Resources\Images\DrawingTools\placeholder_line.png" />
       <None Remove="Resources\Images\DrawingTools\placeholder_paintbrush.png" />
       <None Remove="Resources\Images\DrawingTools\placeholder_rectangle.png" />
@@ -27,6 +28,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Resource Include="Resources\Images\DrawingTools\placeholder_ellipse.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
       <Resource Include="Resources\Images\DrawingTools\placeholder_line.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>

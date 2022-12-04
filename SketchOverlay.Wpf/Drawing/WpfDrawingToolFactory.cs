@@ -21,6 +21,11 @@ internal class WpfDrawingToolFactory : DrawingToolFactory<WpfDrawing, WpfImageSo
         return image;
     }
 
+    protected override IEllipseTool<WpfDrawing, Brush>? CreateEllipseTool()
+    {
+        return new WpfEllipseTool();
+    }
+
     protected override ILineTool<WpfDrawing, WpfBrush>? CreateLineTool()
     {
         return new WpfLineTool();
