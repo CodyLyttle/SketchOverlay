@@ -5,14 +5,64 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SketchOverlay.Wpf.Views"
         xmlns:controls="clr-namespace:SketchOverlay.Wpf.Controls"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="OverlayWindow" 
         Height="800" 
         Width="1400"
         AllowsTransparency="True"
-        Background="#0fffffff"
+        Background="#01ffffff"
         WindowStyle="None">
+    <Window.Resources>
+        <sys:Double x:Key="BorderThickness">48</sys:Double>
+    </Window.Resources>
+
     <Grid>
+        <!-- gradient border -->
+        <Rectangle Height="{StaticResource BorderThickness}" 
+                   HorizontalAlignment="Stretch" 
+                   VerticalAlignment="Top">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#0fffffff" Offset="0.0"/>
+                    <GradientStop Color="#00ffffff" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Rectangle Height="{StaticResource BorderThickness}" 
+                   HorizontalAlignment="Stretch" 
+                   VerticalAlignment="Bottom">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Color="#00ffffff" Offset="0.0"/>
+                        <GradientStop Color="#0fffffff" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+        </Rectangle>
+
+        <Rectangle Width="{StaticResource BorderThickness}" 
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Stretch">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                    <GradientStop Color="#0fffffff" Offset="0.0"/>
+                    <GradientStop Color="#00ffffff" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Rectangle Width="{StaticResource BorderThickness}" 
+                   HorizontalAlignment="Right" 
+                   VerticalAlignment="Stretch">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
+                    <GradientStop Color="#00ffffff" Offset="0.0"/>
+                    <GradientStop Color="#0fffffff" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
         <controls:DrawingCanvas x:Name="DrawingCanvas"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
