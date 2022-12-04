@@ -17,7 +17,7 @@
                       SelectionMode="Single"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      Margin="0,12,0,0">
+                      Margin="0,12,0,24">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal"/>
@@ -36,9 +36,26 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+            <ListView x:Name="DrawingColorsListView"
+                      ItemsSource="{Binding DrawingColors.Colors, Mode=OneTime}"
+                      SelectedItem="{Binding StrokeColor}"
+                      SelectionMode="Single"
+                      HorizontalAlignment="Center">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="6"
+                                     Rows="3"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle Fill="{Binding}"
+                                   Width="24"
+                                   Height="24"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-
-            <ListView/>
         </StackPanel>
     </Border>
 </UserControl>
