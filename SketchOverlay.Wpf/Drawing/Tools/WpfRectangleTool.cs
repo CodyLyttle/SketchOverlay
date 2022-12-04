@@ -10,11 +10,12 @@ namespace SketchOverlay.Wpf.Drawing.Tools;
 internal class WpfRectangleTool : DrawingTool<GeometryDrawing, WpfBrush>, IRectangleTool<GeometryDrawing, WpfBrush>
 {
     private RectangleGeometry? _rectangle;
+    private Point _startPoint;
 
     protected override GeometryDrawing DoCreateDrawing(ICanvasProperties<WpfBrush> canvasProps, PointF startPoint)
     {
-        Point wpfStartPoint = startPoint.ToWpfPoint();
-        _rectangle = new RectangleGeometry(new Rect(wpfStartPoint, wpfStartPoint));
+        _startPoint = startPoint.ToWpfPoint();
+        _rectangle = new RectangleGeometry(new Rect(_startPoint, _startPoint));
 
         GeometryDrawing drawing = base.DoCreateDrawing(canvasProps, startPoint);
         drawing.Geometry = _rectangle;
@@ -25,11 +26,7 @@ internal class WpfRectangleTool : DrawingTool<GeometryDrawing, WpfBrush>, IRecta
 
     public override void DoUpdateDrawing(PointF currentPoint)
     {
-        _rectangle!.Rect = _rectangle.Rect with
-        {
-            Width = _rectangle.Rect.X - currentPoint.X,
-            Height = _rectangle.Rect.Y - currentPoint.Y
-        };
+        _rectangle!.Rect = new Rect(_startPoint, currentPoint.ToWpfPoint());
     }
 
     protected override void DoFinishDrawing()
