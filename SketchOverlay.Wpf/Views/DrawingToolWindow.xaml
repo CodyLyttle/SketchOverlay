@@ -17,7 +17,7 @@
                       SelectionMode="Single"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      Margin="0,12,0,24">
+                      Margin="0,18,0,24">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal"/>
@@ -58,7 +58,7 @@
 
             <Label Content="{Binding StrokeSize}"
                    HorizontalContentAlignment="Center"
-                   Margin="0,6,0,-4"/>
+                   Margin="0,12,0,0"/>
             <!-- TODO: Bind minimum/maximum slider values -->
             <Slider x:Name="DrawSizeSlider"
                     HorizontalAlignment="Center"
@@ -68,6 +68,19 @@
                     Maximum="64"
                     Value="{Binding StrokeSize}"/>
 
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,12,0,0">
+                <Button x:Name="UndoButton" Content="undo" 
+                        Command="{Binding UndoCommand}"
+                        IsEnabled="{Binding CanUndo}"/>
+                <Button x:Name="RedoButton" Content="redo" 
+                        Command="{Binding RedoCommand}"
+                        IsEnabled="{Binding CanRedo}"/>
+                <Button x:Name="ClearButton" Content="clear" 
+                        Command="{Binding ClearCommand}"
+                        IsEnabled="{Binding CanClear}"/>
+            </StackPanel>
         </StackPanel>
     </Border>
 </UserControl>
