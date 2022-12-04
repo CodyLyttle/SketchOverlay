@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Windows;
+﻿using System.Windows;
 using SketchOverlay.Wpf.BindingConverters;
 
 namespace SketchOverlay.Wpf.Tests;
@@ -20,7 +19,7 @@ public class InvertedBooleanToVisibilityConverterTests
     public void Convert_ConvertsToExpectedValue(bool? isVisible, Visibility expected)
     {
         // Act
-        var actual = (Visibility)_sut.Convert(isVisible!, typeof(bool), null!, CultureInfo.CurrentCulture);
+        var actual = (Visibility)_sut.Convert(isVisible!, null!, null!, null!);
 
         // Assert
         Assert.Equal(expected, actual);
@@ -33,7 +32,7 @@ public class InvertedBooleanToVisibilityConverterTests
     public void ConvertBack_ConvertsToExpectedValue(Visibility visibility, bool expected)
     {
         // Act
-        var actual = (bool)_sut.ConvertBack(visibility, typeof(Visibility), null!, CultureInfo.CurrentCulture);
+        var actual = (bool)_sut.ConvertBack(visibility, null!, null!, null!);
 
         // Assert
         Assert.Equal(expected, actual);

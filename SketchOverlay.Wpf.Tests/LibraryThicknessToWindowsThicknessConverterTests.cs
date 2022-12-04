@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Windows;
+﻿using System.Windows;
 using SketchOverlay.Library.Models;
 using SketchOverlay.Wpf.BindingConverters;
 
@@ -21,8 +20,7 @@ public class LibraryThicknessToWindowsThicknessConverterTests
         LibraryThickness libraryThickness = new(-22, -11, 11, 22);
 
         // Act
-        var windowsThickness = (Thickness)_sut.Convert(
-            libraryThickness, null!, null!, null!);
+        var windowsThickness = (Thickness)_sut.Convert(libraryThickness, null!, null!, null!);
 
         // Assert
         AssertEquivalentThickness(libraryThickness, windowsThickness);
@@ -35,8 +33,7 @@ public class LibraryThicknessToWindowsThicknessConverterTests
         Thickness windowsThickness = new(-22, -11, 11, 22);
 
         // Act
-        var libraryThickness = (LibraryThickness)_sut.ConvertBack(
-            windowsThickness, null!, null!, null!);
+        var libraryThickness = (LibraryThickness)_sut.ConvertBack(windowsThickness, null!, null!, null!);
 
         // Assert
         AssertEquivalentThickness(libraryThickness, windowsThickness);
