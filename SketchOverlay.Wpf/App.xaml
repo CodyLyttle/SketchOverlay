@@ -11,8 +11,10 @@
                 <ui:ThemesDictionary Theme="Dark"/>
                 <ui:ControlsDictionary/>
                 <ResourceDictionary>
+                    <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+                    <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBoolToVisibility"/>
                     <converters:InvertedBooleanConverter x:Key="InvertedBool"/>
-                    <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBoolToVis"/>
+                    <converters:LibraryThicknessToWindowsThicknessConverter x:Key="LibraryThickness"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
