@@ -6,7 +6,12 @@
         xmlns:local="clr-namespace:SketchOverlay.Wpf.Views"
         xmlns:controls="clr-namespace:SketchOverlay.Wpf.Controls"
         mc:Ignorable="d"
-        Title="OverlayWindow" Height="450" Width="800">
+        Title="OverlayWindow" 
+        Height="800" 
+        Width="1400"
+        AllowsTransparency="True"
+        Background="#0fffffff"
+        WindowStyle="None">
     <Grid>
         <controls:DrawingCanvas x:Name="DrawingCanvas"
                                 HorizontalAlignment="Stretch"
