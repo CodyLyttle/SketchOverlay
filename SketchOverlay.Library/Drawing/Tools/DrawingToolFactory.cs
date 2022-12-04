@@ -11,6 +11,7 @@ public abstract class DrawingToolFactory<TDrawing, TImageSource, TColor>
         AddTool(tools, CreatePaintBrushTool(), "placeholder_paintbrush.png", "Paintbrush");
         AddTool(tools, CreateLineTool(), "placeholder_line.png", "Line");
         AddTool(tools, CreateRectangleTool(), "placeholder_rectangle.png", "Rectangle");
+        AddTool(tools, CreateEllipseTool(), "placeholder_ellipse.png", "Ellipse");
 
         return new DrawingToolCollection<TDrawing, TImageSource, TColor>(tools);
     }
@@ -27,13 +28,18 @@ public abstract class DrawingToolFactory<TDrawing, TImageSource, TColor>
             Description = description
         });
     }
-
-    protected virtual IPaintBrushTool<TDrawing, TColor>? CreatePaintBrushTool()
+    
+    protected virtual IEllipseTool<TDrawing, TColor>? CreateEllipseTool()
     {
         return null;
     }
 
     protected virtual ILineTool<TDrawing, TColor>? CreateLineTool()
+    {
+        return null;
+    }
+
+    protected virtual IPaintBrushTool<TDrawing, TColor>? CreatePaintBrushTool()
     {
         return null;
     }
