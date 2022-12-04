@@ -7,6 +7,7 @@ public abstract class DrawingToolFactory<TDrawing, TImageSource, TColor>
     // We return the concrete collection because it contains multiple interfaces, which simplifies dependency injection.
     public DrawingToolCollection<TDrawing, TImageSource, TColor> CreateDrawingToolCollection()
     {
+        // TODO: Move tool icons to library resources.
         List<DrawingToolInfo<TDrawing, TImageSource, TColor>> tools = new();
         AddTool(tools, CreatePaintBrushTool(), "placeholder_paintbrush.png", "Paintbrush");
         AddTool(tools, CreateLineTool(), "placeholder_line.png", "Line");
