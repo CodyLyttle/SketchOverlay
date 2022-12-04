@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Media;
 using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.Drawing.Tools;
+using Point = System.Windows.Point;
 
 namespace SketchOverlay.Wpf.Drawing.Tools;
 
 internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPaintBrushTool<GeometryDrawing, WpfBrush>
 {
     private PathGeometry? _brushPath;
+    private Point _parentPoint;
+    private Point _grandParentPoint;
+    private bool _canSimplify;
 
     protected override GeometryDrawing DoCreateDrawing(ICanvasProperties<WpfBrush> canvasProps, PointF startPoint)
     {
         _brushPath = new PathGeometry();
         _brushPath.Figures.Add(new PathFigure(startPoint.ToWpfPoint(), Array.Empty<PathSegment>(), false));
+        _parentPoint = new Point();
+        _grandParentPoint = new Point();
+        _canSimplify = false;
 
         GeometryDrawing drawing = base.DoCreateDrawing(canvasProps, startPoint);
         drawing.Geometry = _brushPath;
@@ -33,8 +41,42 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
 
     public override void DoUpdateDrawing(PointF currentPoint)
     {
-        // TODO: Optimize drawing.
-        _brushPath!.Figures[0].Segments.Add(new LineSegment(currentPoint.ToWpfPoint(), true));
+        PathSegmentCollection segments = _brushPath!.FirstSegments();
+        Point childPoint = currentPoint.ToWpfPoint();
+
+        if (_canSimplify)
+        {
+            // Find the area of the triangle formed by the 3 most recent points.
+            double sideA = Point.Subtract(_grandParentPoint, _parentPoint).Length;
+            double sideB = Point.Subtract(_parentPoint, childPoint).Length;
+            double sideC = Point.Subtract(_grandParentPoint, childPoint).Length;
+            double semiPerimeter = (sideA + sideB + sideC) / 2;
+            double triangleArea = Math.Sqrt(semiPerimeter * (semiPerimeter - sideA)
+                                                          * (semiPerimeter - sideB)
+                                                          * (semiPerimeter - sideC));
+
+            // Determine if the area is small enough to simplify.
+            // A value of 0.1 removes roughly 50% of all points.
+            // Increasing the value has diminishing returns at the cost of drawing accuracy.
+            if (triangleArea < 0.1) 
+            {
+                // Replace parent point with child point.
+                ((LineSegment)segments.Last()).Point = childPoint;
+            }
+            else
+            {
+                _brushPath!.FirstSegments().Add(new LineSegment(currentPoint.ToWpfPoint(), true));
+            }
+        }
+        else
+        {
+            _brushPath!.FirstSegments().Add(new LineSegment(currentPoint.ToWpfPoint(), true));
+            if (segments.Count >= 2)
+                _canSimplify = true;
+        }
+
+        _grandParentPoint = _parentPoint;
+        _parentPoint = childPoint;
     }
 
     protected override void DoFinishDrawing()
@@ -42,5 +84,13 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
         base.DoFinishDrawing();
         _brushPath!.Freeze();
         _brushPath = null;
+    }
+}
+
+public static class GeometryExtensions
+{
+    public static PathSegmentCollection FirstSegments(this PathGeometry geometry)
+    {
+        return geometry.Figures[0].Segments;
     }
 }
