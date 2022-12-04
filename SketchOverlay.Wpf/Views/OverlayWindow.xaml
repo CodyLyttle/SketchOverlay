@@ -13,7 +13,8 @@
         WindowStartupLocation="CenterScreen"
         Background="{x:Null}"
         Topmost="True"
-        WindowState="Maximized">
+        WindowState="Maximized"
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <sys:Double x:Key="BorderThickness">48</sys:Double>
