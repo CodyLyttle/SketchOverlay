@@ -17,8 +17,18 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
 
         GeometryDrawing drawing = base.DoCreateDrawing(canvasProps, startPoint);
         drawing.Geometry = _brushPath;
-        drawing.Pen = canvasProps.StrokeColor.ToPen(canvasProps.StrokeSize);
+        drawing.Pen = CreatePen(canvasProps.StrokeColor, canvasProps.StrokeSize);
         return drawing;
+    }
+
+    private System.Windows.Media.Pen CreatePen(WpfBrush brush, float strokeSize)
+    {
+        return new System.Windows.Media.Pen(brush, strokeSize)
+        {
+            LineJoin = PenLineJoin.Round,
+            StartLineCap = PenLineCap.Round,
+            EndLineCap = PenLineCap.Round
+        };
     }
 
     public override void DoUpdateDrawing(PointF currentPoint)
