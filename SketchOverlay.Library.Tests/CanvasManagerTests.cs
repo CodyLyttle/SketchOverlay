@@ -51,11 +51,6 @@ public class CanvasManagerTests
         return canvasActionsCatcher;
     }
 
-    private void AssertNotDrawing()
-    {
-        Assert.False(_sut.IsDrawing);
-    }
-
     private void SetupIsDrawing()
     {
         if (_sut.IsDrawing)
@@ -76,14 +71,17 @@ public class CanvasManagerTests
         }
     }
 
+    [Fact]
+    public void IsDrawing_OnInstantiation_IsFalse()
+    {
+        Assert.False(_sut.IsDrawing);
+    }
+
     #region DoDrawing_WhileNotDrawing
 
     [Fact]
     public void DoDrawing_WhileNotDrawing_SetsIsDrawingToTrue()
     {
-        // Arrange
-        AssertNotDrawing();
-
         // Act
         _sut.DoDrawing(new PointF());
 
@@ -94,10 +92,10 @@ public class CanvasManagerTests
     [Fact]
     public void DoDrawing_WhileNotDrawing_CreatesDrawingUsingCanvasProperties()
     {
-        // Act
-        AssertNotDrawing();
+        // Arrange
         PointF expectedPoint = new(123, 321);
 
+        // Act
         _sut.DoDrawing(expectedPoint);
 
         // Assert
@@ -109,7 +107,6 @@ public class CanvasManagerTests
     public void DoDrawing_WhileNotDrawing_PushesDrawingToDrawStack()
     {
         // Act
-        AssertNotDrawing();
         _sut.DoDrawing(new PointF());
 
         // Assert
@@ -121,7 +118,6 @@ public class CanvasManagerTests
     public void DoDrawing_WhileNotDrawing_InvokesRequestsRedrawEvent()
     {
         // Arrange
-        AssertNotDrawing();
         EventCatcher eventCatcher = new();
         _sut.RequestRedraw += eventCatcher.OnReceived;
 
@@ -136,7 +132,6 @@ public class CanvasManagerTests
     public void DoDrawing_WhileNotDrawing_DoesNotInvokeCanvasActionEvents()
     {
         // Arrange
-        AssertNotDrawing();
         EventCatcher<bool> eventCatcher = CreateCanvasActionsEventCatcher();
 
         // Act
@@ -242,14 +237,11 @@ public class CanvasManagerTests
     [Fact]
     public void FinishDrawing_WhileNotDrawing_DoesNothing()
     {
-        // Arrange
-        AssertNotDrawing();
-
         // Act
         _sut.FinishDrawing();
 
         // Assert
-        AssertNotDrawing();
+        Assert.False(_sut.IsDrawing);
         _mockCanvasProps.VerifyNoOtherCalls();
         _mockDrawStack.VerifyNoOtherCalls();
         _mockDrawingTool.VerifyNoOtherCalls();
@@ -302,7 +294,6 @@ public class CanvasManagerTests
     public void FinishDrawing_FirstDrawingInDrawStack_InvokesCanClearAndCanUndoEventsWithValueTrue()
     {
         // Arrange
-        AssertNotDrawing();
         EventCatcher<bool> canClearCatcher = new();
         EventCatcher<bool> canRedoCatcher = new();
         EventCatcher<bool> canUndoCatcher = new();
