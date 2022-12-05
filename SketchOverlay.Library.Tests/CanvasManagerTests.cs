@@ -3,6 +3,7 @@ using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.Drawing.Tools;
 using SketchOverlay.Library.Tests.TestHelpers;
 using Moq;
+using SUT = SketchOverlay.Library.Drawing.Canvas.CanvasManager<object, object, object>;
 
 namespace SketchOverlay.Library.Tests;
 public class CanvasManagerTests
@@ -10,7 +11,7 @@ public class CanvasManagerTests
     #region Setups
 
     private int _mockStackCount = 0;
-    private readonly CanvasManager<object, object, object> _sut;
+    private readonly SUT _sut;
     private readonly Mock<ICanvasProperties<object>> _mockCanvasProps;
     private readonly Mock<IDrawingStack<object, object>> _mockDrawStack;
     private readonly Mock<IDrawingToolRetriever<object, object>> _mockToolRetriever;
@@ -29,7 +30,7 @@ public class CanvasManagerTests
         _mockToolRetriever = new Mock<IDrawingToolRetriever<object, object>>();
         _mockToolRetriever.Setup(x => x.SelectedTool).Returns(_mockDrawingTool.Object);
 
-        _sut = new CanvasManager<object, object, object>(
+        _sut = new SUT(
             _mockCanvasProps.Object,
             _mockDrawStack.Object,
             _mockToolRetriever.Object);
@@ -104,37 +105,97 @@ public class CanvasManagerTests
     [Fact]
     public void CanClear_SetWithSameValue_DoesNothing()
     {
-        // TODO:
+        // Arrange
+        EventCatcher<bool> eventCatcher = new();
+        _sut.CanClearChanged += eventCatcher.OnReceived;
+        bool expectedValue = _sut.CanClear;
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanClear), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.CanClear);
+        Assert.Empty(eventCatcher.Received);
     }
 
     [Fact]
     public void CanRedo_SetWithSameValue_DoesNothing()
     {
-        // TODO:
+        // Arrange
+        EventCatcher<bool> eventCatcher = new();
+        _sut.CanRedoChanged += eventCatcher.OnReceived;
+        bool expectedValue = _sut.CanRedo;
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanRedo), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.CanRedo);
+        Assert.Empty(eventCatcher.Received);
     }
 
     [Fact]
     public void CanUndo_SetWithSameValue_DoesNothing()
     {
-        // TODO:
+        // Arrange
+        EventCatcher<bool> eventCatcher = new();
+        _sut.CanUndoChanged += eventCatcher.OnReceived;
+        bool expectedValue = _sut.CanUndo;
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanUndo), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.CanUndo);
+        Assert.Empty(eventCatcher.Received);
     }
 
     [Fact]
     public void CanClear_PropertyChanged_InvokesCanClearChangedEvent()
     {
-        // TODO:
+        // Arrange
+        EventCatcher<bool> eventCatcher = new();
+        _sut.CanClearChanged += eventCatcher.OnReceived;
+        bool expectedValue = !_sut.CanClear;
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanClear), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.CanClear);
+        Assert.Single(eventCatcher.Received);
     }
 
     [Fact]
     public void CanRedo_PropertyChanged_InvokesCanRedoChangedEvent()
     {
-        // TODO:
+        // Arrange
+        EventCatcher<bool> eventCatcher = new();
+        _sut.CanRedoChanged += eventCatcher.OnReceived;
+        bool expectedValue = !_sut.CanRedo;
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanRedo), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.CanRedo);
+        Assert.Single(eventCatcher.Received);
     }
 
     [Fact]
     public void CanUndo_PropertyChanged_InvokesCanUndoChangedEvent()
     {
-        // TODO:
+        // Arrange
+        EventCatcher<bool> eventCatcher = new();
+        _sut.CanUndoChanged += eventCatcher.OnReceived;
+        bool expectedValue = !_sut.CanUndo;
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanUndo), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.CanUndo);
+        Assert.Single(eventCatcher.Received);
     }
 
     #endregion
