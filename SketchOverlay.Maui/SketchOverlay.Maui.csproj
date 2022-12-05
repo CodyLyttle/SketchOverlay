@@ -63,7 +63,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\SketchOverlay.Library\SketchOverlay.Library.csproj" />
-		<ProjectReference Include="..\SketchOverlay.Native\SketchOverlay.Native.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -5,10 +5,6 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Maui", "SketchOverlay.Maui\SketchOverlay.Maui.csproj", "{5FD10638-ADD0-43E8-BE41-BC9309F27D64}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Native", "SketchOverlay.Native\SketchOverlay.Native.csproj", "{CAD73054-975B-49CA-AAA4-F5AF8CD7AC5A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Native.Tests", "SketchOverlay.Native.Tests\SketchOverlay.Native.Tests.csproj", "{7DD47B35-7019-4CA3-8DF0-77E44F2EBAF5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Tests", "SketchOverlay.Tests\SketchOverlay.Tests.csproj", "{EE54C86C-C3C8-4EF6-BEDA-1F276A41FD73}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Library", "SketchOverlay.Library\SketchOverlay.Library.csproj", "{B7CD9B41-D5D2-4BE3-A351-E0783142ED06}"
@@ -17,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Library.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Wpf", "SketchOverlay.Wpf\SketchOverlay.Wpf.csproj", "{BD9F1B37-45A6-41AB-8226-C5317112ED5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SketchOverlay.Wpf.Tests", "SketchOverlay.Wpf.Tests\SketchOverlay.Wpf.Tests.csproj", "{53FECEF6-AA8F-4B84-94A6-9A11B2C90DCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SketchOverlay.Wpf.Tests", "SketchOverlay.Wpf.Tests\SketchOverlay.Wpf.Tests.csproj", "{53FECEF6-AA8F-4B84-94A6-9A11B2C90DCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,14 +27,6 @@ Global
 		{5FD10638-ADD0-43E8-BE41-BC9309F27D64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FD10638-ADD0-43E8-BE41-BC9309F27D64}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5FD10638-ADD0-43E8-BE41-BC9309F27D64}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{CAD73054-975B-49CA-AAA4-F5AF8CD7AC5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CAD73054-975B-49CA-AAA4-F5AF8CD7AC5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CAD73054-975B-49CA-AAA4-F5AF8CD7AC5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CAD73054-975B-49CA-AAA4-F5AF8CD7AC5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7DD47B35-7019-4CA3-8DF0-77E44F2EBAF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DD47B35-7019-4CA3-8DF0-77E44F2EBAF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DD47B35-7019-4CA3-8DF0-77E44F2EBAF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DD47B35-7019-4CA3-8DF0-77E44F2EBAF5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EE54C86C-C3C8-4EF6-BEDA-1F276A41FD73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE54C86C-C3C8-4EF6-BEDA-1F276A41FD73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE54C86C-C3C8-4EF6-BEDA-1F276A41FD73}.Release|Any CPU.ActiveCfg = Release|Any CPU
