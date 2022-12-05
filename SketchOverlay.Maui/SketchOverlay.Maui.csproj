@@ -51,6 +51,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Remove="Resources\Images\DrawingTools\placeholder_ellipse.png" />
 		<None Remove="Resources\Images\DrawingTools\placeholder_line.png" />
 		<None Remove="Resources\Images\DrawingTools\placeholder_paintbrush.png" />
 		<None Remove="Resources\Images\DrawingTools\placeholder_rectangle.png" />
@@ -85,10 +86,20 @@
 
 	<ItemGroup>
 		<MauiImage Include="Resources\Images\DrawingTools\placeholder_line.png">
-			<CopyToOutputDirectory></CopyToOutputDirectory>
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</MauiImage>
-		<MauiImage Include="Resources\Images\DrawingTools\placeholder_paintbrush.png" />
-		<MauiImage Include="Resources\Images\DrawingTools\placeholder_rectangle.png" />
+		<MauiImage Include="Resources\Images\DrawingTools\placeholder_paintbrush.png">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</MauiImage>
+		<MauiImage Include="Resources\Images\DrawingTools\placeholder_rectangle.png">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</MauiImage>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Images\DrawingTools\placeholder_ellipse.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiImage>
 	</ItemGroup>
 
 </Project>

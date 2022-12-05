@@ -10,14 +10,19 @@ internal class MauiDrawingToolFactory : DrawingToolFactory<MauiDrawing, MauiImag
         return ImageSource.FromFile(fileName);
     }
 
-    protected override IPaintBrushTool<MauiDrawing, MauiColor> CreatePaintBrushTool()
+    protected override IEllipseTool<IDrawable, Color>? CreateEllipseTool()
     {
-        return new MauiPaintBrushTool();
+        return new MauiEllipseTool();
     }
 
     protected override ILineTool<MauiDrawing, MauiColor> CreateLineTool()
     {
         return new MauiLineTool();
+    }
+
+    protected override IPaintBrushTool<MauiDrawing, MauiColor> CreatePaintBrushTool()
+    {
+        return new MauiPaintBrushTool();
     }
 
     protected override IRectangleTool<MauiDrawing, MauiColor>? CreateRectangleTool()
