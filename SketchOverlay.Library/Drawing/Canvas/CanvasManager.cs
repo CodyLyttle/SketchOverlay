@@ -29,10 +29,9 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
     public event EventHandler<bool>? CanUndoChanged;
 
     private IDrawingTool<TDrawing, TColor> DrawingTool => _toolRetriever.SelectedTool;
-
-    protected bool IsDrawing { get; private set; }
-
+    
     public TOutput DrawingOutput => _drawStack.Output;
+    public bool IsDrawing { get; private set; }
 
     public void Undo()
     {
@@ -63,7 +62,8 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
         {
             IsDrawing = true;
             _redoStack.Clear();
-            _drawStack.PushDrawing(DrawingTool.CreateDrawing(_canvasProperties, point));
+            TDrawing drawing = DrawingTool.CreateDrawing(_canvasProperties, point);
+            _drawStack.PushDrawing(drawing);
         }
         else
         {
