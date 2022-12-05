@@ -22,6 +22,8 @@ public class CanvasManagerTests
         _mockDrawStack = new Mock<IDrawingStack<object, object>>();
         _mockDrawStack.Setup(x => x.PushDrawing(It.IsAny<object>()))
             .Callback(() => _mockStackCount++);
+        _mockDrawStack.Setup(x => x.PopDrawing())
+            .Callback(() => _mockStackCount--);
         _mockDrawStack.Setup(x => x.Count)
             .Returns(() => _mockStackCount);
 
@@ -90,6 +92,13 @@ public class CanvasManagerTests
         }
 
         ResetMockInvocations();
+    }
+
+    private void SetupCanUndoAndCanClear(int drawingCount)
+    {
+        SetupWithDrawings(drawingCount);
+        Assert.True(_sut.CanUndo);
+        Assert.True(_sut.CanClear);
     }
 
     #endregion
@@ -562,6 +571,67 @@ public class CanvasManagerTests
 
         // Assert
         Assert.Empty(eventCatcher.Received);
+    }
+
+    #endregion
+
+    #region Undo
+
+    [Fact]
+    public void Undo_WithCanUndoFalse_DoesNothing()
+    {
+        // Arrange
+        Assert.False(_sut.CanUndo);
+
+        // Act
+        _sut.Undo();
+
+        // Assert
+        AssertNoInvocations();
+    }
+
+    [Fact]
+    public void Undo_WithCanUndoTrue_PopsDrawingFromDrawStack()
+    {
+        // Arrange
+        SetupCanUndoAndCanClear(1);
+
+        // Act
+        _sut.Undo();
+
+        // Assert
+        _mockDrawStack.Verify(x => x.PopDrawing(), Times.Once);
+    }
+
+    [Fact]
+    public void Undo_WithSingleDrawing_SetsCorrectCanvasActionStates()
+    {
+        // Arrange
+        SetupCanUndoAndCanClear(1);
+
+        // Act
+        _sut.Undo();
+
+        // Arrange
+        Assert.False(_sut.CanClear);
+        Assert.True(_sut.CanRedo);
+        Assert.False(_sut.CanUndo);
+    }
+
+    [Fact]
+    public void Undo_WithConsecutiveDrawings_SetsCorrectCanvasActionStates()
+    {
+
+        // Arrange
+        SetupCanUndoAndCanClear(2);
+
+        // Act
+        _sut.Undo();
+
+        // Arrange
+        Assert.True(_sut.CanClear);
+        Assert.True(_sut.CanRedo);
+        Assert.True(_sut.CanUndo);
     }
 
     #endregion
