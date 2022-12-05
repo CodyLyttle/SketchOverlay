@@ -41,6 +41,14 @@ public class CanvasManagerTests
         _mockToolRetriever.Invocations.Clear();
     }
 
+    private void AssertNoInvocations()
+    {
+        _mockCanvasProps.VerifyNoOtherCalls();
+        _mockDrawStack.VerifyNoOtherCalls();
+        _mockDrawingTool.VerifyNoOtherCalls();
+        _mockToolRetriever.VerifyNoOtherCalls();
+    }
+
     private EventCatcher<bool> CreateCanvasActionsEventCatcher()
     {
         EventCatcher<bool> canvasActionsCatcher = new();
@@ -242,10 +250,7 @@ public class CanvasManagerTests
 
         // Assert
         Assert.False(_sut.IsDrawing);
-        _mockCanvasProps.VerifyNoOtherCalls();
-        _mockDrawStack.VerifyNoOtherCalls();
-        _mockDrawingTool.VerifyNoOtherCalls();
-        _mockToolRetriever.VerifyNoOtherCalls();
+        AssertNoInvocations();
     }
 
     [Fact]
@@ -345,6 +350,91 @@ public class CanvasManagerTests
         // Assert
         Assert.Single(eventCatcher.Received);
         Assert.False(eventCatcher.Received[0].e);
+    }
+
+    #endregion
+
+    #region CancelDrawing
+
+    [Fact]
+    public void CancelDrawing_WhileNotDrawing_DoesNothing()
+    {
+        // Act
+        _sut.CancelDrawing();
+
+        // Assert
+        Assert.False(_sut.IsDrawing);
+        AssertNoInvocations();
+    }
+
+    [Fact]
+    public void CancelDrawing_WhileDrawing_SetsIsDrawingToFalse()
+    {
+        // Arrange
+        SetupIsDrawing();
+        
+        // Act
+        _sut.CancelDrawing();
+        
+        // Assert
+        Assert.False(_sut.IsDrawing);
+    }
+
+    [Fact]
+    public void CancelDrawing_WhileDrawing_FinishesCurrentDrawing()
+    {
+        // Arrange
+        SetupIsDrawing();
+        
+        // Act
+        _sut.CancelDrawing();
+        
+        // Assert
+        _mockDrawingTool.Verify(x=> x.FinishDrawing());
+        _mockDrawingTool.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public void CancelDrawing_WhileDrawing_PopsDrawingFromDrawStack()
+    {
+        // Arrange
+        SetupIsDrawing();
+
+        // Act
+        _sut.CancelDrawing();
+
+        // Assert
+        _mockDrawStack.Verify(x=> x.PopDrawing());
+        _mockDrawStack.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public void CancelDrawing_WhileDrawing_InvokesRequestRedrawEvent()
+    {
+        // Arrange
+        SetupIsDrawing();
+        EventCatcher eventCatcher = new ();
+        _sut.RequestRedraw += eventCatcher.OnReceived;
+
+        // Act
+        _sut.CancelDrawing();
+
+        // Assert
+        Assert.Single(eventCatcher.Received);
+    }
+
+    [Fact]
+    public void CancelDrawing_WhileDrawing_DoesNotInvokeCanvasActionEvents()
+    {
+        // Arrange
+        EventCatcher<bool> eventCatcher = CreateCanvasActionsEventCatcher();
+        SetupIsDrawing();
+
+        // Act
+        _sut.CancelDrawing();
+
+        // Assert
+        Assert.Empty(eventCatcher.Received);
     }
 
     #endregion
