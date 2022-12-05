@@ -5,6 +5,10 @@ namespace SketchOverlay.Library.Drawing.Canvas;
 
 public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
 {
+    private bool _canClear;
+    private bool _canRedo;
+    private bool _canUndo;
+
     // Temporary undo/redo solution. Refactored to support delete tool.
     private readonly Stack<TDrawing> _redoStack = new();
     private readonly IDrawingStack<TDrawing, TOutput> _drawStack;
@@ -27,9 +31,39 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
 
     private IDrawingTool<TDrawing, TColor> DrawingTool => _toolRetriever.SelectedTool;
 
-    public bool CanUndo { get; private set; }
-    public bool CanRedo { get; private set; }
-    public bool CanClear => CanUndo;
+    public bool CanClear
+    {
+        get => _canClear;
+        private set
+        {
+            if (value == _canClear) return;
+            _canClear = value;
+            CanClearChanged?.Invoke(this, value);
+        }
+    }
+
+    public bool CanRedo
+    {
+        get => _canRedo;
+        private set
+        {
+            if (value == _canRedo) return;
+            _canRedo = value;
+            CanRedoChanged?.Invoke(this, value);
+        }
+    }
+
+    public bool CanUndo
+    {
+        get => _canUndo;
+        private set
+        {
+            if (value == _canUndo) return;
+            _canUndo = value;
+            CanUndoChanged?.Invoke(this, value);
+        }
+    }
+
     public bool IsDrawing { get; private set; }
     public TOutput DrawingOutput => _drawStack.Output;
 
@@ -109,20 +143,8 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
 
     private void UpdateAvailableActions()
     {
-        bool updatedCanUndo = _drawStack.Count > 0;
-        bool updatedCanRedo = _redoStack.Count > 0;
-
-        if (updatedCanUndo != CanUndo)
-        {
-            CanUndo = updatedCanUndo;
-            CanUndoChanged?.Invoke(this, CanUndo);
-            CanClearChanged?.Invoke(this, CanUndo);
-        }
-
-        if (updatedCanRedo != CanRedo)
-        {
-            CanRedo = updatedCanRedo;
-            CanRedoChanged?.Invoke(this, CanRedo);
-        }
+        CanUndo = _drawStack.Count > 0;
+        CanClear = CanUndo;
+        CanRedo = _redoStack.Count > 0;
     }
 }
