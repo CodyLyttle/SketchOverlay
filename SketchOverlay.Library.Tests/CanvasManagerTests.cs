@@ -198,6 +198,12 @@ public class CanvasManagerTests
         Assert.Single(eventCatcher.Received);
     }
 
+    [Fact]
+    public void DrawingOutput_ReturnsDrawStackOutput()
+    {
+        Assert.Equal(_mockDrawStack.Object.Output, _sut.DrawingOutput); 
+    }
+
     #endregion
 
     #region DoDrawing
