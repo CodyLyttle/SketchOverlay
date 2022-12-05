@@ -71,7 +71,7 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
 
     public void Undo()
     {
-        if (_drawStack.Count is 0) return;
+        if (!CanUndo) return;
 
         _redoStack.Push(_drawStack.PopDrawing());
         Update();
@@ -79,7 +79,7 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
 
     public void Redo()
     {
-        if (_redoStack.Count is 0) return;
+        if (!CanRedo) return;
 
         _drawStack.PushDrawing(_redoStack.Pop());
         Update();
@@ -87,6 +87,8 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
 
     public void Clear()
     {
+        if (!CanClear) return;
+
         _drawStack.Clear();
         _redoStack.Clear();
         Update();
