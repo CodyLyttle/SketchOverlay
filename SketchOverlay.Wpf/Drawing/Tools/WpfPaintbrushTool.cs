@@ -44,6 +44,8 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
         PathSegmentCollection segments = _brushPath!.FirstSegments();
         Point childPoint = currentPoint.ToWpfPoint();
 
+        // Simplify path using Visvalingam’s algorithm
+        // See: https://bost.ocks.org/mike/simplify/
         if (_canSimplify)
         {
             // Find the area of the triangle formed by the 3 most recent points.
