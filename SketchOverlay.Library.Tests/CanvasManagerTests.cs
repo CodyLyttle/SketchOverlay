@@ -10,7 +10,7 @@ public class CanvasManagerTests
 {
     #region Setups
 
-    private int _mockStackCount = 0;
+    private Stack<int> _drawStackItems;
     private readonly SUT _sut;
     private readonly Mock<ICanvasProperties<object>> _mockCanvasProps;
     private readonly Mock<IDrawingStack<object, object>> _mockDrawStack;
@@ -19,13 +19,14 @@ public class CanvasManagerTests
 
     public CanvasManagerTests()
     {
+        _drawStackItems = new Stack<int>();
         _mockDrawStack = new Mock<IDrawingStack<object, object>>();
         _mockDrawStack.Setup(x => x.PushDrawing(It.IsAny<object>()))
-            .Callback(() => _mockStackCount++);
+            .Callback(() => _drawStackItems.Push(Random.Shared.Next()));
         _mockDrawStack.Setup(x => x.PopDrawing())
-            .Callback(() => _mockStackCount--);
+            .Returns(() => _drawStackItems.Pop());
         _mockDrawStack.Setup(x => x.Count)
-            .Returns(() => _mockStackCount);
+            .Returns(() => _drawStackItems.Count);
 
         _mockCanvasProps = new Mock<ICanvasProperties<object>>();
         _mockDrawingTool = new Mock<IDrawingTool<object, object>>();
@@ -94,11 +95,22 @@ public class CanvasManagerTests
         ResetMockInvocations();
     }
 
-    private void SetupCanUndoAndCanClear(int drawingCount)
+    private void SetupCanUndoAndCanClear(int undoCount)
     {
-        SetupWithDrawings(drawingCount);
+        SetupWithDrawings(undoCount);
         Assert.True(_sut.CanUndo);
         Assert.True(_sut.CanClear);
+    }
+
+    private void SetupCanRedo(int redoCount)
+    {
+        SetupWithDrawings(redoCount);
+        for (var i = 0; i < redoCount; i++)
+        {
+            _sut.Undo();
+        }
+
+        Assert.True(_sut.CanRedo);
     }
 
     #endregion
@@ -575,6 +587,83 @@ public class CanvasManagerTests
 
     #endregion
 
+    #region Redo
+
+    [Fact]
+    public void Redo_WithCanRedoFalse_DoesNothing()
+    {
+        // Arrange
+        Assert.False(_sut.CanRedo);
+
+        // Act
+        _sut.Redo();
+
+        // Assert
+        AssertNoInvocations();
+    }
+
+    [Fact]
+    public void Redo_WithCanRedoTrue_PushesLastPopToDrawStack()
+    {
+        // Arrange
+        SetupWithDrawings(3);
+        int expected = _drawStackItems.Last();
+        _sut.Undo();
+
+        // Act
+        _sut.Redo();
+
+        // Assert
+        _mockDrawStack.Verify(x=> x.PushDrawing(It.IsAny<object>()), Times.Once);
+        Assert.Equal(expected, _drawStackItems.Last());
+    }
+
+    [Fact]
+    public void Redo_WithSingleUndo_SetsCorrectCanvasActionStates()
+    {
+        // Arrange
+        SetupCanRedo(1);
+
+        // Act
+        _sut.Redo();
+
+        // Arrange
+        Assert.True(_sut.CanClear);
+        Assert.False(_sut.CanRedo);
+        Assert.True(_sut.CanUndo);
+    }
+
+    [Fact]
+    public void Redo_WithConsecutiveUndo_SetsCorrectCanvasActionStates()
+    {
+        // Arrange
+        SetupCanRedo(3);
+
+        // Act
+        _sut.Redo();
+
+        // Arrange
+        Assert.True(_sut.CanClear);
+        Assert.True(_sut.CanRedo);
+        Assert.True(_sut.CanUndo);
+    }
+
+    [Fact]
+    public void Redo_WithCanRedoTrue_InvokesRequestRedrawEvent()
+    {
+        // Arrange
+        SetupCanRedo(1);
+        EventCatcher eventCatcher = GetRequestRedrawEventCatcher();
+
+        // Act
+        _sut.Redo();
+
+        // Assert
+        Assert.Single(eventCatcher.Received);
+    }
+
+    #endregion
+
     #region Undo
 
     [Fact]
@@ -621,7 +710,6 @@ public class CanvasManagerTests
     [Fact]
     public void Undo_WithConsecutiveDrawings_SetsCorrectCanvasActionStates()
     {
-
         // Arrange
         SetupCanUndoAndCanClear(2);
 
@@ -632,6 +720,20 @@ public class CanvasManagerTests
         Assert.True(_sut.CanClear);
         Assert.True(_sut.CanRedo);
         Assert.True(_sut.CanUndo);
+    }
+
+    [Fact]
+    public void Undo_WithCanUndoTrue_InvokesRequestRedrawEvent()
+    {
+        // Arrange
+        SetupCanUndoAndCanClear(1);
+        EventCatcher eventCatcher = GetRequestRedrawEventCatcher();
+
+        // Act
+        _sut.Undo();
+
+        // Assert
+        Assert.Single(eventCatcher.Received);
     }
 
     #endregion
