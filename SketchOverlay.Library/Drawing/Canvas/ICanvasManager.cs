@@ -4,8 +4,11 @@ namespace SketchOverlay.Library.Drawing.Canvas;
 
 public interface ICanvasManager<out TOutput>
 {
+    bool CanUndo { get; }
+    bool CanRedo { get; }
+    bool CanClear { get; }
+    bool IsDrawing { get; }
     TOutput DrawingOutput { get; }
-    public bool IsDrawing { get; }
 
     void Undo();
     void Redo();
