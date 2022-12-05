@@ -11,7 +11,7 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
     private readonly IDrawingToolRetriever<TDrawing, TColor> _toolRetriever;
     private readonly ICanvasProperties<TColor> _canvasProperties;
 
-    public CanvasManager(ICanvasProperties<TColor> canvasProperties, 
+    public CanvasManager(ICanvasProperties<TColor> canvasProperties,
         IDrawingStack<TDrawing, TOutput> drawStack,
         IDrawingToolRetriever<TDrawing, TColor> toolRetriever)
     {
@@ -66,9 +66,9 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
         IsDrawing = false;
         DrawingTool.FinishDrawing();
         _drawStack.PopDrawing();
-        Update();
+        Update(updateAvailableActions: false);
     }
-    
+
     public void Undo()
     {
         if (_drawStack.Count is 0) return;
