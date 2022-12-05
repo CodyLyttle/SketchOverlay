@@ -11,9 +11,9 @@ public interface ICanvasManager<out TOutput>
     void Redo();
     void Clear();
 
-    void DoDrawingEvent(PointF point);
-    void FinalizeDrawingEvent();
-    void CancelDrawingEvent();
+    void DoDrawing(PointF point);
+    void FinishDrawing();
+    void CancelDrawing();
 
     event EventHandler? RequestRedraw;
     event EventHandler<bool>? CanClearChanged;

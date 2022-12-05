@@ -33,6 +33,42 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
     public TOutput DrawingOutput => _drawStack.Output;
     public bool IsDrawing { get; private set; }
 
+    public void DoDrawing(PointF point)
+    {
+        if (!IsDrawing)
+        {
+            IsDrawing = true;
+            _redoStack.Clear();
+            TDrawing drawing = DrawingTool.CreateDrawing(_canvasProperties, point);
+            _drawStack.PushDrawing(drawing);
+        }
+        else
+        {
+            DrawingTool.UpdateDrawing(point);
+        }
+
+        Update(updateAvailableActions: false);
+    }
+
+    public void FinishDrawing()
+    {
+        if (!IsDrawing) return;
+
+        IsDrawing = false;
+        DrawingTool.FinishDrawing();
+        Update();
+    }
+
+    public void CancelDrawing()
+    {
+        if (!IsDrawing) return;
+
+        IsDrawing = false;
+        DrawingTool.FinishDrawing();
+        _drawStack.PopDrawing();
+        Update();
+    }
+    
     public void Undo()
     {
         if (_drawStack.Count is 0) return;
@@ -53,42 +89,6 @@ public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
     {
         _drawStack.Clear();
         _redoStack.Clear();
-        Update();
-    }
-
-    public void DoDrawingEvent(PointF point)
-    {
-        if (!IsDrawing)
-        {
-            IsDrawing = true;
-            _redoStack.Clear();
-            TDrawing drawing = DrawingTool.CreateDrawing(_canvasProperties, point);
-            _drawStack.PushDrawing(drawing);
-        }
-        else
-        {
-            DrawingTool.UpdateDrawing(point);
-        }
-
-        Update(updateAvailableActions: false);
-    }
-
-    public void FinalizeDrawingEvent()
-    {
-        if (!IsDrawing) return;
-
-        IsDrawing = false;
-        DrawingTool.FinishDrawing();
-        Update();
-    }
-
-    public void CancelDrawingEvent()
-    {
-        if (!IsDrawing) return;
-
-        IsDrawing = false;
-        DrawingTool.FinishDrawing();
-        _drawStack.PopDrawing();
         Update();
     }
 

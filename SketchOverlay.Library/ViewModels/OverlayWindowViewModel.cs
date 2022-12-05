@@ -76,7 +76,7 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         {
             // Allow drawing to pass behind tool window.
             SetDrawingWindowInputTransparency(true);
-            _canvasManager.DoDrawingEvent(info.CursorPosition);
+            _canvasManager.DoDrawing(info.CursorPosition);
         }
         else if (info.Button is MouseButton.Middle)
         {
@@ -97,7 +97,7 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
     {
         if (info.Button is MouseButton.Left)
         {
-            _canvasManager.DoDrawingEvent(info.CursorPosition);
+            _canvasManager.DoDrawing(info.CursorPosition);
         }
         else if (info.Button is MouseButton.Middle && _isToolWindowDragInProgress)
         {
@@ -111,7 +111,7 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         if (info.Button is MouseButton.Left)
         {
             SetDrawingWindowInputTransparency(false);
-            _canvasManager.FinalizeDrawingEvent();
+            _canvasManager.FinishDrawing();
         }
         else if (info.Button is MouseButton.Middle && _isToolWindowDragInProgress)
         {
