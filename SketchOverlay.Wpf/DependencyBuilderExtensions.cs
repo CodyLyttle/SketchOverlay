@@ -19,6 +19,7 @@ public static class DependencyBuilderExtensions
         builder.AddSingleton<IColorPalette<WpfBrush>, WpfColorPalette>();
         builder.AddSingleton<ICanvasProperties<WpfBrush>, WpfCanvasProperties>();
         builder.AddSingleton<ICanvasManager<WpfDrawingOutput>, WpfCanvasManager>();
+        builder.AddSingleton<IDrawingStack<WpfDrawing, WpfDrawingOutput>, DrawingStack>();
 
         // Tools
         DrawingToolCollection<WpfDrawing, WpfImageSource, WpfBrush> drawingToolCollection =

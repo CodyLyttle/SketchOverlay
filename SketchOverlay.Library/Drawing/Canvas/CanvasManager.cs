@@ -3,20 +3,22 @@ using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Library.Drawing.Canvas;
 
-public class CanvasManager<TDrawStack, TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
-    where TDrawStack : IDrawingStack<TDrawing, TOutput>, new()
+public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
 {
     private bool _canRedo;
     private bool _canUndo;
 
     // Temporary undo/redo solution. Refactored to support delete tool.
     private readonly Stack<TDrawing> _redoStack = new();
+    private readonly IDrawingStack<TDrawing, TOutput> _drawStack;
     private readonly IDrawingToolRetriever<TDrawing, TColor> _toolRetriever;
-    private readonly TDrawStack _drawStack = new();
     private readonly ICanvasProperties<TColor> _canvasProperties;
 
-    public CanvasManager(ICanvasProperties<TColor> canvasProperties, IDrawingToolRetriever<TDrawing, TColor> toolRetriever)
+    public CanvasManager(ICanvasProperties<TColor> canvasProperties, 
+        IDrawingStack<TDrawing, TOutput> drawStack,
+        IDrawingToolRetriever<TDrawing, TColor> toolRetriever)
     {
+        _drawStack = drawStack;
         _canvasProperties = canvasProperties;
         _toolRetriever = toolRetriever;
     }

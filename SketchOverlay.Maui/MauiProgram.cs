@@ -59,6 +59,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IColorPalette<MauiColor>, MauiColorPalette>();
         builder.Services.AddSingleton<ICanvasProperties<MauiColor>, MauiCanvasProperties>();
         builder.Services.AddSingleton<ICanvasManager<MauiDrawing>, MauiCanvasManager>();
+        builder.Services.AddSingleton<IDrawingStack<MauiDrawing, MauiDrawingOutput>, DrawableStack>();
 
         // Tools
         DrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor> drawingToolCollection = 
