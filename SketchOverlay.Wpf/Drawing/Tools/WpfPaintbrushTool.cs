@@ -41,44 +41,53 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
 
     public override void DoUpdateDrawing(PointF currentPoint)
     {
-        PathSegmentCollection segments = _brushPath!.FirstSegments();
         Point childPoint = currentPoint.ToWpfPoint();
+        PathSegmentCollection segments = _brushPath!.FirstSegments();
+        var wasSimplified = false;
 
-        // Simplify path using Visvalingam’s algorithm
-        // See: https://bost.ocks.org/mike/simplify/
         if (_canSimplify)
         {
-            // Find the area of the triangle formed by the 3 most recent points.
-            double sideA = Point.Subtract(_grandParentPoint, _parentPoint).Length;
-            double sideB = Point.Subtract(_parentPoint, childPoint).Length;
-            double sideC = Point.Subtract(_grandParentPoint, childPoint).Length;
-            double semiPerimeter = (sideA + sideB + sideC) / 2;
-            double triangleArea = Math.Sqrt(semiPerimeter * (semiPerimeter - sideA)
-                                                          * (semiPerimeter - sideB)
-                                                          * (semiPerimeter - sideC));
-
-            // Determine if the area is small enough to simplify.
-            // A value of 0.1 removes roughly 50% of all points.
-            // Increasing the value has diminishing returns at the cost of drawing accuracy.
-            if (triangleArea < 0.1) 
-            {
-                // Replace parent point with child point.
-                ((LineSegment)segments.Last()).Point = childPoint;
-            }
-            else
-            {
-                _brushPath!.FirstSegments().Add(new LineSegment(currentPoint.ToWpfPoint(), true));
-            }
+            wasSimplified = TrySimplify(childPoint, segments);
         }
-        else
+        else if (segments.Count >= 2)
         {
-            _brushPath!.FirstSegments().Add(new LineSegment(currentPoint.ToWpfPoint(), true));
-            if (segments.Count >= 2)
-                _canSimplify = true;
+            _canSimplify = true;
+            wasSimplified = TrySimplify(childPoint, segments);
+        }
+
+        if (!wasSimplified)
+        {
+            segments.Add(new LineSegment(currentPoint.ToWpfPoint(), true));
         }
 
         _grandParentPoint = _parentPoint;
         _parentPoint = childPoint;
+    }
+
+    // Simplify path using Visvalingam’s algorithm
+    // See: https://bost.ocks.org/mike/simplify/
+    private bool TrySimplify(Point childPoint, PathSegmentCollection segments)
+    {
+        // Find the area of the triangle formed by the 3 most recent points.
+        double sideA = Point.Subtract(_grandParentPoint, _parentPoint).Length;
+        double sideB = Point.Subtract(_parentPoint, childPoint).Length;
+        double sideC = Point.Subtract(_grandParentPoint, childPoint).Length;
+        double semiPerimeter = (sideA + sideB + sideC) / 2;
+        double triangleArea = Math.Sqrt(semiPerimeter * (semiPerimeter - sideA)
+                                                      * (semiPerimeter - sideB)
+                                                      * (semiPerimeter - sideC));
+
+        // Determine if the area is small enough to simplify.
+        // A value of 0.1 removes roughly 50% of all points.
+        // Increasing the value has diminishing returns at the cost of drawing accuracy.
+        if (triangleArea < 0.1)
+        {
+            // Replace parent point with child point.
+            ((LineSegment)segments.Last()).Point = childPoint;
+            return true;
+        }
+
+        return false;
     }
 
     protected override void DoFinishDrawing()
