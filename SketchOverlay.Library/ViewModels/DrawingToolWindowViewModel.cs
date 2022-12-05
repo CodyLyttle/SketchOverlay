@@ -43,10 +43,10 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
     private bool _isInputTransparent;
 
     [ObservableProperty]
-    private double _windowHeight = 310;
+    private double _windowHeight;
 
     [ObservableProperty]
-    private double _windowWidth = 300;
+    private double _windowWidth;
 
     [ObservableProperty]
     private LibraryThickness _windowMargin;

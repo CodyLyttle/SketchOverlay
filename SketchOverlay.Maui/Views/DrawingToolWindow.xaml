@@ -12,8 +12,8 @@
              Margin="{Binding WindowMargin, Converter={StaticResource libThicknessConverter}}"
              InputTransparent="{Binding IsInputTransparent, Mode=OneWay}"
              IsVisible="{Binding IsVisible}"
-             WidthRequest="{Binding WindowWidth}"
-             HeightRequest="{Binding WindowHeight}">
+             WidthRequest="{Binding WindowWidth, Mode=OneWayToSource}"
+             HeightRequest="{Binding WindowHeight, Mode=OneWayToSource}">
     <Border Background="#222222"
             Stroke="Green">
         <VerticalStackLayout>

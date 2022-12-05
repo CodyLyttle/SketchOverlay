@@ -7,8 +7,8 @@
              d:DesignHeight="450" d:DesignWidth="800"
              HorizontalAlignment="Left"
              VerticalAlignment="Top"
-             Width="{Binding WindowWidth}"
-             Height="{Binding WindowHeight}"
+             Width="{Binding WindowWidth, Mode=OneWayToSource}"
+             Height="{Binding WindowHeight, Mode=OneWayToSource}"
              Margin="{Binding WindowMargin, Converter={StaticResource LibraryThickness}}"
              IsHitTestVisible="{Binding IsInputTransparent, Converter={StaticResource InvertedBool}}"
              Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibility}}">
@@ -69,7 +69,7 @@
             <Slider x:Name="DrawSizeSlider"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
-                    Width="240"
+                    Width="200"
                     Minimum="{Binding MinimumStrokeSize, Mode=OneTime}"
                     Maximum="{Binding MaximumStrokeSize, Mode=OneTime}"
                     Value="{Binding StrokeSize}"/>

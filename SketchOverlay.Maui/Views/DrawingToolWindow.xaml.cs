@@ -8,5 +8,7 @@ public partial class DrawingToolWindow
     {
         InitializeComponent();
         BindingContext = MauiProgram.GetService<MauiDrawingToolWindowViewModel>();
+        HeightRequest = 310;
+        WidthRequest =300;
     }
 }

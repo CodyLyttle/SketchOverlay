@@ -10,5 +10,7 @@ public partial class DrawingToolWindow : UserControl
     {
         InitializeComponent();
         DataContext = App.Current.Services.GetService<WpfDrawingToolWindowViewModel>();
+        Width = 260;
+        Height = 310;
     }
 }
