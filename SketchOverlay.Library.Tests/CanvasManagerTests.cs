@@ -124,6 +124,24 @@ public class CanvasManagerTests
     }
 
     [Fact]
+    public void CanClear_OnInstantiation_IsFalse()
+    {
+        Assert.False(_sut.CanClear);
+    }
+
+    [Fact]
+    public void CanRedo_OnInstantiation_IsFalse()
+    {
+        Assert.False(_sut.CanRedo);
+    }
+
+    [Fact]
+    public void CanUndo_OnInstantiation_IsFalse()
+    {
+        Assert.False(_sut.CanUndo);
+    }
+
+    [Fact]
     public void CanClear_SetWithSameValue_DoesNothing()
     {
         // Arrange
