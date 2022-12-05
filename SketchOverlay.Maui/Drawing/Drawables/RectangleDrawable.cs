@@ -3,7 +3,7 @@
 internal class RectangleDrawable : MauiDrawing
 {
     public MauiColor FillColor { get; set; } = Colors.Transparent;
-    public MauiColor StrokeColor { get; set; } = Colors.Gray;
+    public MauiColor StrokeColor { get; set; } = Colors.Transparent;
     public float StrokeSize { get; set; } = 4;
     public PointF PointA { get; set; }
     public PointF PointB { get; set; }
@@ -20,6 +20,7 @@ internal class RectangleDrawable : MauiDrawing
             PointB.X - PointA.X, 
             PointB.Y - PointA.Y);
 
+        canvas.FillRectangle(rect);
         canvas.DrawRectangle(rect);
     }
 }
