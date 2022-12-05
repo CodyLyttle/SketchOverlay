@@ -10,8 +10,8 @@ public class CanvasManagerTests
 {
     #region Setups
 
-    private Stack<int> _drawStackItems;
     private readonly SUT _sut;
+    private readonly Stack<int> _drawStackItems;
     private readonly Mock<ICanvasProperties<object>> _mockCanvasProps;
     private readonly Mock<IDrawingStack<object, object>> _mockDrawStack;
     private readonly Mock<IDrawingToolRetriever<object, object>> _mockToolRetriever;
@@ -21,12 +21,14 @@ public class CanvasManagerTests
     {
         _drawStackItems = new Stack<int>();
         _mockDrawStack = new Mock<IDrawingStack<object, object>>();
+        _mockDrawStack.Setup(x => x.Count)
+            .Returns(() => _drawStackItems.Count);
+        _mockDrawStack.Setup(x => x.Clear())
+            .Callback(_drawStackItems.Clear);
         _mockDrawStack.Setup(x => x.PushDrawing(It.IsAny<object>()))
             .Callback(() => _drawStackItems.Push(Random.Shared.Next()));
         _mockDrawStack.Setup(x => x.PopDrawing())
             .Returns(() => _drawStackItems.Pop());
-        _mockDrawStack.Setup(x => x.Count)
-            .Returns(() => _drawStackItems.Count);
 
         _mockCanvasProps = new Mock<ICanvasProperties<object>>();
         _mockDrawingTool = new Mock<IDrawingTool<object, object>>();
@@ -601,6 +603,69 @@ public class CanvasManagerTests
 
         // Assert
         Assert.Empty(eventCatcher.Received);
+    }
+
+    #endregion
+
+    #region Clear
+
+    [Fact]
+    public void Clear_WithCanClearFalse_DoesNothing()
+    {
+        // Arrange
+        Assert.False(_sut.CanClear);
+
+        // Act
+        _sut.Clear();
+
+        // Assert
+        AssertNoInvocations();
+    }
+
+    [Fact]
+    public void Clear_WithCanClearTrue_ClearsDrawStack()
+    {
+        // Arrange
+        SetupWithDrawings(3);
+
+        // Act
+        _sut.Clear();
+
+        // Assert
+        _mockDrawStack.Verify(x=> x.Clear(), Times.Once);
+    }
+
+    [Fact]
+    public void Clear_WithAllCanvasActionStatesTrue_SetsAllCanvasActionStatesToFalse()
+    {
+        // Arrange
+        SetupWithDrawings(3);
+        _sut.Undo();
+        Assert.True(_sut.CanClear);
+        Assert.True(_sut.CanRedo);
+        Assert.True(_sut.CanUndo);
+
+        // Act
+        _sut.Clear();
+
+        // Assert
+        Assert.False(_sut.CanClear);
+        Assert.False(_sut.CanRedo);
+        Assert.False(_sut.CanUndo);
+    }
+
+    [Fact]
+    public void Clear_WithCanClearTrue_InvokesRequestRedrawEvent()
+    {
+        // Arrange
+        SetupWithDrawings(3);
+        EventCatcher eventCatcher = GetRequestRedrawEventCatcher();
+
+        // Act
+        _sut.Clear();
+
+        // Assert
+        Assert.Single(eventCatcher.Received);
     }
 
     #endregion
