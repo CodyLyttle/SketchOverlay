@@ -9,11 +9,11 @@
              HorizontalOptions="Start"
              VerticalOptions="Start"
              x:DataType="viewModels:MauiDrawingToolWindowViewModel"
+             WidthRequest="{Binding WindowWidth, Mode=OneWayToSource}"
+             HeightRequest="{Binding WindowHeight, Mode=OneWayToSource}"
              Margin="{Binding WindowMargin, Converter={StaticResource libThicknessConverter}}"
              InputTransparent="{Binding IsInputTransparent, Mode=OneWay}"
-             IsVisible="{Binding IsVisible}"
-             WidthRequest="{Binding WindowWidth, Mode=OneWayToSource}"
-             HeightRequest="{Binding WindowHeight, Mode=OneWayToSource}">
+             IsVisible="{Binding IsVisible}">
     <Border Background="#222222"
             Stroke="Green">
         <VerticalStackLayout>
