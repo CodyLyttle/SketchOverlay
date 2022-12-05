@@ -98,6 +98,10 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
         }
     }
 
+    public float MinimumStrokeSize => ICanvasProperties<TColor>.MinimumStrokeSize;
+    
+    public float MaximumStrokeSize => ICanvasProperties<TColor>.MaximumStrokeSize;
+
     // DrawingToolsCollection.SelectedItem was originally bound to DrawingTools.SelectedToolInfo,
     // however, when the control is loaded, the SelectedItem value gets set to null.
     // This causes a NullReferenceException when attempting to draw without explicitly selecting a tool.

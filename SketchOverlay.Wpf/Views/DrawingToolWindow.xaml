@@ -70,8 +70,8 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Width="240"
-                    Minimum="1"
-                    Maximum="64"
+                    Minimum="{Binding MinimumStrokeSize, Mode=OneTime}"
+                    Maximum="{Binding MaximumStrokeSize, Mode=OneTime}"
                     Value="{Binding StrokeSize}"/>
 
             <StackPanel Orientation="Horizontal"

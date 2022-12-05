@@ -72,8 +72,8 @@
                         HorizontalOptions="Center"
                         VerticalOptions="Start"
                         WidthRequest="240" 
-                        Minimum="1" 
-                        Maximum="64"
+                        Minimum="{Binding MinimumStrokeSize, Mode=OneTime}" 
+                        Maximum="{Binding MaximumStrokeSize, Mode=OneTime}"
                         Value="{Binding StrokeSize}"/>
 
             <HorizontalStackLayout x:Name="CanvasActionLayout"
