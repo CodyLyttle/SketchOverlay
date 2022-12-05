@@ -85,7 +85,7 @@ public class CanvasManagerTests
         Assert.False(_sut.IsDrawing);
     }
 
-    #region DoDrawing_WhileNotDrawing
+    #region DoDrawing
 
     [Fact]
     public void DoDrawing_WhileNotDrawing_SetsIsDrawingToTrue()
@@ -148,10 +148,6 @@ public class CanvasManagerTests
         // Assert
         Assert.Empty(eventCatcher.Received);
     }
-
-    #endregion
-
-    #region DoDrawing_WhileDrawing
 
     [Fact]
     public void DoDrawing_WhileDrawing_IsDrawingRemainsTrue()
@@ -372,10 +368,10 @@ public class CanvasManagerTests
     {
         // Arrange
         SetupIsDrawing();
-        
+
         // Act
         _sut.CancelDrawing();
-        
+
         // Assert
         Assert.False(_sut.IsDrawing);
     }
@@ -385,12 +381,12 @@ public class CanvasManagerTests
     {
         // Arrange
         SetupIsDrawing();
-        
+
         // Act
         _sut.CancelDrawing();
-        
+
         // Assert
-        _mockDrawingTool.Verify(x=> x.FinishDrawing());
+        _mockDrawingTool.Verify(x => x.FinishDrawing());
         _mockDrawingTool.VerifyNoOtherCalls();
     }
 
@@ -404,7 +400,7 @@ public class CanvasManagerTests
         _sut.CancelDrawing();
 
         // Assert
-        _mockDrawStack.Verify(x=> x.PopDrawing());
+        _mockDrawStack.Verify(x => x.PopDrawing());
         _mockDrawStack.VerifyNoOtherCalls();
     }
 
@@ -413,7 +409,7 @@ public class CanvasManagerTests
     {
         // Arrange
         SetupIsDrawing();
-        EventCatcher eventCatcher = new ();
+        EventCatcher eventCatcher = new();
         _sut.RequestRedraw += eventCatcher.OnReceived;
 
         // Act
