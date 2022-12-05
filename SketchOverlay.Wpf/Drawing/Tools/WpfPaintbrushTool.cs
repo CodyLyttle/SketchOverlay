@@ -42,7 +42,7 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
     public override void DoUpdateDrawing(PointF currentPoint)
     {
         Point childPoint = currentPoint.ToWpfPoint();
-        PathSegmentCollection segments = _brushPath!.FirstSegments();
+        PathSegmentCollection segments = _brushPath!.Figures[0].Segments;
         var wasSimplified = false;
 
         if (_canSimplify)
@@ -95,13 +95,5 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
         base.DoFinishDrawing();
         _brushPath!.Freeze();
         _brushPath = null;
-    }
-}
-
-public static class GeometryExtensions
-{
-    public static PathSegmentCollection FirstSegments(this PathGeometry geometry)
-    {
-        return geometry.Figures[0].Segments;
     }
 }
