@@ -3,7 +3,7 @@ using SketchOverlay.Library.Drawing.Tools;
 using SketchOverlay.Library.Models;
 using SUT = SketchOverlay.Library.Drawing.Tools.DrawingToolCollection<object, object, object>;
 
-namespace SketchOverlay.Library.Tests;
+namespace SketchOverlay.Library.Tests.Drawing;
 
 public class DrawingToolCollectionTests
 {

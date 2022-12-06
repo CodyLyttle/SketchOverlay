@@ -1,43 +1,45 @@
 ﻿using Moq;
 using SketchOverlay.Library.Drawing.Tools;
 
-namespace SketchOverlay.Library.Tests;
+namespace SketchOverlay.Library.Tests.Drawing;
 
 public class DrawingToolFactoryTests
 {
+    #region Setups
+
     private class MockDrawingToolFactory : DrawingToolFactory<object, object, object>
     {
-        public object ImageSourceReturnObject { get; set; } = new ();
+        public object ImageSourceReturnObject { get; set; } = new();
         public IEllipseTool<object, object>? EllipseTool { get; private set; }
         public ILineTool<object, object>? LineTool { get; private set; }
         public IPaintBrushTool<object, object>? PaintBrushTool { get; private set; }
         public IRectangleTool<object, object>? RectangleTool { get; private set; }
 
-        public void WithMockEllipse() 
+        public void WithMockEllipse()
             => EllipseTool = new Mock<IEllipseTool<object, object>>().Object;
 
-        public void WithMockLine() 
+        public void WithMockLine()
             => LineTool = new Mock<ILineTool<object, object>>().Object;
 
-        public void WithMockPaintBrush() 
+        public void WithMockPaintBrush()
             => PaintBrushTool = new Mock<IPaintBrushTool<object, object>>().Object;
 
-        public void WithMockRectangle() 
+        public void WithMockRectangle()
             => RectangleTool = new Mock<IRectangleTool<object, object>>().Object;
 
         // Call base method unless a mock tool has been set via the respective WithMock... method.
-        protected override IEllipseTool<object, object>? CreateEllipseTool() 
+        protected override IEllipseTool<object, object>? CreateEllipseTool()
             => EllipseTool ?? base.CreateEllipseTool();
 
-        protected override ILineTool<object, object>? CreateLineTool() 
+        protected override ILineTool<object, object>? CreateLineTool()
             => LineTool ?? base.CreateLineTool();
 
-        protected override IPaintBrushTool<object, object>? CreatePaintBrushTool() 
+        protected override IPaintBrushTool<object, object>? CreatePaintBrushTool()
             => PaintBrushTool ?? base.CreatePaintBrushTool();
 
-        protected override IRectangleTool<object, object>? CreateRectangleTool() 
+        protected override IRectangleTool<object, object>? CreateRectangleTool()
             => RectangleTool ?? base.CreateRectangleTool();
-        
+
         protected override object CreateImageSource(string fileName) => ImageSourceReturnObject;
     }
 
@@ -47,6 +49,10 @@ public class DrawingToolFactoryTests
     {
         _sut = new MockDrawingToolFactory();
     }
+
+    #endregion
+
+    #region CreateDrawingToolCollection
 
     [Fact]
     public void CreateDrawingToolCollection_CreatesEllipseTool()
@@ -132,4 +138,6 @@ public class DrawingToolFactoryTests
         // Assert
         Assert.Equal(_sut.ImageSourceReturnObject, returnedTools.First().IconSource);
     }
+
+    #endregion
 }

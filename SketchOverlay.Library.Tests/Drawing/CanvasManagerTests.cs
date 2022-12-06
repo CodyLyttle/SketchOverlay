@@ -5,7 +5,7 @@ using SketchOverlay.Library.Tests.TestHelpers;
 using Moq;
 using SUT = SketchOverlay.Library.Drawing.Canvas.CanvasManager<object, object, object>;
 
-namespace SketchOverlay.Library.Tests;
+namespace SketchOverlay.Library.Tests.Drawing;
 public class CanvasManagerTests
 {
     #region Setups
@@ -242,7 +242,7 @@ public class CanvasManagerTests
     [Fact]
     public void DrawingOutput_ReturnsDrawStackOutput()
     {
-        Assert.Equal(_mockDrawStack.Object.Output, _sut.DrawingOutput); 
+        Assert.Equal(_mockDrawStack.Object.Output, _sut.DrawingOutput);
     }
 
     #endregion
@@ -632,7 +632,7 @@ public class CanvasManagerTests
         _sut.Clear();
 
         // Assert
-        _mockDrawStack.Verify(x=> x.Clear(), Times.Once);
+        _mockDrawStack.Verify(x => x.Clear(), Times.Once);
     }
 
     [Fact]
@@ -697,7 +697,7 @@ public class CanvasManagerTests
         _sut.Redo();
 
         // Assert
-        _mockDrawStack.Verify(x=> x.PushDrawing(It.IsAny<object>()), Times.Once);
+        _mockDrawStack.Verify(x => x.PushDrawing(It.IsAny<object>()), Times.Once);
         Assert.Equal(expected, _drawStackItems.Last());
     }
 

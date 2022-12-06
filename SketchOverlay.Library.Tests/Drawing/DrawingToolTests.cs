@@ -5,7 +5,7 @@ using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.Tests.TestHelpers;
 using SUT = SketchOverlay.Library.Drawing.Tools.DrawingTool<object, object>;
 
-namespace SketchOverlay.Library.Tests;
+namespace SketchOverlay.Library.Tests.Drawing;
 
 public class DrawingToolTests
 {

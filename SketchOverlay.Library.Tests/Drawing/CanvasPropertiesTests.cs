@@ -3,7 +3,7 @@ using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Tests.TestHelpers;
 using SUT = SketchOverlay.Library.Drawing.Canvas.CanvasProperties<System.Guid>;
 
-namespace SketchOverlay.Library.Tests;
+namespace SketchOverlay.Library.Tests.Drawing;
 
 // Use Guid as our TColor generic parameter to simplify equality assertions.
 public class CanvasPropertiesTests
