@@ -7,6 +7,8 @@ namespace SketchOverlay.Library.Tests;
 
 public class DrawingToolCollectionTests
 {
+    #region Setups
+
     private readonly SUT _sut;
     private readonly DrawingToolInfo<object, object, object>[] _toolInfoObjects;
 
@@ -28,6 +30,15 @@ public class DrawingToolCollectionTests
             new Mock<IDrawingTool<object, object>>().Object,
             new object(),
             Guid.NewGuid().ToString());
+    }
+
+    #endregion
+
+    [Fact]
+    public void Constructor_WithEmptyToolInfoEnumerable_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SUT(
+            Array.Empty<DrawingToolInfo<object, object, object>>()));
     }
 
     #region IReadonlyCollection implementation.

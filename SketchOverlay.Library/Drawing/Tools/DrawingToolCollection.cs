@@ -10,6 +10,10 @@ public class DrawingToolCollection<TDrawing, TImageSource, TColor> : IDrawingToo
     public DrawingToolCollection(IEnumerable<DrawingToolInfo<TDrawing, TImageSource, TColor>> tools)
     {
         _tools = tools.ToArray();
+        if (_tools.Length == 0)
+            throw new ArgumentOutOfRangeException(nameof(tools), 
+                "Empty tool info array");
+
         DefaultTool = _tools[0].Tool;
         SelectedToolInfo = _tools[0];
     }
