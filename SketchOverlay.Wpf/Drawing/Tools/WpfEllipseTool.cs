@@ -22,7 +22,7 @@ internal class WpfEllipseTool : DrawingTool<GeometryDrawing, WpfBrush>, IEllipse
         CurrentDrawing.Brush = canvasProps.FillColor;
     }
 
-    public override void DoUpdateDrawing(PointF currentPoint)
+    protected override void DoUpdateDrawing(PointF currentPoint)
     {
         Point newPoint = currentPoint.ToWpfPoint();
         double radiusX = (newPoint.X - _startPoint.X) / 2;

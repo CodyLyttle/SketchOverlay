@@ -22,7 +22,7 @@ internal class WpfRectangleTool : DrawingTool<GeometryDrawing, WpfBrush>, IRecta
         CurrentDrawing.Brush = canvasProps.FillColor;
     }
 
-    public override void DoUpdateDrawing(PointF currentPoint)
+    protected override void DoUpdateDrawing(PointF currentPoint)
     {
         _rectangle!.Rect = new Rect(_startPoint, currentPoint.ToWpfPoint());
     }

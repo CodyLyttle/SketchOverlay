@@ -12,7 +12,7 @@ internal class MauiPaintBrushTool : DrawingTool<PaintBrushDrawable, MauiColor>, 
         CurrentDrawing.StrokeSize = canvasProps.StrokeSize;
     }
 
-    public override void DoUpdateDrawing(System.Drawing.PointF currentPoint)
+    protected override void DoUpdateDrawing(System.Drawing.PointF currentPoint)
     {
         CurrentDrawing.AddDrawingPoint(currentPoint.ToMauiPointF());
     }

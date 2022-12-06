@@ -19,7 +19,7 @@ internal class WpfLineTool : DrawingTool<GeometryDrawing, WpfBrush>, ILineTool<G
         CurrentDrawing.Pen = canvasProps.StrokeColor.ToPen(canvasProps.StrokeSize);
     }
 
-    public override void DoUpdateDrawing(PointF currentPoint)
+    protected override void DoUpdateDrawing(PointF currentPoint)
     {
         _line!.EndPoint = currentPoint.ToWpfPoint();
     }

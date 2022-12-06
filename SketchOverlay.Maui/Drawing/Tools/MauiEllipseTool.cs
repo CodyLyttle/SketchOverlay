@@ -15,7 +15,7 @@ internal class MauiEllipseTool : DrawingTool<EllipseDrawable, MauiColor>, IEllip
         CurrentDrawing.PointA = startPoint.ToMauiPointF();
     }
 
-    public override void DoUpdateDrawing(PointF currentPoint)
+    protected override void DoUpdateDrawing(PointF currentPoint)
     {
         CurrentDrawing.PointB = currentPoint.ToMauiPointF();
     }

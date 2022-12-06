@@ -40,7 +40,7 @@ public abstract class DrawingTool<TDrawing, TColor> : IDrawingTool<TDrawing, TCo
         DoUpdateDrawing(currentPoint);
     }
 
-    public abstract void DoUpdateDrawing(PointF currentPoint);
+    protected abstract void DoUpdateDrawing(PointF currentPoint);
 
     public void FinishDrawing()
     {

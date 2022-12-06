@@ -37,7 +37,7 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
         };
     }
 
-    public override void DoUpdateDrawing(PointF currentPoint)
+    protected override void DoUpdateDrawing(PointF currentPoint)
     {
         Point childPoint = currentPoint.ToWpfPoint();
         PathSegmentCollection segments = _brushPath!.Figures[0].Segments;
