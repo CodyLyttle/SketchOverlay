@@ -20,9 +20,9 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
     private readonly ICanvasProperties<TColor> _canvasProps;
 
     public DrawingToolWindowViewModel(
-        ICanvasProperties<TColor> canvasProps, 
+        ICanvasProperties<TColor> canvasProps,
         IColorPalette<TColor> drawingColors,
-        IDrawingToolCollection<TDrawing, TImageSource, TColor> drawingTools, 
+        IDrawingToolCollection<TDrawing, TImageSource, TColor> drawingTools,
         IMessenger messenger)
     {
         _messenger = messenger;
@@ -36,7 +36,7 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
         IsVisible = false;
     }
 
-    [ObservableProperty] 
+    [ObservableProperty]
     private IColorPalette<TColor> _drawingColors;
 
     [ObservableProperty]
@@ -89,8 +89,8 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
         get => _canvasProps.StrokeSize;
         set
         {
-            if (value is < ICanvasProperties<TColor>.MinimumStrokeSize
-                      or > ICanvasProperties<TColor>.MaximumStrokeSize)
+            if (value < _canvasProps.MinimumStrokeSize ||
+                value > _canvasProps.MaximumStrokeSize)
                 return;
 
             _canvasProps.StrokeSize = (float)Math.Round(value);
@@ -98,9 +98,9 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
         }
     }
 
-    public float MinimumStrokeSize => ICanvasProperties<TColor>.MinimumStrokeSize;
-    
-    public float MaximumStrokeSize => ICanvasProperties<TColor>.MaximumStrokeSize;
+    public float MinimumStrokeSize => _canvasProps.MinimumStrokeSize;
+
+    public float MaximumStrokeSize => _canvasProps.MaximumStrokeSize;
 
     // DrawingToolsCollection.SelectedItem was originally bound to DrawingTools.SelectedToolInfo,
     // however, when the control is loaded, the SelectedItem value gets set to null.

@@ -2,24 +2,24 @@
 
 public class CanvasProperties<TColor> : ICanvasProperties<TColor>
 {
-    private readonly IColorPalette<TColor> _drawingColors;
-    private const float DefaultStrokeSize = 4;
-
     public CanvasProperties(IColorPalette<TColor> drawingColors)
     {
-        _drawingColors = drawingColors;
-        ResetDefaults();
-    }
-
-    // Suppress nullable warnings. Properties are set on instantiation via ResetDefaults()
-    public TColor FillColor { get; set; } = default!;
-    public TColor StrokeColor { get; set; } = default!;
-    public float StrokeSize { get; set; }
-
-    public void ResetDefaults()
-    {
-        FillColor = _drawingColors.DefaultSecondaryColor;
-        StrokeColor = _drawingColors.DefaultPrimaryColor;
+        DefaultFillColor = drawingColors.DefaultSecondaryColor;
+        DefaultStrokeColor = drawingColors.DefaultPrimaryColor;
+        FillColor = drawingColors.SecondaryColor;
+        StrokeColor = drawingColors.PrimaryColor;
         StrokeSize = DefaultStrokeSize;
     }
+    
+    public TColor DefaultFillColor { get; }
+    public TColor DefaultStrokeColor { get; }
+    public TColor FillColor { get; set; }
+    public TColor StrokeColor { get; set; }
+
+
+    public float MinimumStrokeSize => 1;
+    public float MaximumStrokeSize => 64;
+    public float DefaultStrokeSize => 4;
+    public float StrokeSize { get; set; }
+
 }
