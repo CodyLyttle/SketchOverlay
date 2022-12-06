@@ -9,6 +9,8 @@ namespace SketchOverlay.Library.Tests;
 
 public class DrawingToolTests
 {
+    #region Setups
+
     private readonly SUT _sut;
     private readonly Mock<SUT> _mockTool;
     private readonly ICanvasProperties<object> _canvasProps;
@@ -18,23 +20,26 @@ public class DrawingToolTests
         _canvasProps = new Mock<ICanvasProperties<object>>().Object;
 
         _mockTool = new Mock<SUT>();
-        _mockTool.Protected().Setup("InitializeDrawingProperties",
-            _canvasProps, It.IsAny<PointF>());
-        _mockTool.Protected().Setup("DoUpdateDrawing",
-            It.IsAny<PointF>());
+        _mockTool.Protected().Setup("InitializeDrawingProperties", _canvasProps, It.IsAny<PointF>());
+        _mockTool.Protected().Setup("DoUpdateDrawing", It.IsAny<PointF>());
+        _mockTool.Protected().Setup("DoFinishDrawing");
 
         _sut = _mockTool.Object;
     }
 
-    [Fact]
-    public void CurrentDrawing_IsNull_ThrowsInvalidOperationException()
+    private void SetupCurrentDrawingIsNull()
     {
-        // Arrange
         _sut.SetPropertyValue<object?>(nameof(SUT.CurrentDrawing), null);
-
-        // Act/Assert
-        Assert.Throws<InvalidOperationException>(() => _sut.CurrentDrawing);
     }
+
+    private void SetupCurrentDrawingNotNull()
+    {
+        _sut.SetPropertyValue(nameof(SUT.CurrentDrawing), new object());
+    }
+
+    #endregion
+
+    #region Properties
 
     [Fact]
     public void CurrentDrawing_OnInitialization_IsNull()
@@ -42,13 +47,25 @@ public class DrawingToolTests
         Assert.Throws<InvalidOperationException>(() => _sut.CurrentDrawing);
     }
 
+    [Fact]
+    public void CurrentDrawing_IsNull_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        SetupCurrentDrawingIsNull();
+
+        // Act/Assert
+        Assert.Throws<InvalidOperationException>(() => _sut.CurrentDrawing);
+    }
+
+    #endregion
+
     #region CreateDrawing
 
     [Fact]
     public void CreateDrawing_CurrentDrawingNotNull_ThrowsInvalidOperationException()
     {
         // Arrange
-        _sut.SetPropertyValue("CurrentDrawing", new object());
+        SetupCurrentDrawingNotNull();
 
         // Act/Assert
         Assert.Throws<InvalidOperationException>(() =>
@@ -110,6 +127,10 @@ public class DrawingToolTests
     [Fact]
     public void UpdateDrawing_CurrentDrawingIsNull_ThrowsInvalidOperationException()
     {
+        // Arrange
+        SetupCurrentDrawingIsNull();
+
+        // Act/Assert
         Assert.Throws<InvalidOperationException>(() => _sut.UpdateDrawing(new PointF()));
     }
 
@@ -117,8 +138,8 @@ public class DrawingToolTests
     public void UpdateDrawing_CurrentDrawingNotNull_UpdatesDrawing()
     {
         // Arrange
-        _sut.SetPropertyValue(nameof(SUT.CurrentDrawing), new object());
-        PointF expectedPoint = new(1,2);
+        SetupCurrentDrawingNotNull();
+        PointF expectedPoint = new(1, 2);
 
         // Act
         _sut.UpdateDrawing(expectedPoint);
@@ -126,6 +147,46 @@ public class DrawingToolTests
         // Assert
         _mockTool.Protected().Verify("DoUpdateDrawing", Times.Once(),
             expectedPoint);
+    }
+
+    #endregion
+
+    #region FinishDrawing
+
+    [Fact]
+    public void FinishDrawing_CurrentDrawingIsNull_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        SetupCurrentDrawingIsNull();
+
+        // Act/Assert
+        Assert.Throws<InvalidOperationException>(() => _sut.FinishDrawing());
+    }
+
+    [Fact]
+    public void FinishDrawing_CurrentDrawingNotNull_FinishesDrawing()
+    {
+        // Arrange
+        SetupCurrentDrawingNotNull();
+
+        // Act
+        _sut.FinishDrawing();
+
+        // Assert
+        _mockTool.Protected().Verify("DoFinishDrawing", Times.Once());
+    }
+
+    [Fact]
+    public void FinishDrawing_CurrentDrawingNotNull_SetsCurrentDrawingToNull()
+    {
+        // Arrange
+        SetupCurrentDrawingNotNull();
+
+        // Act
+        _sut.FinishDrawing();
+
+        // Assert
+        Assert.Throws<InvalidOperationException>(() => _sut.CurrentDrawing);
     }
 
     #endregion
