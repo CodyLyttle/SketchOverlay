@@ -5,6 +5,7 @@ using SUT = SketchOverlay.Library.Drawing.Canvas.CanvasProperties<System.Guid>;
 
 namespace SketchOverlay.Library.Tests;
 
+// Use Guid as our TColor generic parameter to simplify equality assertions.
 public class CanvasPropertiesTests
 {
     #region Setups
