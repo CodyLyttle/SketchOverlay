@@ -15,7 +15,7 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
     private Point _grandParentPoint;
     private bool _canSimplify;
 
-    protected override GeometryDrawing DoCreateDrawing(ICanvasProperties<WpfBrush> canvasProps, PointF startPoint)
+    protected override void InitializeDrawingProperties(ICanvasProperties<WpfBrush> canvasProps, PointF startPoint)
     {
         _brushPath = new PathGeometry();
         _brushPath.Figures.Add(new PathFigure(startPoint.ToWpfPoint(), Array.Empty<PathSegment>(), false));
@@ -23,10 +23,8 @@ internal class WpfPaintbrushTool : DrawingTool<GeometryDrawing, WpfBrush>, IPain
         _grandParentPoint = new Point();
         _canSimplify = false;
 
-        GeometryDrawing drawing = base.DoCreateDrawing(canvasProps, startPoint);
-        drawing.Geometry = _brushPath;
-        drawing.Pen = CreatePen(canvasProps.StrokeColor, canvasProps.StrokeSize);
-        return drawing;
+        CurrentDrawing.Geometry = _brushPath;
+        CurrentDrawing.Pen = CreatePen(canvasProps.StrokeColor, canvasProps.StrokeSize);
     }
 
     private System.Windows.Media.Pen CreatePen(WpfBrush brush, float strokeSize)

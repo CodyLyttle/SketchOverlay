@@ -10,15 +10,13 @@ internal class WpfLineTool : DrawingTool<GeometryDrawing, WpfBrush>, ILineTool<G
 {
     private LineGeometry? _line;
 
-    protected override GeometryDrawing DoCreateDrawing(ICanvasProperties<WpfBrush> canvasProps, PointF startPoint)
+    protected override void InitializeDrawingProperties(ICanvasProperties<WpfBrush> canvasProps, PointF startPoint)
     {
         Point wpfStartPoint = startPoint.ToWpfPoint();
         _line = new LineGeometry(wpfStartPoint, wpfStartPoint);
 
-        GeometryDrawing drawing = base.DoCreateDrawing(canvasProps, startPoint);
-        drawing.Geometry = _line;
-        drawing.Pen = canvasProps.StrokeColor.ToPen(canvasProps.StrokeSize);
-        return drawing;
+        CurrentDrawing.Geometry = _line;
+        CurrentDrawing.Pen = canvasProps.StrokeColor.ToPen(canvasProps.StrokeSize);
     }
 
     public override void DoUpdateDrawing(PointF currentPoint)

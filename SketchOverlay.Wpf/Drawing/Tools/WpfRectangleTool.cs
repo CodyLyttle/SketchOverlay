@@ -12,16 +12,14 @@ internal class WpfRectangleTool : DrawingTool<GeometryDrawing, WpfBrush>, IRecta
     private RectangleGeometry? _rectangle;
     private Point _startPoint;
 
-    protected override GeometryDrawing DoCreateDrawing(ICanvasProperties<WpfBrush> canvasProps, PointF startPoint)
+    protected override void InitializeDrawingProperties(ICanvasProperties<WpfBrush> canvasProps, PointF startPoint)
     {
         _startPoint = startPoint.ToWpfPoint();
         _rectangle = new RectangleGeometry(new Rect(_startPoint, _startPoint));
 
-        GeometryDrawing drawing = base.DoCreateDrawing(canvasProps, startPoint);
-        drawing.Geometry = _rectangle;
-        drawing.Pen = canvasProps.StrokeColor.ToPen(canvasProps.StrokeSize);
-        drawing.Brush = canvasProps.FillColor;
-        return drawing;
+        CurrentDrawing.Geometry = _rectangle;
+        CurrentDrawing.Pen = canvasProps.StrokeColor.ToPen(canvasProps.StrokeSize);
+        CurrentDrawing.Brush = canvasProps.FillColor;
     }
 
     public override void DoUpdateDrawing(PointF currentPoint)

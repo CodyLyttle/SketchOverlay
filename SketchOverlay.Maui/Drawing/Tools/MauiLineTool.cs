@@ -6,13 +6,11 @@ namespace SketchOverlay.Maui.Drawing.Tools;
 
 internal class MauiLineTool : DrawingTool<LineDrawable, MauiColor>, ILineTool<LineDrawable, MauiColor>
 {
-    protected override LineDrawable DoCreateDrawing(ICanvasProperties<MauiColor> canvasProps, System.Drawing.PointF startPoint)
+    protected override void InitializeDrawingProperties(ICanvasProperties<MauiColor> canvasProps, System.Drawing.PointF startPoint)
     {
-        LineDrawable drawable = base.DoCreateDrawing(canvasProps, startPoint);
-        drawable.StrokeColor = canvasProps.StrokeColor;
-        drawable.StrokeSize = canvasProps.StrokeSize;
-        drawable.PointA = startPoint.ToMauiPointF();
-        return drawable;
+        CurrentDrawing.StrokeColor = canvasProps.StrokeColor;
+        CurrentDrawing.StrokeSize = canvasProps.StrokeSize;
+        CurrentDrawing.PointA = startPoint.ToMauiPointF();
     }
 
     public override void DoUpdateDrawing(System.Drawing.PointF currentPoint)

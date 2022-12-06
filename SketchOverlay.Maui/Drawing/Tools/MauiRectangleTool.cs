@@ -6,14 +6,12 @@ namespace SketchOverlay.Maui.Drawing.Tools;
 
 internal class MauiRectangleTool : DrawingTool<RectangleDrawable, MauiColor>, IRectangleTool<RectangleDrawable, MauiColor>
 {
-    protected override RectangleDrawable DoCreateDrawing(ICanvasProperties<MauiColor> canvasProps, System.Drawing.PointF startPoint)
+    protected override void InitializeDrawingProperties(ICanvasProperties<MauiColor> canvasProps, System.Drawing.PointF startPoint)
     {
-        RectangleDrawable drawable =  base.DoCreateDrawing(canvasProps, startPoint);
-        drawable.FillColor = canvasProps.FillColor;
-        drawable.StrokeColor = canvasProps.StrokeColor;
-        drawable.StrokeSize = canvasProps.StrokeSize;
-        drawable.PointA = startPoint.ToMauiPointF();
-        return drawable;
+        CurrentDrawing.FillColor = canvasProps.FillColor;
+        CurrentDrawing.StrokeColor = canvasProps.StrokeColor;
+        CurrentDrawing.StrokeSize = canvasProps.StrokeSize;
+        CurrentDrawing.PointA = startPoint.ToMauiPointF();
     }
 
     public override void DoUpdateDrawing(System.Drawing.PointF currentPoint)

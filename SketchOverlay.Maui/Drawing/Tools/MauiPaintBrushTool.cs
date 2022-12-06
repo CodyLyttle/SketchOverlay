@@ -6,12 +6,10 @@ namespace SketchOverlay.Maui.Drawing.Tools;
 
 internal class MauiPaintBrushTool : DrawingTool<PaintBrushDrawable, MauiColor>, IPaintBrushTool<PaintBrushDrawable, MauiColor>
 {
-    protected override PaintBrushDrawable DoCreateDrawing(ICanvasProperties<MauiColor> canvasProps, System.Drawing.PointF startPoint)
+    protected override void InitializeDrawingProperties(ICanvasProperties<MauiColor> canvasProps, System.Drawing.PointF startPoint)
     {
-        PaintBrushDrawable drawable = base.DoCreateDrawing(canvasProps, startPoint);
-        drawable.StrokeColor = canvasProps.StrokeColor;
-        drawable.StrokeSize = canvasProps.StrokeSize;
-        return drawable;
+        CurrentDrawing.StrokeColor = canvasProps.StrokeColor;
+        CurrentDrawing.StrokeSize = canvasProps.StrokeSize;
     }
 
     public override void DoUpdateDrawing(System.Drawing.PointF currentPoint)

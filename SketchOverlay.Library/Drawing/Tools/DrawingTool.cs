@@ -18,15 +18,17 @@ public abstract class DrawingTool<TDrawing, TColor> : IDrawingTool<TDrawing, TCo
         if (_currentDrawing is not null)
             throw new InvalidOperationException(
                 "Cannot create a new drawing before finishing the current drawing");
-        
-        return DoCreateDrawing(canvasProps, startPoint);
+
+        CurrentDrawing = new TDrawing();
+        InitializeDrawingProperties(canvasProps, startPoint);
+        UpdateDrawing(startPoint);
+
+        return CurrentDrawing;
     }
 
-    protected virtual TDrawing DoCreateDrawing(ICanvasProperties<TColor> canvasProps, PointF startPoint)
+    protected virtual void InitializeDrawingProperties(ICanvasProperties<TColor> canvasProps, PointF startPoint)
     {
-        CurrentDrawing = new TDrawing();
-        UpdateDrawing(startPoint);
-        return CurrentDrawing;
+        // Do nothing.
     }
 
     public void UpdateDrawing(PointF currentPoint)
