@@ -104,4 +104,29 @@ public class DrawingToolTests
     }
 
     #endregion
+
+    #region UpdateDrawing
+
+    [Fact]
+    public void UpdateDrawing_CurrentDrawingIsNull_ThrowsInvalidOperationException()
+    {
+        Assert.Throws<InvalidOperationException>(() => _sut.UpdateDrawing(new PointF()));
+    }
+
+    [Fact]
+    public void UpdateDrawing_CurrentDrawingNotNull_UpdatesDrawing()
+    {
+        // Arrange
+        _sut.SetPropertyValue(nameof(SUT.CurrentDrawing), new object());
+        PointF expectedPoint = new(1,2);
+
+        // Act
+        _sut.UpdateDrawing(expectedPoint);
+
+        // Assert
+        _mockTool.Protected().Verify("DoUpdateDrawing", Times.Once(),
+            expectedPoint);
+    }
+
+    #endregion
 }
