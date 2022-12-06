@@ -3,8 +3,7 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Library.Drawing.Tools;
 
-public class DrawingToolCollection<TDrawing, TImageSource, TColor> : IDrawingToolCollection<TDrawing, TImageSource, TColor>,
-    IDrawingToolRetriever<TDrawing, TColor>
+public class DrawingToolCollection<TDrawing, TImageSource, TColor> : IDrawingToolCollection<TDrawing, TImageSource, TColor>
 {
     private readonly DrawingToolInfo<TDrawing, TImageSource, TColor>[] _tools;
 

@@ -22,10 +22,10 @@ public static class DependencyBuilderExtensions
         builder.AddSingleton<IDrawingStack<WpfDrawing, WpfDrawingOutput>, DrawingStack>();
 
         // Tools
-        DrawingToolCollection<WpfDrawing, WpfImageSource, WpfBrush> drawingToolCollection =
+        IDrawingToolCollection<WpfDrawing, WpfImageSource, WpfBrush> drawingToolCollection =
             new WpfDrawingToolFactory().CreateDrawingToolCollection();
 
-        builder.AddSingleton<IDrawingToolCollection<WpfDrawing, WpfImageSource, WpfBrush>>(drawingToolCollection);
+        builder.AddSingleton(drawingToolCollection);
         builder.AddSingleton<IDrawingToolRetriever<WpfDrawing, WpfBrush>>(drawingToolCollection);
         builder.AddSingleton<ILineTool<WpfDrawing, WpfBrush>>(drawingToolCollection.GetTool<WpfLineTool>());
         builder.AddSingleton<IPaintBrushTool<WpfDrawing, WpfBrush>>(drawingToolCollection.GetTool<WpfPaintbrushTool>());

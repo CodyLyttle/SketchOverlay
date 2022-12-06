@@ -62,10 +62,10 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDrawingStack<MauiDrawing, MauiDrawingOutput>, DrawableStack>();
 
         // Tools
-        DrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor> drawingToolCollection = 
+        IDrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor> drawingToolCollection = 
             new MauiDrawingToolFactory().CreateDrawingToolCollection();
 
-        builder.Services.AddSingleton<IDrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor>>(drawingToolCollection);
+        builder.Services.AddSingleton(drawingToolCollection);
         builder.Services.AddSingleton<IDrawingToolRetriever<MauiDrawing, MauiColor>>(drawingToolCollection);
         builder.Services.AddSingleton<IPaintBrushTool<MauiDrawing, MauiColor>>(drawingToolCollection.GetTool<MauiPaintBrushTool>());
         builder.Services.AddSingleton<ILineTool<MauiDrawing, MauiColor>>(drawingToolCollection.GetTool<MauiLineTool>());

@@ -50,7 +50,7 @@ public class DrawingToolCollectionTests
 
     #endregion
 
-    #region IDrawingToolRetriever implementation
+    #region IDrawingToolCollection implementation
 
     [Fact]
     public void DefaultTool_ReturnsFirstTool()
@@ -63,10 +63,6 @@ public class DrawingToolCollectionTests
     {
         Assert.Equal(_toolInfoObjects[0].Tool, _sut.SelectedTool);
     }
-
-    #endregion
-
-    #region IDrawingToolCollection implementation
 
     [Fact]
     public void SelectedToolInfo_OnInitialization_ReturnsFirstToolInfo()

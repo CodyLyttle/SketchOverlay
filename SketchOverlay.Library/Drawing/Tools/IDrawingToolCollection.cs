@@ -2,8 +2,9 @@
 
 namespace SketchOverlay.Library.Drawing.Tools;
 
-public interface IDrawingToolCollection<TDrawing, TImageSource, TColor>
-    : IReadOnlyCollection<DrawingToolInfo<TDrawing, TImageSource, TColor>>
+public interface IDrawingToolCollection<TDrawing, TImageSource, TColor> : 
+    IDrawingToolRetriever<TDrawing, TColor>,  
+    IReadOnlyCollection<DrawingToolInfo<TDrawing, TImageSource, TColor>>
 {
     DrawingToolInfo<TDrawing, TImageSource, TColor> SelectedToolInfo { get; set; }
 
