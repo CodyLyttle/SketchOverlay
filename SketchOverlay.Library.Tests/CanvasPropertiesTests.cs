@@ -61,25 +61,19 @@ public class CanvasPropertiesTests
     [Fact]
     public void FillColor_Setter_SetsInputValue()
     {
-        PropertyAssertions.SetsInputValue(_sut,
-            nameof(SUT.FillColor),
-            Guid.NewGuid());
+        _sut.AssertSetsValue(nameof(SUT.FillColor), Guid.NewGuid());
     }
 
     [Fact]
     public void StrokeColor_Setter_SetsInputValue()
     {
-        PropertyAssertions.SetsInputValue(_sut,
-            nameof(SUT.StrokeColor),
-            Guid.NewGuid());
+        _sut.AssertSetsValue(nameof(SUT.StrokeColor), Guid.NewGuid());
     }
 
     [Fact]
     public void StrokeSize_Setter_SetsInputValue()
     {
-        PropertyAssertions.SetsInputValue(_sut, 
-            nameof(SUT.StrokeSize), 
-            (float)Random.Shared.Next());
+        _sut.AssertSetsValue(nameof(SUT.StrokeSize), (float)Random.Shared.Next());
     }
 
     #endregion
