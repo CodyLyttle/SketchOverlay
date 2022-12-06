@@ -10,6 +10,7 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Library.ViewModels;
 
+// TODO: Tests.
 public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> : ObservableObject,
     IRecipient<DrawingWindowSetPropertyMessage>,
     IRecipient<DrawingWindowDragEventMessage>

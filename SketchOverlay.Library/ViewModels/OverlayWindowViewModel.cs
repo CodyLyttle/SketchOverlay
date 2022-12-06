@@ -8,6 +8,7 @@ using SketchOverlay.Library.Models;
 
 namespace SketchOverlay.Library.ViewModels;
 
+// TODO: Tests.
 public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TColor> : ObservableObject,
     IRecipient<DrawingWindowPropertyChangedMessage>,
     IRecipient<OverlayWindowCanvasActionMessage>
