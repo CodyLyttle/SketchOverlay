@@ -80,6 +80,24 @@ public partial class ToolsWindowViewModel<TDrawing, TImageSource, TColor> : Obse
     [RelayCommand(CanExecute = nameof(CanUndo))]
     private void Undo() => _canvasStateManager.Undo();
 
+    public float MinimumStrokeSize => _canvasProps.MinimumStrokeSize;
+
+    public float MaximumStrokeSize => _canvasProps.MaximumStrokeSize;
+
+    public float StrokeSize
+    {
+        get => _canvasProps.StrokeSize;
+        set
+        {
+            if (value < MinimumStrokeSize ||
+                value > MaximumStrokeSize)
+                return;
+
+            _canvasProps.StrokeSize = (float)Math.Round(value);
+            OnPropertyChanged();
+        }
+    }
+
     public TColor StrokeColor
     {
         get => _canvasProps.StrokeColor;
@@ -103,24 +121,6 @@ public partial class ToolsWindowViewModel<TDrawing, TImageSource, TColor> : Obse
             _canvasProps.FillColor = value;
         }
     }
-
-    public float StrokeSize
-    {
-        get => _canvasProps.StrokeSize;
-        set
-        {
-            if (value < _canvasProps.MinimumStrokeSize ||
-                value > _canvasProps.MaximumStrokeSize)
-                return;
-
-            _canvasProps.StrokeSize = (float)Math.Round(value);
-            OnPropertyChanged();
-        }
-    }
-
-    public float MinimumStrokeSize => _canvasProps.MinimumStrokeSize;
-
-    public float MaximumStrokeSize => _canvasProps.MaximumStrokeSize;
 
     // DrawingToolsCollection.SelectedItem was originally bound to DrawingTools.SelectedToolInfo,
     // however, when the control is loaded, the SelectedItem value gets set to null.

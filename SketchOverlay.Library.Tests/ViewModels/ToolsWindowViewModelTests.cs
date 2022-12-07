@@ -19,16 +19,19 @@ public class ToolsWindowViewModelTests
     public ToolsWindowViewModelTests()
     {
         _mockCanvasProperties = new Mock<ICanvasProperties<object>>();
+        _mockCanvasProperties.Setup(x => x.MinimumStrokeSize).Returns(1);
+        _mockCanvasProperties.Setup(x => x.MaximumStrokeSize).Returns(10);
+
         _mockDrawingToolsCollection = new Mock<IDrawingToolCollection<object, object, object>>();
         _mockCanvasStateManager = new Mock<ICanvasStateManager>();
         _mockCanvasStateManager.SetupAllProperties();
         _mockColorPalette = new Mock<IColorPalette<object>>();
-        
+
         _sut = new SUT(
-            _mockCanvasProperties.Object, 
-            _mockColorPalette.Object, 
+            _mockCanvasProperties.Object,
+            _mockColorPalette.Object,
             _mockDrawingToolsCollection.Object,
-            _mockCanvasStateManager.Object, 
+            _mockCanvasStateManager.Object,
             _messenger);
     }
 
@@ -41,7 +44,7 @@ public class ToolsWindowViewModelTests
         bool expectedValue = !_sut.CanClear;
 
         // Act
-        _mockCanvasStateManager.Raise(x=> x.CanClearChanged += null, null, expectedValue);
+        _mockCanvasStateManager.Raise(x => x.CanClearChanged += null, null, expectedValue);
 
         // Assert
         Assert.Equal(expectedValue, _sut.CanClear);
@@ -85,7 +88,7 @@ public class ToolsWindowViewModelTests
         _sut.ClearCommand.Execute(null);
 
         // Assert
-        _mockCanvasStateManager.Verify(x=> x.Clear(), Times.Once);
+        _mockCanvasStateManager.Verify(x => x.Clear(), Times.Once);
     }
 
     [Fact]
@@ -102,7 +105,7 @@ public class ToolsWindowViewModelTests
     public void ClearCommand_CanClearIsTrue_CanExecuteIsTrue()
     {
         // Arrange
-        _mockCanvasStateManager.Raise(x=> x.CanClearChanged += null, null, true);
+        _mockCanvasStateManager.Raise(x => x.CanClearChanged += null, null, true);
         Assert.True(_sut.CanClear);
 
         // Assert
@@ -177,6 +180,67 @@ public class ToolsWindowViewModelTests
 
         // Assert
         Assert.True(_sut.UndoCommand.CanExecute(null));
+    }
+
+    #endregion
+
+    #region Properties
+
+    [Fact]
+    public void MinimumStrokeSize_ReturnsCanvasPropertiesMinimumStrokeSize()
+    {
+        // Arrange
+        Assert.Equal(_mockCanvasProperties.Object.MinimumStrokeSize, _sut.MinimumStrokeSize);
+    }
+
+    [Fact]
+    public void MaximumStrokeSize_ReturnsCanvasPropertiesMaximumStrokeSize()
+    {
+        // Arrange
+        _mockCanvasProperties.Setup(x => x.MaximumStrokeSize)
+            .Returns(32);
+
+        // Arrange
+        Assert.Equal(_mockCanvasProperties.Object.MaximumStrokeSize, _sut.MaximumStrokeSize);
+    }
+
+    [Fact]
+    public void StrokeSize_SetWithValueLessThanMinimumStrokeSize_DoesNothing()
+    {
+        // Arrange
+        float expectedValue = _mockCanvasProperties.Object.MinimumStrokeSize - 1;
+
+        // Act
+        _sut.StrokeSize = expectedValue;
+
+        // Assert
+        _mockCanvasProperties.VerifySet(x => x.StrokeSize = expectedValue, Times.Never);
+    }
+
+    [Fact]
+    public void StrokeSize_SetWithValueGreaterThanMaximumStrokeSize_DoesNothing()
+    {
+        // Arrange
+        float expectedValue = _mockCanvasProperties.Object.MaximumStrokeSize + 1;
+
+        // Act
+        _sut.StrokeSize = expectedValue;
+
+        // Assert
+        _mockCanvasProperties.VerifySet(x => x.StrokeSize = expectedValue, Times.Never);
+    }
+
+    [Fact]
+    public void StrokeSize_SetWithValidStrokeSize_DoesNothing()
+    {
+        // Arrange
+        float expectedValue = _mockCanvasProperties.Object.MaximumStrokeSize - 1;
+
+        // Act
+        _sut.StrokeSize = expectedValue;
+
+        // Assert
+        _mockCanvasProperties.VerifySet(x => x.StrokeSize = expectedValue, Times.Once);
     }
 
     #endregion
