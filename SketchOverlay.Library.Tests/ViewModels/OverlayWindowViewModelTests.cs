@@ -251,4 +251,43 @@ public class OverlayWindowViewModelTests
     }
 
     #endregion
+
+    #region Receive ToolsWindowPropertyChanged
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ReceiveToolsWindowPropertyChanged_IsVisible_SetsIsToolsWindowVisibleField(bool setterValue)
+    {
+        // Arrange
+        const string fieldName = "_isToolsWindowVisible";
+        _sut.SetField(fieldName, !setterValue);
+
+        // Act
+        _sut.Receive(new ToolsWindowPropertyChangedMessage(setterValue, nameof(ToolsWindow.IsVisible)));
+        var actual = _sut.GetField<bool>(fieldName);
+
+        // Assert
+        Assert.Equal(setterValue, actual);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ReceiveToolsWindowPropertyChanged_IsVisible_SetsIsToolsWindowDragInProgressField(bool setterValue)
+    {
+        // Arrange
+        const string fieldName = "_isToolsWindowDragInProgress";
+        _sut.SetField(fieldName, !setterValue);
+
+        // Act
+        _sut.Receive(new ToolsWindowPropertyChangedMessage(setterValue, nameof(ToolsWindow.IsDragInProgress)));
+        var actual = _sut.GetField<bool>(fieldName);
+
+        // Assert
+        Assert.Equal(setterValue, actual);
+    }
+
+
+    #endregion
 }
