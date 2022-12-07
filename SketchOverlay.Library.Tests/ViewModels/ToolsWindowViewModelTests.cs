@@ -5,6 +5,7 @@ using Moq;
 using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.Drawing.Tools;
+using SketchOverlay.Library.Models;
 using SUT = SketchOverlay.Library.ViewModels.ToolsWindowViewModel<object, object, object>;
 
 namespace SketchOverlay.Library.Tests.ViewModels;
@@ -26,6 +27,10 @@ public class ToolsWindowViewModelTests
         _mockCanvasProperties.Setup(x => x.MaximumStrokeSize).Returns(10);
 
         _mockDrawingToolsCollection = new Mock<IDrawingToolCollection<object, object, object>>();
+        _mockDrawingToolsCollection.Setup(x => x.SelectedToolInfo)
+            .Returns(new DrawingToolInfo<object, object, object>(
+                new Mock<IDrawingTool<object, object>>().Object, "iconSource", "mockTool"));
+
         _mockCanvasStateManager = new Mock<ICanvasStateManager>();
         _mockCanvasStateManager.SetupAllProperties();
         _mockColorPalette = new Mock<IColorPalette<object>>();
@@ -265,10 +270,10 @@ public class ToolsWindowViewModelTests
     {
         // Act
         // UI bindings have the ability to set non-nullable properties to null.
-        _sut.FillColor = null!; 
+        _sut.FillColor = null!;
 
         // Assert
-        _mockCanvasProperties.VerifySet(x=> x.FillColor = null!, Times.Never);
+        _mockCanvasProperties.VerifySet(x => x.FillColor = null!, Times.Never);
     }
 
     [Fact]
@@ -306,6 +311,34 @@ public class ToolsWindowViewModelTests
 
         // Assert
         _mockCanvasProperties.VerifySet(x => x.StrokeColor = expectedValue, Times.Once);
+    }
+
+    [Fact]
+    public void SelectedToolInfo_SetWithNullOrSameValue_DoesNothing()
+    {
+        // Act
+        _sut.SelectedToolInfo = null!;
+        _sut.SelectedToolInfo = _sut.SelectedToolInfo;
+
+        // Assert
+        _mockDrawingToolsCollection.VerifySet(x => x.SelectedToolInfo = null!, Times.Never());
+        _mockDrawingToolsCollection.VerifySet(x => x.SelectedToolInfo = _sut.SelectedToolInfo, Times.Never());
+        _sutMonitor.Should().NotRaisePropertyChangeFor(x => x.SelectedToolInfo);
+    }
+
+    [Fact]
+    public void SelectedToolInfo_SetWithNewValue_UpdatesSelectedDrawingToolInfo()
+    {
+        // Arrange
+        DrawingToolInfo<object, object, object> expectedToolInfo = new(
+            new Mock<IDrawingTool<object, object>>().Object, "icon2", "someOtherTool");
+
+        // Act
+        _sut.SelectedToolInfo = expectedToolInfo;
+
+        // Assert
+        _mockDrawingToolsCollection.VerifySet(x => x.SelectedToolInfo = expectedToolInfo, Times.Once);
+        _sutMonitor.Should().RaisePropertyChangeFor(x => x.SelectedToolInfo);
     }
 
     #endregion
