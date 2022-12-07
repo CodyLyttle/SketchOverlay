@@ -439,4 +439,39 @@ public class ToolsWindowViewModelTests
 
     #endregion
 
+    #region Receive
+
+    [Fact]
+    public void ReceiveSetIsVisible_SetsIsVisibleProperty()
+    {
+        // Arrange
+        bool expectedValue = !_sut.IsVisible;
+
+        // Act
+        _messenger.Send(new ToolsWindowSetPropertyMessage(nameof(SUT.IsVisible), expectedValue));
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.IsVisible);
+    }
+
+    [Fact]
+    public void ReceiveSetIsInputTransparent_SetsIsInputTransparentProperty()
+    {
+        // Arrange
+        bool expectedValue = !_sut.IsInputTransparent;
+
+        // Act
+        _messenger.Send(new ToolsWindowSetPropertyMessage(nameof(SUT.IsInputTransparent), expectedValue));
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.IsInputTransparent);
+    }
+
+    [Fact]
+    public void ReceiveUnhandledMessage_DoesNotThrowException()
+    {
+        _messenger.Send(new ToolsWindowSetPropertyMessage("SomeProperty", 32));
+    }
+
+    #endregion
 }
