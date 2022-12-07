@@ -170,4 +170,61 @@ public class OverlayWindowViewModelTests
     }
 
     #endregion
+
+    #region MouseUpCommand
+
+    [Fact]
+    public void MouseUpCommand_LeftButton_EnablesToolWindowHitTesting()
+    {
+        // Arrange
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
+        ToolsWindowSetPropertyMessage expectedMsg = new(nameof(ToolsWindow.IsInputTransparent), false);
+
+        // Act
+        _sut.MouseUpCommand.Execute(new MouseActionInfo(MouseButton.Left, new PointF()));
+
+        // Assert
+        inbox.AssertReceivedSingleMessage(expectedMsg);
+    }
+
+    [Fact]
+    public void MouseUpCommand_LeftButton_FinishesDrawing()
+    {
+        // Act
+        _sut.MouseUpCommand.Execute(new MouseActionInfo(MouseButton.Left, PointF.Empty));
+
+        // Assert
+        _mockCanvas.Verify(x => x.FinishDrawing(), Times.Once);
+    }
+
+    [Fact]
+    public void MouseUpCommand_MiddleButtonWhileDragging_EndToolWindowDragAction()
+    {
+        // Arrange
+        _sut.SetField("_isToolsWindowDragInProgress", true);
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowDragEventMessage>();
+        ToolsWindowDragEventMessage expectedMsg = new(DragAction.EndDrag, new PointF(0,1));
+
+        // Act
+        _sut.MouseUpCommand.Execute(new MouseActionInfo(MouseButton.Middle, expectedMsg.Value.position));
+
+        // Assert
+        inbox.AssertReceivedSingleMessage(expectedMsg);
+    }
+
+    [Fact]
+    public void MouseUpCommand_MiddleButtonWhileNotDragging_DoesNothing()
+    {
+        _sut.SetField("_isToolsWindowDragInProgress", false);
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowDragEventMessage>();
+
+        // Act
+        _sut.MouseUpCommand.Execute(new MouseActionInfo(MouseButton.Middle, PointF.Empty));
+
+        // Assert
+        inbox.AssertReceivedNoMessages();
+    }
+
+    #endregion
+
 }
