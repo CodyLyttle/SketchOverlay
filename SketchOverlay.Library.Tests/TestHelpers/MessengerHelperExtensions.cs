@@ -23,4 +23,9 @@ internal static class MessengerHelperExtensions
     {
         MessengerAssertions.ReceivedSingleMessage(inbox, expectedMsg);
     }
+
+    public static void AssertReceivedNoMessages(this MessageInbox inbox)
+    {
+        MessengerAssertions.ReceivedNoMessages(inbox);   
+    }
 }

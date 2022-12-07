@@ -16,4 +16,9 @@ internal static class MessengerAssertions
         Assert.Equal(1, inbox.MessageCount);
         Assert.Equivalent(expectedMsg, inbox.GetLastMessage());
     }
+
+    public static void ReceivedNoMessages(MessageInbox inbox)
+    {
+        Assert.Equal(0, inbox.MessageCount);
+    }
 }
