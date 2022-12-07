@@ -288,6 +288,57 @@ public class OverlayWindowViewModelTests
         Assert.Equal(setterValue, actual);
     }
 
+    #endregion
+
+    #region CanvasActionChanged
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void CanClearChanged_SetToolWindowCanClear(bool value)
+    {
+        // Arrange
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
+        ToolsWindowSetPropertyMessage expectedMsg = new(nameof(ToolsWindow.CanClear), value);
+
+        // Act
+        _mockCanvas.Raise(x=> x.CanClearChanged += null, this, value);
+
+        // Assert
+        inbox.AssertReceivedSingleMessage(expectedMsg);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void CanRedoChanged_SetToolWindowCanRedo(bool value)
+    {
+        // Arrange
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
+        ToolsWindowSetPropertyMessage expectedMsg = new(nameof(ToolsWindow.CanRedo), value);
+
+        // Act
+        _mockCanvas.Raise(x => x.CanRedoChanged += null, this, value);
+
+        // Assert
+        inbox.AssertReceivedSingleMessage(expectedMsg);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void CanUndoChanged_SetToolWindowCanUndo(bool value)
+    {
+        // Arrange
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
+        ToolsWindowSetPropertyMessage expectedMsg = new(nameof(ToolsWindow.CanUndo), value);
+
+        // Act
+        _mockCanvas.Raise(x => x.CanUndoChanged += null, this, value);
+
+        // Assert
+        inbox.AssertReceivedSingleMessage(expectedMsg);
+    }
 
     #endregion
 }
