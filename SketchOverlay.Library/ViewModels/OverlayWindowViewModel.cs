@@ -39,37 +39,6 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         IsCanvasVisible = !IsCanvasVisible;
     }
 
-    public void Receive(OverlayWindowCanvasActionMessage message)
-    {
-        switch (message.Value)
-        {
-            case CanvasAction.Undo:
-                _canvasManager.Undo();
-                break;
-            case CanvasAction.Redo:
-                _canvasManager.Redo();
-                break;
-            case CanvasAction.Clear:
-                _canvasManager.Clear();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(message));
-        }
-    }
-
-    public void Receive(DrawingWindowPropertyChangedMessage message)
-    {
-        switch (message.PropertyName)
-        {
-            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsVisible):
-                _isToolWindowVisible = (bool)message.Value;
-                break;
-            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsDragInProgress):
-                _isToolWindowDragInProgress = (bool)message.Value;
-                break;
-        }
-    }
-
     [RelayCommand]
     private void MouseDown(MouseActionInfo info)
     {
@@ -117,6 +86,37 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         else if (info.Button is MouseButton.Middle && _isToolWindowDragInProgress)
         {
             SendOverlayWindowDragAction(DragAction.EndDrag, info.CursorPosition);
+        }
+    }
+
+    public void Receive(OverlayWindowCanvasActionMessage message)
+    {
+        switch (message.Value)
+        {
+            case CanvasAction.Undo:
+                _canvasManager.Undo();
+                break;
+            case CanvasAction.Redo:
+                _canvasManager.Redo();
+                break;
+            case CanvasAction.Clear:
+                _canvasManager.Clear();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(message));
+        }
+    }
+
+    public void Receive(DrawingWindowPropertyChangedMessage message)
+    {
+        switch (message.PropertyName)
+        {
+            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsVisible):
+                _isToolWindowVisible = (bool)message.Value;
+                break;
+            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsDragInProgress):
+                _isToolWindowDragInProgress = (bool)message.Value;
+                break;
         }
     }
 
