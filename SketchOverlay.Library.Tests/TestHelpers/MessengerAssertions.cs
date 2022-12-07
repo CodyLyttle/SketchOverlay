@@ -9,4 +9,11 @@ internal static class MessengerAssertions
     {
         Assert.True(messenger.IsRegistered<TMessage>(sutInstance));
     }
+    
+    public static void ReceivedSingleMessage<TMessage>(MessageInbox inbox, TMessage expectedMsg)
+        where TMessage : class
+    {
+        Assert.Equal(1, inbox.MessageCount);
+        Assert.Equivalent(expectedMsg, inbox.GetLastMessage());
+    }
 }

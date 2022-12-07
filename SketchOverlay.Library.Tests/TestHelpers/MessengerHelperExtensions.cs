@@ -17,4 +17,10 @@ internal static class MessengerHelperExtensions
         inbox.Register<TMessage>();
         return inbox;
     }
+
+    public static void AssertReceivedSingleMessage<TMessage>(this MessageInbox inbox, TMessage expectedMsg)
+        where TMessage : class
+    {
+        MessengerAssertions.ReceivedSingleMessage(inbox, expectedMsg);
+    }
 }
