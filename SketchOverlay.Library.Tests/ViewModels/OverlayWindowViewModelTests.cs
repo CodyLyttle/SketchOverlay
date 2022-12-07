@@ -1,9 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using System.Drawing;
+using CommunityToolkit.Mvvm.Messaging;
 using Moq;
 using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.Messages;
+using SketchOverlay.Library.Models;
 using SketchOverlay.Library.Tests.TestHelpers;
 using SUT = SketchOverlay.Library.ViewModels.OverlayWindowViewModel<object, object, object, object>;
+using ToolsWindow = SketchOverlay.Library.ViewModels.ToolsWindowViewModel<object, object, object>;
 
 namespace SketchOverlay.Library.Tests.ViewModels;
 
@@ -56,6 +59,66 @@ public class OverlayWindowViewModelTests
             // Assert
             Assert.Equal(!initialValue, _sut.IsCanvasVisible);
         }
+    }
+
+    [Fact]
+    public void MouseDownCommand_LeftButton_DisableToolsWindowHitTesting()
+    {
+        // Arrange
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
+        ToolsWindowSetPropertyMessage expectedMsg = new (nameof(ToolsWindow.IsInputTransparent), true);
+
+        // Act
+        _sut.MouseDownCommand.Execute(new MouseActionInfo(MouseButton.Left, new PointF()));
+
+        // Assert
+        inbox.AssertReceivedSingleMessage(expectedMsg);
+    }
+
+    [Fact]
+    public void MouseDownCommand_LeftButton_DrawAtMousePosition()
+    {
+        // Arrange
+        PointF expectedPoint = new(123, 321);
+
+        // Act
+        _sut.MouseDownCommand.Execute(new MouseActionInfo(MouseButton.Left, expectedPoint));
+
+        // Assert
+        _mockCanvas.Verify(x => x.DoDrawing(expectedPoint), Times.Once);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void MouseDownCommand_MiddleButton_ToggleToolsWindowVisibility(bool isVisible)
+    {
+        // Arrange
+        _sut.SetField("_isToolsWindowVisible", isVisible);
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
+        ToolsWindowSetPropertyMessage expectedMsg = new (nameof(ToolsWindow.IsVisible), !isVisible);
+
+        // Act
+        _sut.MouseDownCommand.Execute(new MouseActionInfo(MouseButton.Middle, Point.Empty));
+
+        // Assert
+        inbox.AssertReceivedSingleMessage(expectedMsg);
+    }
+
+    [Fact]
+    public void MouseDownCommand_MiddleButtonWithToolWindowHidden_BeginToolsWindowDragAction()
+    {
+        // Arrange
+        _sut.SetField("_isToolsWindowVisible", false);
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowDragEventMessage>();
+        ToolsWindowDragEventMessage expectedMsg = new(DragAction.BeginDrag, new PointF(123,456));
+
+        // Act
+        _sut.MouseDownCommand.Execute(new MouseActionInfo(MouseButton.Middle, expectedMsg.Value.position));
+
+
+        // Assert
+        inbox.AssertReceivedSingleMessage(expectedMsg);
     }
 
     #endregion
