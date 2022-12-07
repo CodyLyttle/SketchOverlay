@@ -39,4 +39,11 @@ public static class DependencyBuilderExtensions
         builder.AddSingleton<WpfToolsWindowViewModel>();
         return builder;
     }
+
+    private static void AddSingletonToExistingService<TService, TImplementation>(this ServiceCollection builder)
+        where TService : class
+        where TImplementation : class, TService
+    {
+        builder.AddSingleton<TService, TImplementation>(x => x.GetRequiredService<TImplementation>());
+    }
 }

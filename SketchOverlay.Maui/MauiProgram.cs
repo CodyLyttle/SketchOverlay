@@ -88,4 +88,12 @@ public static class MauiProgram
 
         return builder;
     }
+
+    private static void AddSingletonToExistingService<TService, TImplementation>(this IServiceCollection services)
+        where TService : class
+        where TImplementation : class, TService
+    {
+        services.AddSingleton<TService, TImplementation>(
+            x => x.GetRequiredService<TImplementation>());
+    }
 }
