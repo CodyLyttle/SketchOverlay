@@ -4,11 +4,32 @@ namespace SketchOverlay.Library.Tests.TestHelpers;
 
 internal static class ReflectionExtensions
 {
-    public static object GetPropertyValue(this object objectInstance, string propertyName)
+    public static TValue GetField<TValue>(this object objectInstance, string fieldName)
     {
-        return objectInstance.GetType()
-            .GetProperty(propertyName)!
-            .GetValue(objectInstance)!;
+        Type type = objectInstance.GetType();
+        FieldInfo? field = type.GetField(fieldName,
+            BindingFlags.Public |
+            BindingFlags.NonPublic |
+            BindingFlags.Instance);
+
+        if (field is null)
+            throw new ArgumentOutOfRangeException(nameof(fieldName), $"Field with name {fieldName} doesn't exist");
+
+        return (TValue)field.GetValue(objectInstance)!;
+    }
+
+    public static void SetField<TValue>(this object objectInstance, string fieldName, TValue value)
+    {
+        Type type = objectInstance.GetType();
+        FieldInfo? field = type.GetField(fieldName,
+            BindingFlags.Public |
+            BindingFlags.NonPublic |
+            BindingFlags.Instance);
+
+        if (field is null)
+            throw new ArgumentOutOfRangeException(nameof(fieldName), $"Field with name {fieldName} doesn't exist");
+
+        field.SetValue(objectInstance, value);
     }
 
     public static TValue GetPropertyValue<TValue>(this object objectInstance, string propertyName)
