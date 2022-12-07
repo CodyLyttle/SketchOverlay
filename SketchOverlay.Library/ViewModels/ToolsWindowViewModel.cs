@@ -151,29 +151,22 @@ public partial class ToolsWindowViewModel<TDrawing, TImageSource, TColor> : Obse
             _messenger.Send(new ToolsWindowPropertyChangedMessage(value));
         }
     }
-
-    // TODO: Move yield tasks to Maui project.
-    // BUG: Button.IsEnabled visual state stops updating after a few click events.
-    // See: https://github.com/dotnet/maui/issues/7377
-    // Workaround await Task.Yield() before sending message.
+    
     [RelayCommand]
-    private async void Undo()
+    private void Undo()
     {
-        await Task.Yield();
         _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Undo));
     }
 
     [RelayCommand]
-    private async void Redo()
+    private void Redo()
     {
-        await Task.Yield();
         _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Redo));
     }
 
     [RelayCommand]
-    private async void Clear()
+    private void Clear()
     {
-        await Task.Yield();
         _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Clear));
     }
 

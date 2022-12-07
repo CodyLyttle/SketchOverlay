@@ -80,13 +80,13 @@
                                    HorizontalOptions="Center"
                                    Margin="0,0,0,12">
                 <Button x:Name="undoButton" Text="undo" 
-                        Command="{Binding UndoCommand}"
+                        Command="{Binding YieldUndoCommand}"
                         IsEnabled="{Binding CanUndo}"/>
                 <Button x:Name="redoButton" Text="redo" 
-                        Command="{Binding RedoCommand}"
+                        Command="{Binding YieldRedoCommand}"
                         IsEnabled="{Binding CanRedo}"/>
                 <Button x:Name="clearButton" Text="clear" 
-                        Command="{Binding ClearCommand}"
+                        Command="{Binding YieldClearCommand}"
                         IsEnabled="{Binding CanClear}"/>
             </HorizontalStackLayout>
 
