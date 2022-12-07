@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using System.Drawing;
+using CommunityToolkit.Mvvm.Messaging;
 using FluentAssertions;
 using FluentAssertions.Events;
 using Moq;
@@ -14,11 +15,12 @@ namespace SketchOverlay.Library.Tests.ViewModels;
 
 public class ToolsWindowViewModelTests
 {
+    #region Setups
+
     private readonly SUT _sut;
     private readonly Mock<ICanvasProperties<object>> _mockCanvasProperties;
     private readonly Mock<IDrawingToolCollection<object, object, object>> _mockDrawingToolsCollection;
     private readonly Mock<ICanvasStateManager> _mockCanvasStateManager;
-    private readonly Mock<IColorPalette<object>> _mockColorPalette;
     private readonly IMessenger _messenger = new WeakReferenceMessenger();
     private readonly IMonitor<SUT> _sutMonitor;
 
@@ -35,17 +37,18 @@ public class ToolsWindowViewModelTests
 
         _mockCanvasStateManager = new Mock<ICanvasStateManager>();
         _mockCanvasStateManager.SetupAllProperties();
-        _mockColorPalette = new Mock<IColorPalette<object>>();
 
         _sut = new SUT(
-            _mockCanvasProperties.Object,
-            _mockColorPalette.Object,
+            _mockCanvasProperties.Object, 
+            new Mock<IColorPalette<object>>().Object,
             _mockDrawingToolsCollection.Object,
             _mockCanvasStateManager.Object,
             _messenger);
 
         _sutMonitor = _sut.Monitor();
     }
+
+    #endregion
 
     #region CanvasStateManager
 
@@ -161,7 +164,7 @@ public class ToolsWindowViewModelTests
 
     #endregion
 
-    #region Undoommand 
+    #region UndoCommand 
 
     [Fact]
     public void UndoCommand_CallsUndoOnCanvasStateManager()
@@ -196,7 +199,7 @@ public class ToolsWindowViewModelTests
 
     #endregion
 
-    #region Properties
+    #region StrokeSize
 
     [Fact]
     public void MinimumStrokeSize_ReturnsCanvasPropertiesMinimumStrokeSize()
@@ -272,6 +275,10 @@ public class ToolsWindowViewModelTests
         _sutMonitor.Should().RaisePropertyChangeFor(x => x.StrokeSize);
     }
 
+    #endregion
+
+    #region FillColor
+
     [Fact]
     public void FillColor_GetsCanvasPropertiesFillColor()
     {
@@ -306,6 +313,10 @@ public class ToolsWindowViewModelTests
         _mockCanvasProperties.VerifySet(x => x.FillColor = expectedValue, Times.Once);
     }
 
+    #endregion
+
+    #region StrokeColor
+
     [Fact]
     public void StrokeColor_GetsCanvasPropertiesStrokeColor()
     {
@@ -339,6 +350,10 @@ public class ToolsWindowViewModelTests
         // Assert
         _mockCanvasProperties.VerifySet(x => x.StrokeColor = expectedValue, Times.Once);
     }
+
+    #endregion
+
+    #region SelectedToolInfo
 
     [Fact]
     public void SelectedToolInfo_GetsDrawingToolsSelectedToolInfo()
@@ -375,6 +390,10 @@ public class ToolsWindowViewModelTests
         _sutMonitor.Should().RaisePropertyChangeFor(x => x.SelectedToolInfo);
     }
 
+    #endregion
+
+    #region IsDragInProgress
+
     [Fact]
     public void IsDragInProgress_SetWithSameValue_DoesNothing()
     {
@@ -405,6 +424,10 @@ public class ToolsWindowViewModelTests
         inbox.AssertReceivedSingleMessage(expectedMessage);
         _sutMonitor.Should().RaisePropertyChangeFor(x => x.IsDragInProgress);
     }
+
+    #endregion
+
+    #region IsVisible
 
     [Fact]
     public void IsVisible_SetWithSameValue_DoesNothing()
@@ -439,7 +462,7 @@ public class ToolsWindowViewModelTests
 
     #endregion
 
-    #region Receive
+    #region ReceiveSetProperty
 
     [Fact]
     public void ReceiveSetIsVisible_SetsIsVisibleProperty()
@@ -471,6 +494,99 @@ public class ToolsWindowViewModelTests
     public void ReceiveUnhandledMessage_DoesNotThrowException()
     {
         _messenger.Send(new ToolsWindowSetPropertyMessage("SomeProperty", 32));
+    }
+
+    #endregion
+
+    #region ReceiveDragAction
+
+    [Fact]
+    public void ReceiveBeginDragMessage_WhileDragging_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        _sut.SetPropertyValue(nameof(SUT.IsDragInProgress), true);
+
+        // Act/Assert
+        Assert.Throws<InvalidOperationException>(() => _messenger.Send(
+            new ToolsWindowDragEventMessage(DragAction.BeginDrag, new PointF(100, 200))));
+    }
+
+    [Fact]
+    public void ReceiveBeginDragMessage_WhileNotDragging_SetsWindowState()
+    {
+        // Arrange
+        LibraryThickness oldWindowMargin = _sut.WindowMargin;
+        _sut.SetPropertyValue(nameof(SUT.IsDragInProgress), false);
+        _sut.SetPropertyValue(nameof(SUT.IsInputTransparent), false);
+
+        // Act
+        _messenger.Send(new ToolsWindowDragEventMessage(DragAction.BeginDrag, new PointF(100, 200)));
+
+        // Assert
+        Assert.True(_sut.IsDragInProgress);
+        Assert.True(_sut.IsInputTransparent);
+        Assert.NotEqual(oldWindowMargin, _sut.WindowMargin);
+    }
+
+    [Fact]
+    public void ReceiveContinueDragMessage_WhileNotDragging_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        _sut.SetPropertyValue(nameof(SUT.IsDragInProgress), false);
+
+        // Act/Assert
+        Assert.Throws<InvalidOperationException>(() => _messenger.Send(
+            new ToolsWindowDragEventMessage(DragAction.ContinueDrag, new PointF(100, 200))));
+    }
+
+    [Fact]
+    public void ReceiveContinueDragMessage_WhileDragging_SetsWindowState()
+    {
+        // Arrange
+        LibraryThickness oldWindowMargin = _sut.WindowMargin;
+        _sut.SetPropertyValue(nameof(SUT.IsDragInProgress), true);
+
+        // Act
+        _messenger.Send(new ToolsWindowDragEventMessage(DragAction.ContinueDrag, new PointF(100, 200)));
+
+        // Assert
+        Assert.NotEqual(oldWindowMargin, _sut.WindowMargin);
+    }
+
+
+    [Fact]
+    public void ReceiveEndDragMessage_WhileNotDragging_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        _sut.SetPropertyValue(nameof(SUT.IsDragInProgress), false);
+
+        // Act/Assert
+        Assert.Throws<InvalidOperationException>(() => _messenger.Send(
+            new ToolsWindowDragEventMessage(DragAction.EndDrag, new PointF(100, 200))));
+    }
+
+    [Fact]
+    public void ReceiveEndDragMessage_WhileDragging_SetsWindowState()
+    {
+        // Arrange
+        LibraryThickness oldWindowMargin = _sut.WindowMargin;
+        _sut.SetPropertyValue(nameof(SUT.IsDragInProgress), true);
+        _sut.SetPropertyValue(nameof(SUT.IsInputTransparent), true);
+
+        // Act
+        _messenger.Send(new ToolsWindowDragEventMessage(DragAction.EndDrag, new PointF(100, 200)));
+
+        // Assert
+        Assert.False(_sut.IsDragInProgress);
+        Assert.False(_sut.IsInputTransparent);
+        Assert.NotEqual(oldWindowMargin, _sut.WindowMargin);
+    }
+
+    [Fact]
+    public void ReceiveUnhandledDragAction_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => _messenger.Send(
+            new ToolsWindowDragEventMessage((DragAction)999, new PointF())));
     }
 
     #endregion
