@@ -27,21 +27,12 @@ public class OverlayWindowViewModelTests
 
     #endregion
 
-    #region Messenger
-
     [Fact]
-    public void ToolsWindowPropertyChangedMessage_OnInstantiation_MessageIsRegistered()
+    public void Constructor_RegistersForMessages()
     {
         _messenger.AssertIsRegistered<ToolsWindowPropertyChangedMessage>(_sut);
-    }
-
-    [Fact]
-    public void OverlayWindowCanvasActionMessage_OnInstantiation_MessageIsRegistered()
-    {
         _messenger.AssertIsRegistered<OverlayWindowCanvasActionMessage>(_sut);
     }
-
-    #endregion
 
     [Fact]
     public void ToggleCanvasVisibilityCommand_ToggleIsCanvasVisible()
