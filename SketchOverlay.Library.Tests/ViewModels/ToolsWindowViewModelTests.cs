@@ -5,7 +5,9 @@ using Moq;
 using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.Drawing.Tools;
+using SketchOverlay.Library.Messages;
 using SketchOverlay.Library.Models;
+using SketchOverlay.Library.Tests.TestHelpers;
 using SUT = SketchOverlay.Library.ViewModels.ToolsWindowViewModel<object, object, object>;
 
 namespace SketchOverlay.Library.Tests.ViewModels;
@@ -215,16 +217,19 @@ public class ToolsWindowViewModelTests
     }
 
     [Fact]
-    public void StrokeSize_SetWithValueLessThanMinimumStrokeSize_DoesNothing()
+    public void StrokeSize_SetWithValueOutsideValidRange_DoesNothing()
     {
         // Arrange
-        float expectedValue = _mockCanvasProperties.Object.MinimumStrokeSize - 1;
+        float belowMinimum = _mockCanvasProperties.Object.MinimumStrokeSize - 1;
+        float aboveMaximum = _mockCanvasProperties.Object.MaximumStrokeSize + 1;
 
         // Act
-        _sut.StrokeSize = expectedValue;
+        _sut.StrokeSize = belowMinimum;
+        _sut.StrokeSize = aboveMaximum;
 
         // Assert
-        _mockCanvasProperties.VerifySet(x => x.StrokeSize = expectedValue, Times.Never);
+        _mockCanvasProperties.VerifySet(x => x.StrokeSize = belowMinimum, Times.Never);
+        _mockCanvasProperties.VerifySet(x => x.StrokeSize = aboveMaximum, Times.Never);
         _sutMonitor.Should().NotRaisePropertyChangeFor(x => x.StrokeSize);
     }
 
@@ -243,7 +248,7 @@ public class ToolsWindowViewModelTests
     }
 
     [Fact]
-    public void StrokeSize_SetWithValidStrokeSize_SetsCanvasPropertiesStrokeSize()
+    public void StrokeSize_SetWithValidStrokeSize_UpdatesStrokeSize()
     {
         // Arrange
         float expectedValue = _mockCanvasProperties.Object.MaximumStrokeSize - 1;
@@ -253,15 +258,6 @@ public class ToolsWindowViewModelTests
 
         // Assert
         _mockCanvasProperties.VerifySet(x => x.StrokeSize = expectedValue, Times.Once);
-    }
-
-    [Fact]
-    public void StrokeSize_SetWithValidStrokeSize_SendsPropertyChangedEvent()
-    {
-        // Act
-        _sut.StrokeSize = _mockCanvasProperties.Object.MaximumStrokeSize - 1;
-
-        // Assert
         _sutMonitor.Should().RaisePropertyChangeFor(x => x.StrokeSize);
     }
 
@@ -341,5 +337,37 @@ public class ToolsWindowViewModelTests
         _sutMonitor.Should().RaisePropertyChangeFor(x => x.SelectedToolInfo);
     }
 
+    [Fact]
+    public void IsDragInProgress_SetWithSameValue_DoesNothing()
+    {
+        // Arrange
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowPropertyChangedMessage>();
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.IsDragInProgress), _sut.IsDragInProgress);
+
+        // Assert
+        inbox.AssertReceivedNoMessages();
+        _sutMonitor.Should().NotRaisePropertyChangeFor(x => x.IsDragInProgress);
+    }
+
+    [Fact]
+    public void IsDragInProgress_SetWithNewValue_UpdatesIsDragInProgress()
+    {
+        // Arrange
+        bool expectedValue = !_sut.IsDragInProgress;
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowPropertyChangedMessage>();
+        ToolsWindowPropertyChangedMessage expectedMessage = new(expectedValue, nameof(SUT.IsDragInProgress));
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.IsDragInProgress), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.IsDragInProgress);
+        inbox.AssertReceivedSingleMessage(expectedMessage);
+        _sutMonitor.Should().RaisePropertyChangeFor(x => x.IsDragInProgress);
+    }
+
     #endregion
+
 }
