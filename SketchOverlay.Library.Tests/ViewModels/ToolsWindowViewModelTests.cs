@@ -217,6 +217,17 @@ public class ToolsWindowViewModelTests
     }
 
     [Fact]
+    public void StrokeSize_GetsCanvasPropertiesStrokeSize()
+    {
+        // Arrange
+        _mockCanvasProperties.Object.StrokeSize = 
+            _mockCanvasProperties.Object.MinimumStrokeSize + 1;
+
+        // Assert
+        Assert.Equal(_mockCanvasProperties.Object.StrokeSize, _sut.StrokeSize);
+    }
+
+    [Fact]
     public void StrokeSize_SetWithValueOutsideValidRange_DoesNothing()
     {
         // Arrange
@@ -262,6 +273,16 @@ public class ToolsWindowViewModelTests
     }
 
     [Fact]
+    public void FillColor_GetsCanvasPropertiesFillColor()
+    {
+        // Arrange
+        _mockCanvasProperties.Object.FillColor = "Blue";
+        
+        // Assert
+        Assert.Equal(_mockCanvasProperties.Object.FillColor, _sut.FillColor);
+    }
+
+    [Fact]
     public void FillColor_SetWithNull_DoesNothing()
     {
         // Act
@@ -286,6 +307,16 @@ public class ToolsWindowViewModelTests
     }
 
     [Fact]
+    public void StrokeColor_GetsCanvasPropertiesStrokeColor()
+    {
+        // Arrange
+        _mockCanvasProperties.Object.StrokeColor = "Red";
+
+        // Assert
+        Assert.Equal(_mockCanvasProperties.Object.StrokeColor, _sut.StrokeColor);
+    }
+
+    [Fact]
     public void StrokeColor_SetWithNull_DoesNothing()
     {
         // Act
@@ -307,6 +338,13 @@ public class ToolsWindowViewModelTests
 
         // Assert
         _mockCanvasProperties.VerifySet(x => x.StrokeColor = expectedValue, Times.Once);
+    }
+
+    [Fact]
+    public void SelectedToolInfo_GetsDrawingToolsSelectedToolInfo()
+    {
+        // Assert
+        Assert.Equal(_mockDrawingToolsCollection.Object.SelectedToolInfo, _sut.SelectedToolInfo);
     }
 
     [Fact]
