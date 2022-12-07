@@ -57,7 +57,7 @@ public class OverlayWindowViewModelTests
     {
         // Arrange
         using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
-        ToolsWindowSetPropertyMessage expectedMsg = new (nameof(ToolsWindow.IsInputTransparent), true);
+        ToolsWindowSetPropertyMessage expectedMsg = new(nameof(ToolsWindow.IsInputTransparent), true);
 
         // Act
         _sut.MouseDownCommand.Execute(new MouseActionInfo(MouseButton.Left, new PointF()));
@@ -87,7 +87,7 @@ public class OverlayWindowViewModelTests
         // Arrange
         _sut.SetField("_isToolsWindowVisible", isVisible);
         using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
-        ToolsWindowSetPropertyMessage expectedMsg = new (nameof(ToolsWindow.IsVisible), !isVisible);
+        ToolsWindowSetPropertyMessage expectedMsg = new(nameof(ToolsWindow.IsVisible), !isVisible);
 
         // Act
         _sut.MouseDownCommand.Execute(new MouseActionInfo(MouseButton.Middle, Point.Empty));
@@ -102,7 +102,7 @@ public class OverlayWindowViewModelTests
         // Arrange
         _sut.SetField("_isToolsWindowVisible", false);
         using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowDragEventMessage>();
-        ToolsWindowDragEventMessage expectedMsg = new(DragAction.BeginDrag, new PointF(123,456));
+        ToolsWindowDragEventMessage expectedMsg = new(DragAction.BeginDrag, new PointF(123, 456));
 
         // Act
         _sut.MouseDownCommand.Execute(new MouseActionInfo(MouseButton.Middle, expectedMsg.Value.position));
@@ -194,7 +194,7 @@ public class OverlayWindowViewModelTests
         // Arrange
         _sut.SetField("_isToolsWindowDragInProgress", true);
         using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowDragEventMessage>();
-        ToolsWindowDragEventMessage expectedMsg = new(DragAction.EndDrag, new PointF(0,1));
+        ToolsWindowDragEventMessage expectedMsg = new(DragAction.EndDrag, new PointF(0, 1));
 
         // Act
         _sut.MouseUpCommand.Execute(new MouseActionInfo(MouseButton.Middle, expectedMsg.Value.position));
@@ -218,4 +218,37 @@ public class OverlayWindowViewModelTests
 
     #endregion
 
+    #region Receive CanvasAction
+
+    [Fact]
+    public void ReceiveCanvasAction_Clear_CanvasClear()
+    {
+        // Act
+        _sut.Receive(new OverlayWindowCanvasActionMessage(CanvasAction.Clear));
+
+        // Assert
+        _mockCanvas.Verify(x=> x.Clear(), Times.Once);
+    }
+
+    [Fact]
+    public void ReceiveCanvasAction_Redo_CanvasRedo()
+    {
+        // Act
+        _sut.Receive(new OverlayWindowCanvasActionMessage(CanvasAction.Redo));
+
+        // Assert
+        _mockCanvas.Verify(x => x.Redo(), Times.Once);
+    }
+
+    [Fact]
+    public void ReceiveCanvasAction_Undo_CanvasUndo()
+    {
+        // Act
+        _sut.Receive(new OverlayWindowCanvasActionMessage(CanvasAction.Undo));
+
+        // Assert
+        _mockCanvas.Verify(x => x.Undo(), Times.Once);
+    }
+
+    #endregion
 }
