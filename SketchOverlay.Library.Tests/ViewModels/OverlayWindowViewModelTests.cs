@@ -39,4 +39,24 @@ public class OverlayWindowViewModelTests
     }
 
     #endregion
+
+    #region Commands
+
+    [Fact]
+    public void ToggleCanvasVisibilityCommand_ToggleIsCanvasVisible()
+    {
+        for (var i = 0; i < 2; i++)
+        {
+            // Arrange
+            bool initialValue = _sut.IsCanvasVisible;
+
+            // Act
+            _sut.ToggleCanvasVisibilityCommand.Execute(null);
+
+            // Assert
+            Assert.Equal(!initialValue, _sut.IsCanvasVisible);
+        }
+    }
+
+    #endregion
 }
