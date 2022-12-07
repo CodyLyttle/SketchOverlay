@@ -58,11 +58,14 @@ public static class MauiProgram
         // Drawing
         builder.Services.AddSingleton<IColorPalette<MauiColor>, MauiColorPalette>();
         builder.Services.AddSingleton<ICanvasProperties<MauiColor>, MauiCanvasProperties>();
-        builder.Services.AddSingleton<ICanvasManager<MauiDrawing>, MauiCanvasManager>();
         builder.Services.AddSingleton<IDrawingStack<MauiDrawing, MauiDrawingOutput>, DrawableStack>();
 
+        builder.Services.AddSingleton<MauiCanvasManager>();
+        builder.Services.AddSingletonToExistingService<ICanvasDrawingManager<MauiDrawing>, MauiCanvasManager>();
+        builder.Services.AddSingletonToExistingService<ICanvasStateManager, MauiCanvasManager>();
+
         // Tools
-        IDrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor> drawingToolCollection = 
+        IDrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor> drawingToolCollection =
             new MauiDrawingToolFactory().CreateDrawingToolCollection();
 
         builder.Services.AddSingleton(drawingToolCollection);

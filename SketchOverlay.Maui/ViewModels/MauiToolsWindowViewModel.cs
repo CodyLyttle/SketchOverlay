@@ -13,7 +13,8 @@ internal partial class MauiToolsWindowViewModel : ToolsWindowViewModel<MauiDrawi
         ICanvasProperties<MauiColor> canvasProps,
         IColorPalette<MauiColor> drawingColors,
         IDrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor> drawingTools,
-        IMessenger messenger) : base(canvasProps, drawingColors, drawingTools, messenger)
+        ICanvasStateManager canvasStateManager,
+        IMessenger messenger) : base(canvasProps, drawingColors, drawingTools, canvasStateManager, messenger)
     {
     }
 

@@ -16,11 +16,11 @@ public class OverlayWindowViewModelTests
 
     private readonly SUT _sut;
     private readonly IMessenger _messenger = WeakReferenceMessenger.Default;
-    private readonly Mock<ICanvasManager<object>> _mockCanvas;
+    private readonly Mock<ICanvasDrawingManager<object>> _mockCanvas;
 
     public OverlayWindowViewModelTests()
     {
-        _mockCanvas = new Mock<ICanvasManager<object>>();
+        _mockCanvas = new Mock<ICanvasDrawingManager<object>>();
         _mockCanvas.SetupAllProperties();
         _sut = new SUT(_mockCanvas.Object, _messenger);
     }
@@ -218,40 +218,6 @@ public class OverlayWindowViewModelTests
 
     #endregion
 
-    #region Receive CanvasAction
-
-    [Fact]
-    public void ReceiveCanvasAction_Clear_CanvasClear()
-    {
-        // Act
-        _sut.Receive(new OverlayWindowCanvasActionMessage(CanvasAction.Clear));
-
-        // Assert
-        _mockCanvas.Verify(x=> x.Clear(), Times.Once);
-    }
-
-    [Fact]
-    public void ReceiveCanvasAction_Redo_CanvasRedo()
-    {
-        // Act
-        _sut.Receive(new OverlayWindowCanvasActionMessage(CanvasAction.Redo));
-
-        // Assert
-        _mockCanvas.Verify(x => x.Redo(), Times.Once);
-    }
-
-    [Fact]
-    public void ReceiveCanvasAction_Undo_CanvasUndo()
-    {
-        // Act
-        _sut.Receive(new OverlayWindowCanvasActionMessage(CanvasAction.Undo));
-
-        // Assert
-        _mockCanvas.Verify(x => x.Undo(), Times.Once);
-    }
-
-    #endregion
-
     #region Receive ToolsWindowPropertyChanged
 
     [Theory]
@@ -286,58 +252,6 @@ public class OverlayWindowViewModelTests
 
         // Assert
         Assert.Equal(setterValue, actual);
-    }
-
-    #endregion
-
-    #region CanvasActionChanged
-
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void CanClearChanged_SetToolWindowCanClear(bool value)
-    {
-        // Arrange
-        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
-        ToolsWindowSetPropertyMessage expectedMsg = new(nameof(ToolsWindow.CanClear), value);
-
-        // Act
-        _mockCanvas.Raise(x=> x.CanClearChanged += null, this, value);
-
-        // Assert
-        inbox.AssertReceivedSingleMessage(expectedMsg);
-    }
-
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void CanRedoChanged_SetToolWindowCanRedo(bool value)
-    {
-        // Arrange
-        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
-        ToolsWindowSetPropertyMessage expectedMsg = new(nameof(ToolsWindow.CanRedo), value);
-
-        // Act
-        _mockCanvas.Raise(x => x.CanRedoChanged += null, this, value);
-
-        // Assert
-        inbox.AssertReceivedSingleMessage(expectedMsg);
-    }
-
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public void CanUndoChanged_SetToolWindowCanUndo(bool value)
-    {
-        // Arrange
-        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowSetPropertyMessage>();
-        ToolsWindowSetPropertyMessage expectedMsg = new(nameof(ToolsWindow.CanUndo), value);
-
-        // Act
-        _mockCanvas.Raise(x => x.CanUndoChanged += null, this, value);
-
-        // Assert
-        inbox.AssertReceivedSingleMessage(expectedMsg);
     }
 
     #endregion

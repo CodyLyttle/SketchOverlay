@@ -19,13 +19,20 @@ public partial class ToolsWindowViewModel<TDrawing, TImageSource, TColor> : Obse
     private bool _isDragInProgress;
     private bool _isVisible;
     private readonly ICanvasProperties<TColor> _canvasProps;
+    private readonly ICanvasStateManager _canvasStateManager;
 
     public ToolsWindowViewModel(
         ICanvasProperties<TColor> canvasProps,
         IColorPalette<TColor> drawingColors,
         IDrawingToolCollection<TDrawing, TImageSource, TColor> drawingTools,
+        ICanvasStateManager canvasStateManager,
         IMessenger messenger)
     {
+        _canvasStateManager = canvasStateManager;
+        _canvasStateManager.CanClearChanged += (_, val) => CanClear = val;
+        _canvasStateManager.CanRedoChanged += (_, val) => CanRedo= val;
+        _canvasStateManager.CanUndoChanged += (_, val) => CanUndo = val;
+
         _messenger = messenger;
         _messenger.Register<ToolsWindowSetPropertyMessage>(this);
         _messenger.Register<ToolsWindowDragEventMessage>(this);
@@ -53,13 +60,25 @@ public partial class ToolsWindowViewModel<TDrawing, TImageSource, TColor> : Obse
     private LibraryThickness _windowMargin;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ClearCommand))]
     private bool _canClear;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(RedoCommand))]
     private bool _canRedo;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(UndoCommand))]
     private bool _canUndo;
+
+    [RelayCommand(CanExecute = nameof(CanClear))]
+    private void Clear() => _canvasStateManager.Clear();
+
+    [RelayCommand(CanExecute = nameof(CanRedo))]
+    private void Redo() => _canvasStateManager.Redo();
+
+    [RelayCommand(CanExecute = nameof(CanUndo))]
+    private void Undo() => _canvasStateManager.Undo();
 
     public TColor StrokeColor
     {
@@ -150,24 +169,6 @@ public partial class ToolsWindowViewModel<TDrawing, TImageSource, TColor> : Obse
             OnPropertyChanged();
             _messenger.Send(new ToolsWindowPropertyChangedMessage(value));
         }
-    }
-    
-    [RelayCommand]
-    private void Undo()
-    {
-        _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Undo));
-    }
-
-    [RelayCommand]
-    private void Redo()
-    {
-        _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Redo));
-    }
-
-    [RelayCommand]
-    private void Clear()
-    {
-        _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Clear));
     }
 
     public void Receive(ToolsWindowSetPropertyMessage message)

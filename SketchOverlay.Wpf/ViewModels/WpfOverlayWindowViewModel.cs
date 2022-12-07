@@ -6,7 +6,7 @@ namespace SketchOverlay.Wpf.ViewModels;
 
 internal class WpfOverlayWindowViewModel : OverlayWindowViewModel<WpfDrawing, WpfDrawingOutput, WpfImageSource, WpfBrush>
 {
-    public WpfOverlayWindowViewModel(ICanvasManager<WpfDrawingOutput> canvasManager, IMessenger messenger) 
+    public WpfOverlayWindowViewModel(ICanvasDrawingManager<WpfDrawingOutput> canvasManager, IMessenger messenger) 
         : base(canvasManager, messenger)
     {
     }

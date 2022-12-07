@@ -11,7 +11,8 @@ internal class WpfToolsWindowViewModel : ToolsWindowViewModel<WpfDrawing, WpfIma
     public WpfToolsWindowViewModel(ICanvasProperties<WpfBrush> canvasProps,
         IColorPalette<WpfBrush> drawingColors,
         IDrawingToolCollection<WpfDrawing, WpfImageSource, WpfBrush> drawingTools,
-        IMessenger messenger) : base(canvasProps, drawingColors, drawingTools, messenger)
+        ICanvasStateManager canvasStateManager,
+        IMessenger messenger) : base(canvasProps, drawingColors, drawingTools, canvasStateManager, messenger)
     {
     }
 }

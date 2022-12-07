@@ -3,7 +3,8 @@ using SketchOverlay.Library.Drawing.Tools;
 
 namespace SketchOverlay.Library.Drawing.Canvas;
 
-public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasManager<TOutput>
+public class CanvasManager<TDrawing, TOutput, TColor> : ICanvasDrawingManager<TOutput>, 
+    ICanvasStateManager
 {
     private bool _canClear;
     private bool _canRedo;

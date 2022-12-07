@@ -79,6 +79,8 @@
             <HorizontalStackLayout x:Name="CanvasActionLayout"
                                    HorizontalOptions="Center"
                                    Margin="0,0,0,12">
+                <!-- Manually bind IsEnabled due to yield command workaround.
+                     See MauiToolsWindowViewModel for context -->
                 <Button x:Name="undoButton" Text="undo" 
                         Command="{Binding YieldUndoCommand}"
                         IsEnabled="{Binding CanUndo}"/>

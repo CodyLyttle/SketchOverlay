@@ -18,8 +18,11 @@ public static class DependencyBuilderExtensions
         // Drawing
         builder.AddSingleton<IColorPalette<WpfBrush>, WpfColorPalette>();
         builder.AddSingleton<ICanvasProperties<WpfBrush>, WpfCanvasProperties>();
-        builder.AddSingleton<ICanvasManager<WpfDrawingOutput>, WpfCanvasManager>();
         builder.AddSingleton<IDrawingStack<WpfDrawing, WpfDrawingOutput>, DrawingStack>();
+
+        builder.AddSingleton<WpfCanvasManager>();
+        builder.AddSingletonToExistingService<ICanvasDrawingManager<WpfDrawingOutput>, WpfCanvasManager>();
+        builder.AddSingletonToExistingService<ICanvasStateManager, WpfCanvasManager>();
 
         // Tools
         IDrawingToolCollection<WpfDrawing, WpfImageSource, WpfBrush> drawingToolCollection =
@@ -44,6 +47,7 @@ public static class DependencyBuilderExtensions
         where TService : class
         where TImplementation : class, TService
     {
-        builder.AddSingleton<TService, TImplementation>(x => x.GetRequiredService<TImplementation>());
+        builder.AddSingleton<TService, TImplementation>(
+            x => x.GetRequiredService<TImplementation>());
     }
 }

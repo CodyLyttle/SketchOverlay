@@ -9,24 +9,18 @@ using SketchOverlay.Library.Models;
 namespace SketchOverlay.Library.ViewModels;
 
 public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TColor> : ObservableObject,
-    IRecipient<ToolsWindowPropertyChangedMessage>,
-    IRecipient<OverlayWindowCanvasActionMessage>
+    IRecipient<ToolsWindowPropertyChangedMessage>
 {
-    private readonly ICanvasManager<TOutput> _canvasManager;
+    private readonly ICanvasDrawingManager<TOutput> _canvasManager;
     private readonly IMessenger _messenger;
     private bool _isToolsWindowDragInProgress;
     private bool _isToolsWindowVisible;
 
-    public OverlayWindowViewModel(ICanvasManager<TOutput> canvasManager, IMessenger messenger)
+    public OverlayWindowViewModel(ICanvasDrawingManager<TOutput> canvasManager, IMessenger messenger)
     {
         _canvasManager = canvasManager;
-        _canvasManager.CanClearChanged += (_, value) => SetDrawingWindowCanClear(value);
-        _canvasManager.CanRedoChanged += (_, value) => SetDrawingWindowCanRedo(value);
-        _canvasManager.CanUndoChanged += (_, value) => SetDrawingWindowCanUndo(value);
-
         _messenger = messenger;
-        messenger.Register<ToolsWindowPropertyChangedMessage>(this);
-        messenger.Register<OverlayWindowCanvasActionMessage>(this);
+        messenger.Register(this);
     }
 
     [ObservableProperty] 
@@ -88,24 +82,6 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         }
     }
 
-    public void Receive(OverlayWindowCanvasActionMessage message)
-    {
-        switch (message.Value)
-        {
-            case CanvasAction.Undo:
-                _canvasManager.Undo();
-                break;
-            case CanvasAction.Redo:
-                _canvasManager.Redo();
-                break;
-            case CanvasAction.Clear:
-                _canvasManager.Clear();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(message));
-        }
-    }
-
     public void Receive(ToolsWindowPropertyChangedMessage message)
     {
         switch (message.PropertyName)
@@ -122,27 +98,6 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
     private void SendOverlayWindowDragAction(DragAction action, PointF cursorPos)
     {
         _messenger.Send(new ToolsWindowDragEventMessage(action, cursorPos));
-    }
-
-    private void SetDrawingWindowCanClear(bool canClear)
-    {
-        _messenger.Send(new ToolsWindowSetPropertyMessage(
-            nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.CanClear),
-            canClear));
-    }
-
-    private void SetDrawingWindowCanRedo(bool canRedo)
-    {
-        _messenger.Send(new ToolsWindowSetPropertyMessage(
-            nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.CanRedo),
-            canRedo));
-    }
-
-    private void SetDrawingWindowCanUndo(bool canUndo)
-    {
-        _messenger.Send(new ToolsWindowSetPropertyMessage(
-            nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.CanUndo),
-            canUndo));
     }
 
     private void SetDrawingWindowVisibility(bool isVisible)

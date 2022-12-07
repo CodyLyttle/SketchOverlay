@@ -78,14 +78,11 @@
                         HorizontalAlignment="Center"
                         Margin="0,12,0,0">
                 <Button x:Name="UndoButton" Content="undo" 
-                        Command="{Binding UndoCommand}"
-                        IsEnabled="{Binding CanUndo}"/>
+                        Command="{Binding UndoCommand}"/>
                 <Button x:Name="RedoButton" Content="redo" 
-                        Command="{Binding RedoCommand}"
-                        IsEnabled="{Binding CanRedo}"/>
+                        Command="{Binding RedoCommand}"/>
                 <Button x:Name="ClearButton" Content="clear" 
-                        Command="{Binding ClearCommand}"
-                        IsEnabled="{Binding CanClear}"/>
+                        Command="{Binding ClearCommand}"/>
             </StackPanel>
         </StackPanel>
     </Border>

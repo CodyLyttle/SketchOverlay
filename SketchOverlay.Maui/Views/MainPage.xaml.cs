@@ -5,7 +5,7 @@ namespace SketchOverlay.Maui.Views;
 
 public partial class MainPage : ContentPage
 {
-    public MainPage(MauiOverlayWindowViewModel viewModel, ICanvasManager<IDrawable> canvasManager)
+    public MainPage(MauiOverlayWindowViewModel viewModel, ICanvasDrawingManager<IDrawable> canvasManager)
     {
         InitializeComponent();
         BindingContext = viewModel;

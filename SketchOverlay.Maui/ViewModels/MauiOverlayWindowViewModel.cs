@@ -6,7 +6,7 @@ namespace SketchOverlay.Maui.ViewModels;
 
 public class MauiOverlayWindowViewModel : OverlayWindowViewModel<MauiDrawing, MauiDrawingOutput, MauiImageSource, MauiColor>
 {
-    public MauiOverlayWindowViewModel(ICanvasManager<MauiDrawing> canvasManager, IMessenger messenger) 
+    public MauiOverlayWindowViewModel(ICanvasDrawingManager<MauiDrawing> canvasManager, IMessenger messenger) 
         : base(canvasManager, messenger)
     {
     }
