@@ -1,4 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using System.Security.Cryptography.X509Certificates;
+using CommunityToolkit.Mvvm.Messaging;
+using FluentAssertions;
+using FluentAssertions.Events;
 using Moq;
 using SketchOverlay.Library.Drawing;
 using SketchOverlay.Library.Drawing.Canvas;
@@ -14,7 +17,8 @@ public class ToolsWindowViewModelTests
     private readonly Mock<IDrawingToolCollection<object, object, object>> _mockDrawingToolsCollection;
     private readonly Mock<ICanvasStateManager> _mockCanvasStateManager;
     private readonly Mock<IColorPalette<object>> _mockColorPalette;
-    private readonly IMessenger _messenger = WeakReferenceMessenger.Default;
+    private readonly IMessenger _messenger = new WeakReferenceMessenger();
+    private readonly IMonitor<SUT> _sutMonitor;
 
     public ToolsWindowViewModelTests()
     {
@@ -33,6 +37,8 @@ public class ToolsWindowViewModelTests
             _mockDrawingToolsCollection.Object,
             _mockCanvasStateManager.Object,
             _messenger);
+
+        _sutMonitor = _sut.Monitor();
     }
 
     #region CanvasStateManager
@@ -215,6 +221,7 @@ public class ToolsWindowViewModelTests
 
         // Assert
         _mockCanvasProperties.VerifySet(x => x.StrokeSize = expectedValue, Times.Never);
+        _sutMonitor.Should().NotRaisePropertyChangeFor(x => x.StrokeSize);
     }
 
     [Fact]
@@ -228,10 +235,11 @@ public class ToolsWindowViewModelTests
 
         // Assert
         _mockCanvasProperties.VerifySet(x => x.StrokeSize = expectedValue, Times.Never);
+        _sutMonitor.Should().NotRaisePropertyChangeFor(x => x.StrokeSize);
     }
 
     [Fact]
-    public void StrokeSize_SetWithValidStrokeSize_DoesNothing()
+    public void StrokeSize_SetWithValidStrokeSize_SetsCanvasPropertiesStrokeSize()
     {
         // Arrange
         float expectedValue = _mockCanvasProperties.Object.MaximumStrokeSize - 1;
@@ -241,6 +249,16 @@ public class ToolsWindowViewModelTests
 
         // Assert
         _mockCanvasProperties.VerifySet(x => x.StrokeSize = expectedValue, Times.Once);
+    }
+
+    [Fact]
+    public void StrokeSize_SetWithValidStrokeSize_SendsPropertyChangedEvent()
+    {
+        // Act
+        _sut.StrokeSize = _mockCanvasProperties.Object.MaximumStrokeSize - 1;
+
+        // Assert
+        _sutMonitor.Should().RaisePropertyChangeFor(x => x.StrokeSize);
     }
 
     #endregion

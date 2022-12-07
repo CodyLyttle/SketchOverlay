@@ -15,7 +15,7 @@ public class OverlayWindowViewModelTests
     #region Setups
 
     private readonly SUT _sut;
-    private readonly IMessenger _messenger = WeakReferenceMessenger.Default;
+    private readonly IMessenger _messenger = new WeakReferenceMessenger();
     private readonly Mock<ICanvasDrawingManager<object>> _mockCanvas;
 
     public OverlayWindowViewModelTests()
