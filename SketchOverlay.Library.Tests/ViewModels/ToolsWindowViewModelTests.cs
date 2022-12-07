@@ -368,6 +368,37 @@ public class ToolsWindowViewModelTests
         _sutMonitor.Should().RaisePropertyChangeFor(x => x.IsDragInProgress);
     }
 
+    [Fact]
+    public void IsVisible_SetWithSameValue_DoesNothing()
+    {
+        // Arrange
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowPropertyChangedMessage>();
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.IsVisible), _sut.IsVisible);
+
+        // Assert
+        inbox.AssertReceivedNoMessages();
+        _sutMonitor.Should().NotRaisePropertyChangeFor(x=> x.IsVisible);
+    }
+
+    [Fact]
+    public void IsVisible_SetWithNewValue_UpdatesIsVisible()
+    {
+        // Arrange
+        bool expectedValue = !_sut.IsVisible;
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowPropertyChangedMessage>();
+        ToolsWindowPropertyChangedMessage expectedMessage = new(expectedValue, nameof(SUT.IsVisible));
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.IsVisible), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.IsVisible);
+        inbox.AssertReceivedSingleMessage(expectedMessage);
+        _sutMonitor.Should().RaisePropertyChangeFor(x => x.IsVisible);
+    }
+
     #endregion
 
 }
