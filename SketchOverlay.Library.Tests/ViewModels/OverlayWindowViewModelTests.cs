@@ -43,8 +43,6 @@ public class OverlayWindowViewModelTests
 
     #endregion
 
-    #region Commands
-
     [Fact]
     public void ToggleCanvasVisibilityCommand_ToggleIsCanvasVisible()
     {
@@ -60,6 +58,8 @@ public class OverlayWindowViewModelTests
             Assert.Equal(!initialValue, _sut.IsCanvasVisible);
         }
     }
+
+    #region MouseDownCommand
 
     [Fact]
     public void MouseDownCommand_LeftButton_DisableToolsWindowHitTesting()
@@ -119,6 +119,54 @@ public class OverlayWindowViewModelTests
 
         // Assert
         inbox.AssertReceivedSingleMessage(expectedMsg);
+    }
+
+    #endregion
+
+    #region MouseDragCommand
+
+    [Fact]
+    public void MouseDragCommand_LeftButton_DrawAtMousePosition()
+    {
+        // Arrange
+        PointF expectedPoint = new(1, 2);
+
+        // Act
+        _sut.MouseDragCommand.Execute(new MouseActionInfo(MouseButton.Left, expectedPoint));
+
+        // Assert
+        _mockCanvas.Verify(x => x.DoDrawing(expectedPoint), Times.Once);
+    }
+
+    [Fact]
+    public void MouseDragCommand_MiddleButtonWhileDragging_ContinueToolsWindowDragAction()
+    {
+        // Arrange
+        _sut.SetField("_isToolsWindowDragInProgress", true);
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowDragEventMessage>();
+        ToolsWindowDragEventMessage expectedMsg = new(DragAction.ContinueDrag, new PointF(33, 44));
+
+        // Act
+        _sut.MouseDragCommand.Execute(new MouseActionInfo(MouseButton.Middle, expectedMsg.Value.position));
+
+
+        // Assert
+        inbox.AssertReceivedSingleMessage(expectedMsg);
+    }
+
+    [Fact]
+    public void MouseDragCommand_MiddleButtonWhileNotDragging_DoesNothing()
+    {
+        // Arrange
+        _sut.SetField("_isToolsWindowDragInProgress", false);
+        using MessageInbox inbox = _messenger.RegisterInbox<ToolsWindowDragEventMessage>();
+
+        // Act
+        _sut.MouseDragCommand.Execute(new MouseActionInfo(MouseButton.Middle, PointF.Empty));
+
+
+        // Assert
+        inbox.AssertReceivedNoMessages();
     }
 
     #endregion
