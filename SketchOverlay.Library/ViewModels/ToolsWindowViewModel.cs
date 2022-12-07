@@ -181,15 +181,6 @@ public partial class ToolsWindowViewModel<TDrawing, TImageSource, TColor> : Obse
             case nameof(IsInputTransparent):
                 IsInputTransparent = (bool)message.Value;
                 break;
-            case nameof(CanClear):
-                CanClear = (bool)message.Value;
-                break;
-            case nameof(CanRedo):
-                CanRedo = (bool)message.Value;
-                break;
-            case nameof(CanUndo):
-                CanUndo = (bool)message.Value;
-                break;
         }
     }
 
