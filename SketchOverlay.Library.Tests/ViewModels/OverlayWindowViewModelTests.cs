@@ -31,7 +31,6 @@ public class OverlayWindowViewModelTests
     public void Constructor_RegistersForMessages()
     {
         _messenger.AssertIsRegistered<ToolsWindowPropertyChangedMessage>(_sut);
-        _messenger.AssertIsRegistered<OverlayWindowCanvasActionMessage>(_sut);
     }
 
     [Fact]
