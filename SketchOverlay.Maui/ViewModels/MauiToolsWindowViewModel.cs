@@ -6,9 +6,9 @@ using SketchOverlay.Library.ViewModels;
 
 namespace SketchOverlay.Maui.ViewModels;
 
-internal class MauiDrawingToolWindowViewModel : DrawingToolWindowViewModel<MauiDrawing, MauiImageSource, MauiColor>
+internal class MauiToolsWindowViewModel : ToolsWindowViewModel<MauiDrawing, MauiImageSource, MauiColor>
 {
-    public MauiDrawingToolWindowViewModel(
+    public MauiToolsWindowViewModel(
         ICanvasProperties<MauiColor> canvasProps,
         IColorPalette<MauiColor> drawingColors,
         IDrawingToolCollection<MauiDrawing, MauiImageSource, MauiColor> drawingTools,

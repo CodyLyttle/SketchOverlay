@@ -76,7 +76,7 @@ public static class MauiProgram
     public static MauiAppBuilder AddViewModels(this MauiAppBuilder builder)
     {
         builder.Services.AddSingleton<MauiOverlayWindowViewModel>();
-        builder.Services.AddSingleton<MauiDrawingToolWindowViewModel>();
+        builder.Services.AddSingleton<MauiToolsWindowViewModel>();
         return builder;
     }
 

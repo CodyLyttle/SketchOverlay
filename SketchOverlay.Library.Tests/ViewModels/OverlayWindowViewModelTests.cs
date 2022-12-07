@@ -19,7 +19,7 @@ public class OverlayWindowViewModelTests
     {
         _mockCanvas = new Mock<ICanvasManager<object>>();
         _mockCanvas.SetupAllProperties();
-        _sut = new SUT(_mockCanvas.Object, _messenger);;
+        _sut = new SUT(_mockCanvas.Object, _messenger);
     }
 
     #endregion
@@ -27,9 +27,9 @@ public class OverlayWindowViewModelTests
     #region Messenger
 
     [Fact]
-    public void DrawingWindowPropertyChangedMessage_OnInstantiation_MessageIsRegistered()
+    public void ToolsWindowPropertyChangedMessage_OnInstantiation_MessageIsRegistered()
     {
-        _messenger.AssertIsRegistered<DrawingWindowPropertyChangedMessage>(_sut);
+        _messenger.AssertIsRegistered<ToolsWindowPropertyChangedMessage>(_sut);
     }
 
     [Fact]

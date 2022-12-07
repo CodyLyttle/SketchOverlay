@@ -84,7 +84,7 @@
                                     MouseDragCommand="{Binding MouseDragCommand}"
                                     MouseUpCommand="{Binding MouseUpCommand}"/>
 
-            <local:DrawingToolWindow/>
+            <local:ToolsWindow/>
         </Grid>
 
         <Button Command="{Binding ToggleCanvasVisibilityCommand}"

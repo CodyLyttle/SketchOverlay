@@ -10,13 +10,13 @@ namespace SketchOverlay.Library.ViewModels;
 
 // TODO: Tests.
 public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TColor> : ObservableObject,
-    IRecipient<DrawingWindowPropertyChangedMessage>,
+    IRecipient<ToolsWindowPropertyChangedMessage>,
     IRecipient<OverlayWindowCanvasActionMessage>
 {
     private readonly ICanvasManager<TOutput> _canvasManager;
     private readonly IMessenger _messenger;
-    private bool _isToolWindowDragInProgress;
-    private bool _isToolWindowVisible;
+    private bool _isToolsWindowDragInProgress;
+    private bool _isToolsWindowVisible;
 
     public OverlayWindowViewModel(ICanvasManager<TOutput> canvasManager, IMessenger messenger)
     {
@@ -26,7 +26,7 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         _canvasManager.CanUndoChanged += (_, value) => SetDrawingWindowCanUndo(value);
 
         _messenger = messenger;
-        messenger.Register<DrawingWindowPropertyChangedMessage>(this);
+        messenger.Register<ToolsWindowPropertyChangedMessage>(this);
         messenger.Register<OverlayWindowCanvasActionMessage>(this);
     }
 
@@ -50,7 +50,7 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         }
         else if (info.Button is MouseButton.Middle)
         {
-            if (_isToolWindowVisible)
+            if (_isToolsWindowVisible)
             {
                 SetDrawingWindowVisibility(false);
             }
@@ -69,7 +69,7 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         {
             _canvasManager.DoDrawing(info.CursorPosition);
         }
-        else if (info.Button is MouseButton.Middle && _isToolWindowDragInProgress)
+        else if (info.Button is MouseButton.Middle && _isToolsWindowDragInProgress)
         {
             SendOverlayWindowDragAction(DragAction.ContinueDrag, info.CursorPosition);
         }
@@ -83,7 +83,7 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
             SetDrawingWindowInputTransparency(false);
             _canvasManager.FinishDrawing();
         }
-        else if (info.Button is MouseButton.Middle && _isToolWindowDragInProgress)
+        else if (info.Button is MouseButton.Middle && _isToolsWindowDragInProgress)
         {
             SendOverlayWindowDragAction(DragAction.EndDrag, info.CursorPosition);
         }
@@ -107,57 +107,57 @@ public partial class OverlayWindowViewModel<TDrawing, TOutput, TImageSource, TCo
         }
     }
 
-    public void Receive(DrawingWindowPropertyChangedMessage message)
+    public void Receive(ToolsWindowPropertyChangedMessage message)
     {
         switch (message.PropertyName)
         {
-            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsVisible):
-                _isToolWindowVisible = (bool)message.Value;
+            case nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.IsVisible):
+                _isToolsWindowVisible = (bool)message.Value;
                 break;
-            case nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsDragInProgress):
-                _isToolWindowDragInProgress = (bool)message.Value;
+            case nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.IsDragInProgress):
+                _isToolsWindowDragInProgress = (bool)message.Value;
                 break;
         }
     }
 
     private void SendOverlayWindowDragAction(DragAction action, PointF cursorPos)
     {
-        _messenger.Send(new DrawingWindowDragEventMessage(action, cursorPos));
+        _messenger.Send(new ToolsWindowDragEventMessage(action, cursorPos));
     }
 
     private void SetDrawingWindowCanClear(bool canClear)
     {
-        _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.CanClear),
+        _messenger.Send(new ToolsWindowSetPropertyMessage(
+            nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.CanClear),
             canClear));
     }
 
     private void SetDrawingWindowCanRedo(bool canRedo)
     {
-        _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.CanRedo),
+        _messenger.Send(new ToolsWindowSetPropertyMessage(
+            nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.CanRedo),
             canRedo));
     }
 
     private void SetDrawingWindowCanUndo(bool canUndo)
     {
-        _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.CanUndo),
+        _messenger.Send(new ToolsWindowSetPropertyMessage(
+            nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.CanUndo),
             canUndo));
     }
 
     private void SetDrawingWindowVisibility(bool isVisible)
     {
 
-        _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsVisible),
+        _messenger.Send(new ToolsWindowSetPropertyMessage(
+            nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.IsVisible),
             isVisible));
     }
 
     private void SetDrawingWindowInputTransparency(bool isInputTransparent)
     {
-        _messenger.Send(new DrawingWindowSetPropertyMessage(
-            nameof(DrawingToolWindowViewModel<TDrawing, TImageSource, TColor>.IsInputTransparent),
+        _messenger.Send(new ToolsWindowSetPropertyMessage(
+            nameof(ToolsWindowViewModel<TDrawing, TImageSource, TColor>.IsInputTransparent),
             isInputTransparent));
     }
 }

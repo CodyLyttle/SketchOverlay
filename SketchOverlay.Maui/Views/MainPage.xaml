@@ -12,6 +12,6 @@
                                  MouseDragCommand="{Binding MouseDragCommand}"
                                  MouseUpCommand="{Binding MouseUpCommand}"/>
 
-        <views:DrawingToolWindow x:Name="DrawingToolsWindow"/>
+        <views:ToolsWindow x:Name="ToolsWindow"/>
     </Grid>
 </ContentPage>

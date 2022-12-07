@@ -2,12 +2,12 @@ using SketchOverlay.Maui.ViewModels;
 
 namespace SketchOverlay.Maui.Views;
 
-public partial class DrawingToolWindow
+public partial class ToolsWindow
 {
-    public DrawingToolWindow()
+    public ToolsWindow()
     {
         InitializeComponent();
-        BindingContext = MauiProgram.GetService<MauiDrawingToolWindowViewModel>();
+        BindingContext = MauiProgram.GetService<MauiToolsWindowViewModel>();
         HeightRequest = 310;
         WidthRequest =300;
     }

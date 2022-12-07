@@ -66,13 +66,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Views\DrawingToolWindow.xaml.cs">
-			<DependentUpon>DrawingToolWindow.xaml</DependentUpon>
+		<Compile Update="Views\ToolsWindow.xaml.cs">
+			<DependentUpon>ToolsWindow.xaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-		<MauiXaml Update="Views\DrawingToolWindow.xaml">
+		<MauiXaml Update="Views\ToolsWindow.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>

@@ -11,24 +11,24 @@ using SketchOverlay.Library.Models;
 namespace SketchOverlay.Library.ViewModels;
 
 // TODO: Tests.
-public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> : ObservableObject,
-    IRecipient<DrawingWindowSetPropertyMessage>,
-    IRecipient<DrawingWindowDragEventMessage>
+public partial class ToolsWindowViewModel<TDrawing, TImageSource, TColor> : ObservableObject,
+    IRecipient<ToolsWindowSetPropertyMessage>,
+    IRecipient<ToolsWindowDragEventMessage>
 {
     private readonly IMessenger _messenger;
     private bool _isDragInProgress;
     private bool _isVisible;
     private readonly ICanvasProperties<TColor> _canvasProps;
 
-    public DrawingToolWindowViewModel(
+    public ToolsWindowViewModel(
         ICanvasProperties<TColor> canvasProps,
         IColorPalette<TColor> drawingColors,
         IDrawingToolCollection<TDrawing, TImageSource, TColor> drawingTools,
         IMessenger messenger)
     {
         _messenger = messenger;
-        _messenger.Register<DrawingWindowSetPropertyMessage>(this);
-        _messenger.Register<DrawingWindowDragEventMessage>(this);
+        _messenger.Register<ToolsWindowSetPropertyMessage>(this);
+        _messenger.Register<ToolsWindowDragEventMessage>(this);
 
         _canvasProps = canvasProps;
         _drawingColors = drawingColors;
@@ -134,7 +134,7 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
 
             _isDragInProgress = value;
             OnPropertyChanged();
-            _messenger.Send(new DrawingWindowPropertyChangedMessage(value));
+            _messenger.Send(new ToolsWindowPropertyChangedMessage(value));
         }
     }
 
@@ -148,7 +148,7 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
 
             _isVisible = value;
             OnPropertyChanged();
-            _messenger.Send(new DrawingWindowPropertyChangedMessage(value));
+            _messenger.Send(new ToolsWindowPropertyChangedMessage(value));
         }
     }
 
@@ -177,7 +177,7 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
         _messenger.Send(new OverlayWindowCanvasActionMessage(CanvasAction.Clear));
     }
 
-    public void Receive(DrawingWindowSetPropertyMessage message)
+    public void Receive(ToolsWindowSetPropertyMessage message)
     {
         switch (message.PropertyName)
         {
@@ -199,7 +199,7 @@ public partial class DrawingToolWindowViewModel<TDrawing, TImageSource, TColor> 
         }
     }
 
-    public void Receive(DrawingWindowDragEventMessage message)
+    public void Receive(ToolsWindowDragEventMessage message)
     {
         (DragAction action, PointF position) = message.Value;
 

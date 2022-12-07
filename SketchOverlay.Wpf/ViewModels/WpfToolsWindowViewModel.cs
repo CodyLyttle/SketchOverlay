@@ -6,9 +6,9 @@ using SketchOverlay.Library.ViewModels;
 
 namespace SketchOverlay.Wpf.ViewModels;
 
-internal class WpfDrawingToolWindowViewModel : DrawingToolWindowViewModel<WpfDrawing, WpfImageSource, WpfBrush>
+internal class WpfToolsWindowViewModel : ToolsWindowViewModel<WpfDrawing, WpfImageSource, WpfBrush>
 {
-    public WpfDrawingToolWindowViewModel(ICanvasProperties<WpfBrush> canvasProps,
+    public WpfToolsWindowViewModel(ICanvasProperties<WpfBrush> canvasProps,
         IColorPalette<WpfBrush> drawingColors,
         IDrawingToolCollection<WpfDrawing, WpfImageSource, WpfBrush> drawingTools,
         IMessenger messenger) : base(canvasProps, drawingColors, drawingTools, messenger)

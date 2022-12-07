@@ -4,12 +4,12 @@ using SketchOverlay.Wpf.ViewModels;
 
 namespace SketchOverlay.Wpf.Views;
 
-public partial class DrawingToolWindow : UserControl
+public partial class ToolsWindow : UserControl
 {
-    public DrawingToolWindow()
+    public ToolsWindow()
     {
         InitializeComponent();
-        DataContext = App.Current.Services.GetService<WpfDrawingToolWindowViewModel>();
+        DataContext = App.Current.Services.GetService<WpfToolsWindowViewModel>();
         Width = 260;
         Height = 310;
     }

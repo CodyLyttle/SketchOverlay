@@ -36,7 +36,7 @@ public static class DependencyBuilderExtensions
     public static ServiceCollection AddViewModels(this ServiceCollection builder)
     {
         builder.AddSingleton<WpfOverlayWindowViewModel>();
-        builder.AddSingleton<WpfDrawingToolWindowViewModel>();
+        builder.AddSingleton<WpfToolsWindowViewModel>();
         return builder;
     }
 }
