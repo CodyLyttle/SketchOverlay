@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using FluentAssertions;
 using FluentAssertions.Events;
 using Moq;
@@ -259,6 +258,54 @@ public class ToolsWindowViewModelTests
 
         // Assert
         _sutMonitor.Should().RaisePropertyChangeFor(x => x.StrokeSize);
+    }
+
+    [Fact]
+    public void FillColor_SetWithNull_DoesNothing()
+    {
+        // Act
+        // UI bindings have the ability to set non-nullable properties to null.
+        _sut.FillColor = null!; 
+
+        // Assert
+        _mockCanvasProperties.VerifySet(x=> x.FillColor = null!, Times.Never);
+    }
+
+    [Fact]
+    public void FillColor_SetWithValidValue_SetsCanvasPropertiesFillColor()
+    {
+        // Arrange
+        object expectedValue = 16;
+
+        // Act
+        _sut.FillColor = expectedValue;
+
+        // Assert
+        _mockCanvasProperties.VerifySet(x => x.FillColor = expectedValue, Times.Once);
+    }
+
+    [Fact]
+    public void StrokeColor_SetWithNull_DoesNothing()
+    {
+        // Act
+        // UI bindings have the ability to set non-nullable properties to null.
+        _sut.StrokeColor = null!;
+
+        // Assert
+        _mockCanvasProperties.VerifySet(x => x.StrokeColor = null!, Times.Never);
+    }
+
+    [Fact]
+    public void StrokeColor_SetWithValidValue_SetsCanvasPropertiesStrokeColor()
+    {
+        // Arrange
+        object expectedValue = 16;
+
+        // Act
+        _sut.StrokeColor = expectedValue;
+
+        // Assert
+        _mockCanvasProperties.VerifySet(x => x.StrokeColor = expectedValue, Times.Once);
     }
 
     #endregion
