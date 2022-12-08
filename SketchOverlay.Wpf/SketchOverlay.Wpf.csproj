@@ -5,6 +5,11 @@
         <TargetFramework>net7.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+	    <VersionPrefix>0.1.0.0</VersionPrefix>
+        <AssemblyName>SketchOverlay</AssemblyName>
+        <AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
+        <FileVersion>$(VersionPrefix)</FileVersion>
     </PropertyGroup>
 
 	<ItemGroup>
@@ -16,6 +21,13 @@
       <None Remove="Resources\Images\DrawingTools\placeholder_line.png" />
       <None Remove="Resources\Images\DrawingTools\placeholder_paintbrush.png" />
       <None Remove="Resources\Images\DrawingTools\placeholder_rectangle.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\README.md">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
