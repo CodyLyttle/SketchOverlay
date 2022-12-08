@@ -50,6 +50,13 @@ public class ToolsWindowViewModelTests
 
     #endregion
 
+    [Fact]
+    public void Constructor_RegistersForMessages()
+    {
+        _messenger.AssertIsRegistered<ToolsWindowSetPropertyMessage>(_sut);
+        _messenger.AssertIsRegistered<ToolsWindowDragEventMessage>(_sut);
+    }
+
     #region CanvasStateManager
 
     [Fact]
