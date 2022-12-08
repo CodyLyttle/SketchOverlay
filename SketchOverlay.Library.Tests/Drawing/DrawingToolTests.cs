@@ -39,10 +39,10 @@ public class DrawingToolTests
 
     #endregion
 
-    #region Properties
+    #region CurrentDrawing
 
     [Fact]
-    public void CurrentDrawing_OnInitialization_IsNull()
+    public void CurrentDrawing_OnInstantiation_IsNull()
     {
         Assert.Throws<InvalidOperationException>(() => _sut.CurrentDrawing);
     }
