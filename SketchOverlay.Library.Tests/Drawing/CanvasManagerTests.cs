@@ -1,4 +1,6 @@
 ﻿using System.Drawing;
+using FluentAssertions;
+using FluentAssertions.Events;
 using SketchOverlay.Library.Drawing.Canvas;
 using SketchOverlay.Library.Drawing.Tools;
 using SketchOverlay.Library.Tests.TestHelpers;
@@ -11,6 +13,7 @@ public class CanvasManagerTests
     #region Setups
 
     private readonly SUT _sut;
+    private readonly IMonitor<SUT> _sutMonitor;
     private readonly Stack<int> _drawStackItems;
     private readonly Mock<ICanvasProperties<object>> _mockCanvasProps;
     private readonly Mock<IDrawingStack<object, object>> _mockDrawStack;
@@ -39,6 +42,8 @@ public class CanvasManagerTests
             _mockCanvasProps.Object,
             _mockDrawStack.Object,
             _mockToolRetriever.Object);
+
+        _sutMonitor = _sut.Monitor();
     }
 
     private void ResetMockInvocations()
@@ -57,22 +62,11 @@ public class CanvasManagerTests
         _mockToolRetriever.VerifyNoOtherCalls();
     }
 
-    private EventCatcher GetRequestRedrawEventCatcher()
+    private void AssertDoesNotInvokeCanvasActions()
     {
-        EventCatcher eventCatcher = new();
-        _sut.RequestRedraw += eventCatcher.OnReceived;
-
-        return eventCatcher;
-    }
-
-    private EventCatcher<bool> GetCanvasActionsEventCatcher()
-    {
-        EventCatcher<bool> eventCatcher = new();
-        _sut.CanClearChanged += eventCatcher.OnReceived;
-        _sut.CanRedoChanged += eventCatcher.OnReceived;
-        _sut.CanUndoChanged += eventCatcher.OnReceived;
-
-        return eventCatcher;
+        _sutMonitor.Should().NotRaise(nameof(SUT.CanClearChanged));
+        _sutMonitor.Should().NotRaise(nameof(SUT.CanRedoChanged));
+        _sutMonitor.Should().NotRaise(nameof(SUT.CanUndoChanged));
     }
 
     private void SetupIsDrawing()
@@ -117,13 +111,19 @@ public class CanvasManagerTests
 
     #endregion
 
-    #region Properties
-
     [Fact]
     public void IsDrawing_OnInstantiation_IsFalse()
     {
         Assert.False(_sut.IsDrawing);
     }
+
+    [Fact]
+    public void DrawingOutput_ReturnsDrawStackOutput()
+    {
+        Assert.Equal(_mockDrawStack.Object.Output, _sut.DrawingOutput);
+    }
+
+    #region CanClear
 
     [Fact]
     public void CanClear_OnInstantiation_IsFalse()
@@ -132,10 +132,66 @@ public class CanvasManagerTests
     }
 
     [Fact]
+    public void CanClear_SetWithSameValue_DoesNothing()
+    {
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanClear), _sut.CanClear);
+
+        // Assert
+        _sutMonitor.Should().NotRaise(nameof(SUT.CanClearChanged));
+    }
+
+    [Fact]
+    public void CanClear_SetWithNewValue_SetsValueAndInvokesCanClearChanged()
+    {
+        // Arrange
+        bool expectedValue = !_sut.CanClear;
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanClear), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.CanClear);
+        _sutMonitor.Should().Raise(nameof(SUT.CanClearChanged));
+    }
+
+    #endregion
+
+    #region CanRedo
+
+    [Fact]
     public void CanRedo_OnInstantiation_IsFalse()
     {
         Assert.False(_sut.CanRedo);
     }
+
+    [Fact]
+    public void CanRedo_SetWithSameValue_DoesNothing()
+    {
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanRedo), _sut.CanRedo);
+
+        // Assert
+        _sutMonitor.Should().NotRaise((nameof(SUT.CanRedoChanged)));
+    }
+
+    [Fact]
+    public void CanRedo_SetWithNewValue_SetsValueAndInvokesCanRedoChanged()
+    {
+        // Arrange
+        bool expectedValue = !_sut.CanRedo;
+
+        // Act
+        _sut.SetPropertyValue(nameof(SUT.CanRedo), expectedValue);
+
+        // Assert
+        Assert.Equal(expectedValue, _sut.CanRedo);
+        _sutMonitor.Should().Raise(nameof(SUT.CanRedoChanged));
+    }
+
+    #endregion
+
+    #region CanUndo
 
     [Fact]
     public void CanUndo_OnInstantiation_IsFalse()
@@ -144,91 +200,19 @@ public class CanvasManagerTests
     }
 
     [Fact]
-    public void CanClear_SetWithSameValue_DoesNothing()
-    {
-        // Arrange
-        EventCatcher<bool> eventCatcher = new();
-        _sut.CanClearChanged += eventCatcher.OnReceived;
-        bool expectedValue = _sut.CanClear;
-
-        // Act
-        _sut.SetPropertyValue(nameof(SUT.CanClear), expectedValue);
-
-        // Assert
-        Assert.Equal(expectedValue, _sut.CanClear);
-        Assert.Empty(eventCatcher.Received);
-    }
-
-    [Fact]
-    public void CanRedo_SetWithSameValue_DoesNothing()
-    {
-        // Arrange
-        EventCatcher<bool> eventCatcher = new();
-        _sut.CanRedoChanged += eventCatcher.OnReceived;
-        bool expectedValue = _sut.CanRedo;
-
-        // Act
-        _sut.SetPropertyValue(nameof(SUT.CanRedo), expectedValue);
-
-        // Assert
-        Assert.Equal(expectedValue, _sut.CanRedo);
-        Assert.Empty(eventCatcher.Received);
-    }
-
-    [Fact]
     public void CanUndo_SetWithSameValue_DoesNothing()
     {
-        // Arrange
-        EventCatcher<bool> eventCatcher = new();
-        _sut.CanUndoChanged += eventCatcher.OnReceived;
-        bool expectedValue = _sut.CanUndo;
-
         // Act
-        _sut.SetPropertyValue(nameof(SUT.CanUndo), expectedValue);
+        _sut.SetPropertyValue(nameof(SUT.CanUndo), _sut.CanUndo);
 
         // Assert
-        Assert.Equal(expectedValue, _sut.CanUndo);
-        Assert.Empty(eventCatcher.Received);
+        _sutMonitor.Should().NotRaise(nameof(SUT.CanRedoChanged));
     }
 
     [Fact]
-    public void CanClear_PropertyChanged_InvokesCanClearChangedEvent()
+    public void CanUndo_SetWithNewValue_SetsValueAndInvokesCanUndoChanged()
     {
         // Arrange
-        EventCatcher<bool> eventCatcher = new();
-        _sut.CanClearChanged += eventCatcher.OnReceived;
-        bool expectedValue = !_sut.CanClear;
-
-        // Act
-        _sut.SetPropertyValue(nameof(SUT.CanClear), expectedValue);
-
-        // Assert
-        Assert.Equal(expectedValue, _sut.CanClear);
-        Assert.Single(eventCatcher.Received);
-    }
-
-    [Fact]
-    public void CanRedo_PropertyChanged_InvokesCanRedoChangedEvent()
-    {
-        // Arrange
-        EventCatcher<bool> eventCatcher = new();
-        _sut.CanRedoChanged += eventCatcher.OnReceived;
-        bool expectedValue = !_sut.CanRedo;
-
-        // Act
-        _sut.SetPropertyValue(nameof(SUT.CanRedo), expectedValue);
-
-        // Assert
-        Assert.Equal(expectedValue, _sut.CanRedo);
-        Assert.Single(eventCatcher.Received);
-    }
-
-    [Fact]
-    public void CanUndo_PropertyChanged_InvokesCanUndoChangedEvent()
-    {
-        // Arrange
-        EventCatcher<bool> eventCatcher = new();
-        _sut.CanUndoChanged += eventCatcher.OnReceived;
         bool expectedValue = !_sut.CanUndo;
 
         // Act
@@ -236,13 +220,7 @@ public class CanvasManagerTests
 
         // Assert
         Assert.Equal(expectedValue, _sut.CanUndo);
-        Assert.Single(eventCatcher.Received);
-    }
-
-    [Fact]
-    public void DrawingOutput_ReturnsDrawStackOutput()
-    {
-        Assert.Equal(_mockDrawStack.Object.Output, _sut.DrawingOutput);
+        _sutMonitor.Should().Raise(nameof(SUT.CanUndoChanged));
     }
 
     #endregion
@@ -285,29 +263,23 @@ public class CanvasManagerTests
     }
 
     [Fact]
-    public void DoDrawing_WhileNotDrawing_InvokesRequestsRedrawEvent()
+    public void DoDrawing_WhileNotDrawing_InvokesRequestRedraw()
     {
-        // Arrange
-        EventCatcher eventCatcher = GetRequestRedrawEventCatcher();
-
         // Act
         _sut.DoDrawing(new PointF());
 
         // Assert
-        Assert.Single(eventCatcher.Received);
+        _sutMonitor.Should().Raise(nameof(SUT.RequestRedraw));
     }
 
     [Fact]
     public void DoDrawing_WhileNotDrawing_DoesNotInvokeCanvasActionEvents()
     {
-        // Arrange
-        EventCatcher<bool> eventCatcher = GetCanvasActionsEventCatcher();
-
         // Act
         _sut.DoDrawing(new PointF());
 
         // Assert
-        Assert.Empty(eventCatcher.Received);
+        AssertDoesNotInvokeCanvasActions();
     }
 
     [Fact]
@@ -367,17 +339,16 @@ public class CanvasManagerTests
     }
 
     [Fact]
-    public void DoDrawing_WhileDrawing_InvokesRequestRedrawEvent()
+    public void DoDrawing_WhileDrawing_InvokesRequestRedraw()
     {
         // Arrange
         SetupIsDrawing();
-        EventCatcher eventCatcher = GetRequestRedrawEventCatcher();
 
         // Act
         _sut.DoDrawing(new PointF());
 
         // Assert
-        Assert.Single(eventCatcher.Received);
+        _sutMonitor.Should().Raise(nameof(SUT.RequestRedraw));
     }
 
     [Fact]
@@ -385,13 +356,12 @@ public class CanvasManagerTests
     {
         // Arrange
         SetupIsDrawing();
-        EventCatcher<bool> eventCatcher = GetCanvasActionsEventCatcher();
 
         // Act
         _sut.DoDrawing(new PointF());
 
         // Assert
-        Assert.Empty(eventCatcher.Received);
+        AssertDoesNotInvokeCanvasActions();
     }
 
     #endregion
@@ -437,17 +407,16 @@ public class CanvasManagerTests
     }
 
     [Fact]
-    public void FinishDrawing_WhileDrawing_InvokesRequestRedrawEvent()
+    public void FinishDrawing_WhileDrawing_InvokesRequestRedraw()
     {
         // Arrange
         SetupIsDrawing();
-        EventCatcher eventCatcher = GetRequestRedrawEventCatcher();
 
         // Act
         _sut.FinishDrawing();
 
         // Assert
-        Assert.Single(eventCatcher.Received);
+        _sutMonitor.Should().Raise(nameof(SUT.RequestRedraw));
     }
 
     [Fact]
@@ -494,14 +463,14 @@ public class CanvasManagerTests
     {
         // Arrange
         SetupWithDrawings(1);
-        EventCatcher<bool> eventCatcher = GetCanvasActionsEventCatcher();
+        _sut.DoDrawing(new PointF());
+        _sutMonitor.Clear();
 
         // Act
-        _sut.DoDrawing(new PointF());
         _sut.FinishDrawing();
 
         // Assert
-        Assert.Empty(eventCatcher.Received);
+        AssertDoesNotInvokeCanvasActions();
     }
 
     [Fact]
@@ -577,32 +546,29 @@ public class CanvasManagerTests
     }
 
     [Fact]
-    public void CancelDrawing_WhileDrawing_InvokesRequestRedrawEvent()
+    public void CancelDrawing_WhileDrawing_InvokesRequestRedraw()
     {
         // Arrange
         SetupIsDrawing();
-        EventCatcher eventCatcher = new();
-        _sut.RequestRedraw += eventCatcher.OnReceived;
 
         // Act
         _sut.CancelDrawing();
 
         // Assert
-        Assert.Single(eventCatcher.Received);
+        _sutMonitor.Should().Raise(nameof(SUT.RequestRedraw));
     }
 
     [Fact]
     public void CancelDrawing_WhileDrawing_DoesNotInvokeCanvasActionEvents()
     {
         // Arrange
-        EventCatcher<bool> eventCatcher = GetCanvasActionsEventCatcher();
         SetupIsDrawing();
 
         // Act
         _sut.CancelDrawing();
 
         // Assert
-        Assert.Empty(eventCatcher.Received);
+        AssertDoesNotInvokeCanvasActions();
     }
 
     #endregion
@@ -655,17 +621,16 @@ public class CanvasManagerTests
     }
 
     [Fact]
-    public void Clear_WithCanClearTrue_InvokesRequestRedrawEvent()
+    public void Clear_WithCanClearTrue_InvokesRequestRedraw()
     {
         // Arrange
         SetupWithDrawings(3);
-        EventCatcher eventCatcher = GetRequestRedrawEventCatcher();
 
         // Act
         _sut.Clear();
 
         // Assert
-        Assert.Single(eventCatcher.Received);
+        _sutMonitor.Should().Raise(nameof(SUT.RequestRedraw));
     }
 
     #endregion
@@ -732,17 +697,16 @@ public class CanvasManagerTests
     }
 
     [Fact]
-    public void Redo_WithCanRedoTrue_InvokesRequestRedrawEvent()
+    public void Redo_WithCanRedoTrue_InvokesRequestRedraw()
     {
         // Arrange
         SetupCanRedo(1);
-        EventCatcher eventCatcher = GetRequestRedrawEventCatcher();
 
         // Act
         _sut.Redo();
 
         // Assert
-        Assert.Single(eventCatcher.Received);
+        _sutMonitor.Should().Raise(nameof(SUT.RequestRedraw));
     }
 
     #endregion
@@ -806,17 +770,16 @@ public class CanvasManagerTests
     }
 
     [Fact]
-    public void Undo_WithCanUndoTrue_InvokesRequestRedrawEvent()
+    public void Undo_WithCanUndoTrue_InvokesRequestRedraw()
     {
         // Arrange
         SetupCanUndoAndCanClear(1);
-        EventCatcher eventCatcher = GetRequestRedrawEventCatcher();
 
         // Act
         _sut.Undo();
 
         // Assert
-        Assert.Single(eventCatcher.Received);
+        _sutMonitor.Should().Raise(nameof(SUT.RequestRedraw));
     }
 
     #endregion
